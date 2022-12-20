@@ -1,0 +1,13 @@
+{
+	"mqtt": {
+		"brokerUrl": "mqtt://homeassistant.local",
+		"discoveryTopic": "homeassistant",
+		"baseTopic": "solarpi",
+		"username": "username",
+		"password": "password"
+	},
+	"inverter": {
+		"model": "SPH3000",
+		"interval": 60
+	}
+}

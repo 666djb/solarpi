@@ -1,0 +1,11 @@
+[Unit]
+Description=SolarPi Inverter/MQTT Bridge
+
+[Service]
+User=solarpi
+WorkingDirectory=/opt/solarpi
+ExecStart=npm start
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
