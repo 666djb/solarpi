@@ -1,19 +1,26 @@
 {
   "name": "solarpi",
-  "version": "0.0.1",
-  "description": "MQTT bridge for Growatt SPH Inverter",
+  "version": "1.0.1",
+  "description": "Solar Inverter to MQTT bridge",
   "main": "./dist/solarpi.js",
+  "type": "module",
   "scripts": {
     "postinstall": "tsc -p ./src",
     "start": "node ./dist/solarpi.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://source.developers.google.com/p/my-vm-165620/r/solarpi"
+    "url": "https://github.com/666djb/solarpi.git"
   },
   "author": "David Brown",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^18.11.17",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "async-mqtt": "^2.6.3",
+    "modbus-serial": "^8.0.8",
+    "mqtt": "^4.3.7"
   }
 }
