@@ -1,9 +1,9 @@
 {
 	"mqtt": {
-		"brokerUrl": "mqtt://homeassistant.local",
+		"brokerUrl": "mqtt://192.168.0.100",
 		"discoveryTopic": "homeassistant",
 		"baseTopic": "solarpi",
-		"username": "username",
+		"username": "mqtt",
 		"password": "password"
 	},
 	"inverter": {

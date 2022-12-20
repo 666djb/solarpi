@@ -23,7 +23,7 @@ export interface InverterConfig {
     interval: number
 }
 
-// Todo: check sanity of config items
+// Todo: check sanity of config items, parse with ajv?
 export function getConfig(configFile: string): Config {
     return JSON.parse(fs.readFileSync(configFile, "utf8")) as Config
 }

@@ -16,4 +16,5 @@ echo "Creating systemd service for solarpi"
 sudo cp solarpi.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable solarpi
+echo "solarpi is installed, now configure by editing /opt/solarpi/options.json"
 cd $pwd

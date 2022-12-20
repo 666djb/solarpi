@@ -1,8 +1,11 @@
-# SolarPi
+# SolarPi v1.0.3
 
 ## Description
-A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js. SolarPi reads the following values from the inverter and publishes them to an MQTT broker such as Mosquitto in Home Assistant:
-* Inverter Status (status, temperatur, error)
+A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
+
+
+SolarPi reads the following values from the inverter:
+* Inverter Status (status, temperature, error)
 * PV Power (both strings and total)
 * PV Voltage (both strings)
 * PV Energy (today and total)
@@ -14,11 +17,21 @@ A bridge between a solar PV inverter and MQTT, written in Typescript and execute
 * Load Energy (today and total)
 * Battery Charge/Discharge Energy (today and total)
 
+SolarPi reads and write the following Time of Use charging values:
+* Charging Power %
+* Stop Charging SOC %
+* AC Charging on/off
+* Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
+
+Home Assistant automations can be simply written to control when the battery is charged and how much it is charged - e.g. if the forecast for the next day is good, then only charge the battery 50% over night.
+
 This creates and updates the following Device and Sensor Entities in Home Assistant:
-![Devices and Entities](SolarPi%20Home%20Assistant.png)
+![Device and Entities](SolarPi%20Home%20Assistant%20Entities%201.png)
+![Device and Entities](SolarPi%20Home%20Assistant%20Entities%202.png)
 
 From these, Lovelace Dashboards such as the following can be created:
 ![Dashboard](SolarPi%20Home%20Assistant%20Dashboard.png)
+![Dashboard](SolarPi%20Home%20Assistant%20TOU%20Dashboard.png)
 
 I have built SolarPi to interface my Growatt SPH3000 with Home Assistant without relying on the Growatt web API or interferring with the Growatt Datalogger/WiFi dongle. That is to say the Growatt web dashboard and the Growatt ShinePhone app still work (as well as they ever did). My approach uses a standard serial port interface on the inverter in accordance with the Growatt Modbus Inverter RTU Protocol document v.1.20.
 
@@ -29,7 +42,18 @@ I am running this code on a Raspberry Pi Zero W with an RS485-USB adapter (speci
 I have designed SolarPi so that the code is extensible to integrate other Growatt inverters and potentially other brands of inverter.
 
 ## Status
-I have had this running continuously for a couple of weeks now with a 60 second update of values. I plan to update the code and enable some control of the inverter via MQTT.
+I have had this running continuously for two months with a 60 second update of values.
+
+## Changes
+### 1.0.1
+* First release
+### 1.0.2
+* Added simple script to backup the Growatt SPH settings to a text file (command line: node ./dist/backupGrowattSPH.js).
+* Enabled control of Time Of Use Charging via MQTT
+### 1.0.3
+* Added bounds to entities published by MQTT (e.g. limiting hours to 0-23)
+* Shorted names of entities published by MQTT so they can be more easily directly used in dashboards
+* Added command to get the time from the inverter (does nothing more than create a button entity and trigger an MQTT message right now)
 
 I will add some pictures of the hardware and connection to the inverter soon.
 
@@ -129,7 +153,14 @@ If you have used the install script or followed the complete set of manual steps
 * sudo rm -rf /home/solarpi
 
 ## Development
-So far, this has only been tested by me and does what I want it to reliably. I plan to add controls so that I can change e.g. the time when the inverter charges the battery from the grid and times when I might want to prevent the battery discharging as I charge my EV from the grid. These controls will be accessible as MQTT entities.
+So far, this has only been tested by me and does what I want it to reliably.
+
+### To do
+* Validate config file
+* Add robustness to install.sh script
+* Local CSV logging of energy values
+* Implement Inverter Time MQTT entities for reading (as sensors)
+* Implement automatic time setting and configuration file item to enable (e.g. use localtime on Raspberry Pi to update inverter time)
 
 Feel free to use this code for your own purposes. If you test this with a Growatt SPH inverter, please let me know, also if you add support for other inverters, I will look to merging changes in. I can't promise to provide tonnes of support, but will try to help.
 

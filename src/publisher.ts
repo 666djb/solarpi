@@ -3,14 +3,21 @@ import MQTT, { AsyncMqttClient } from 'async-mqtt'
 import { MqttConfig } from "./config.js"
 import * as events from "events"
 import { logDate } from "./logDate.js"
-import { inverterEntity } from "./inverter.js"
+import { SensorEntities, ControlEntities, CommandEntities } from "./inverter.js"
 
 export class Publisher extends events.EventEmitter {
+    mqttClient: AsyncMqttClient
+    sensorEntities: SensorEntities
+    controlEntities: ControlEntities
 
-    mqttClient: AsyncMqttClient;
+    constructor(private config: MqttConfig, sensorEntities: SensorEntities, controlEntities: ControlEntities,
+        commandEntities: CommandEntities) {
 
-    constructor(private config: MqttConfig, private entities: inverterEntity[]) {
         super()
+
+        this.sensorEntities = sensorEntities
+        this.controlEntities = controlEntities
+
         const options = {
             will: {
                 topic: `${config.baseTopic}/bridge/availability`,
@@ -26,7 +33,16 @@ export class Publisher extends events.EventEmitter {
         this.mqttClient = MQTT.connect(config.brokerUrl, options)
 
         this.mqttClient.on("connect", () => {
-            this.publishOnline(entities)
+            this.publishOnline(sensorEntities, controlEntities, commandEntities)
+
+            // Subscribe to commands sent to us
+            this.subscribe(`${config.baseTopic}/${commandEntities.subTopic}/set`)
+
+            // Subscribe to control values sent to us
+            // Todo this would need to handle an array of ControlEntities if more control subtopics are added
+            // At the moment there is only one subtopic "touCharging"
+            this.subscribe(`${config.baseTopic}/${controlEntities.subTopic}/set`)
+
             this.emit("Connect")
         })
 
@@ -37,9 +53,23 @@ export class Publisher extends events.EventEmitter {
         this.mqttClient.on("disconnect", () => {
             this.emit("Disconnect")
         })
+
+        this.mqttClient.on("message", (topic, message) => {
+            switch(topic) {
+                case `${config.baseTopic}/${commandEntities.subTopic}/set`:
+                    this.emit("command", message.toString())
+                    break
+                case `${config.baseTopic}/${controlEntities.subTopic}/set`:
+                    this.emit("control", message.toString())
+                    break
+                default:
+                    this.emit("unknown", "")
+            }
+            
+        })
     }
 
-    private async publishOnline(solarpiEntities: inverterEntity[]): Promise<any> {
+    private async publishOnline(sensors: SensorEntities, controls: ControlEntities, commands: CommandEntities): Promise<any> {
         const availability = [
             {
                 topic: `${this.config.baseTopic}/bridge/availability`
@@ -58,18 +88,44 @@ export class Publisher extends events.EventEmitter {
 
         try {
             // Set our bridge availability to online
-            await this.publish("bridge/availability", "online", true)
+            await this.publish("online", "bridge/availability", true)
 
-            // Advertise the presence of all standard entities so they can be discovered
-            for (let entity in solarpiEntities) {
-                let thisEntity = {
+            // Advertise the presence of all sensor entities
+            for (let entity in sensors.entities) {
+                const thisEntity = {
                     availability: availability,
                     device: device,
-                    state_topic: `${this.config.baseTopic}/inverter`,
-                    json_attributes_topic: `${this.config.baseTopic}/inverter`,
-                    object_id: solarpiEntities[entity].unique_id,
+                    state_topic: `${this.config.baseTopic}/${sensors.subTopic}/state`,
+                    json_attributes_topic: `${this.config.baseTopic}/${sensors.subTopic}/state`,
+                    object_id: sensors.entities[entity].unique_id,
                     force_update: true,
-                    ...solarpiEntities[entity],
+                    ...sensors.entities[entity],
+                }
+                await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
+            }
+
+            // Advertise the presence of all command entities
+            for (let entity in commands.entities) {
+                const thisEntity = {
+                    availability: availability,
+                    device: device,
+                    state_topic: `${this.config.baseTopic}/${commands.subTopic}/state`,
+                    command_topic: `${this.config.baseTopic}/${commands.subTopic}/set`,
+                    object_id: commands.entities[entity].unique_id,
+                    ...commands.entities[entity],
+                }
+                await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
+            }
+
+            // Advertise the presence of all control entities
+            for (let entity in controls.entities) {
+                const thisEntity = {
+                    availability: availability,
+                    device: device,
+                    state_topic: `${this.config.baseTopic}/${controls.subTopic}/state`,
+                    command_topic: `${this.config.baseTopic}/${controls.subTopic}/set`,
+                    object_id: controls.entities[entity].unique_id,
+                    ...controls.entities[entity],
                 }
                 await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
             }
@@ -79,9 +135,20 @@ export class Publisher extends events.EventEmitter {
         }
     }
 
-    private async publish(subTopic: string, data: string, retain?: boolean) {
+    private async subscribe(subTopic: string) {
         try {
-            if(!this.mqttClient.connected){
+            if (!this.mqttClient.connected) {
+                throw "Not connected"
+            }
+            await this.mqttClient.subscribe(subTopic)
+        } catch (error) {
+            throw `subscribe() error ${error}`
+        }
+    }
+
+    private async publish(data: string, subTopic: string, retain?: boolean) {
+        try {
+            if (!this.mqttClient.connected) {
                 throw "Not connected"
             }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, data,
@@ -91,12 +158,24 @@ export class Publisher extends events.EventEmitter {
         }
     }
 
-    public async publishData(data: object, retain?: boolean) {
+    public async publishControlData(data: object) {
+        return this.publishData(data, `${this.controlEntities.subTopic}/state`, true)
+    }
+
+    public async publishSensorData(data: object) {
+        return this.publishData(data, `${this.sensorEntities.subTopic}/state`, true)
+    }
+
+    public async publishCommandResponse(data: object) {
+        return this.publishData(data, "command/state")
+    }
+
+    private async publishData(data: object, subTopic: string, retain?: boolean) {
         try {
-            if(!this.mqttClient.connected){
+            if (!this.mqttClient.connected) {
                 throw "Not connected"
             }
-            await this.mqttClient.publish(`${this.config.baseTopic}/inverter`, JSON.stringify(data),
+            await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
             throw `publishJSON() error ${error}`
@@ -105,7 +184,7 @@ export class Publisher extends events.EventEmitter {
 
     private async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
         try {
-            if(!this.mqttClient.connected){
+            if (!this.mqttClient.connected) {
                 throw "Not connected"
             }
             await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data),
