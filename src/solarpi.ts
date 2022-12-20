@@ -2,17 +2,7 @@ import GrowattClient from 'growatt-modbus'
 
 console.log("Starting SolarPi")
 
-try {
-    runSolarPi()
-} catch (error) {
-    if (error instanceof Error) {
-        console.error(`Error reading data: ${error.message}`)
-    } else {
-        console.error("Unknown error:", error)
-    }
-}
-
-console.log("Ending")
+runSolarPi()
 
 async function runSolarPi() {
     const growattClient = new GrowattClient({
@@ -26,6 +16,11 @@ async function runSolarPi() {
         const data = await growattClient.getData()
         console.log(`Data: ${data}`)
     } catch (error) {
-        throw (error)
+        if (error instanceof Error) {
+            console.error(`Error reading data: ${error.message}`)
+        } else {
+            console.error("Unknown error:", error)
+        }
     }
+    console.log("Ending")
 }
