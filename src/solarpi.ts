@@ -11,6 +11,10 @@ async function runSolarPi() {
         device: '/dev/ttyAMA0',
         modbusId: 1
     })
-    await growattClient.init()
-    const data = await growattClient.getData()
+    try {
+        await growattClient.init()
+        const data = await growattClient.getData()
+    } catch (error) {
+        console.error(`Error reading data: ${error}`)
+    }
 }
