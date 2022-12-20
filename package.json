@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "MQTT bridge for Growatt SPH Inverter",
   "main": "./dist/solarpi.js",
+  "type": "module",
   "scripts": {
     "postinstall": "tsc -p ./src",
     "start": "node ./dist/solarpi.js"

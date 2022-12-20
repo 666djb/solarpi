@@ -5,6 +5,7 @@ console.log("Starting SolarPi")
 runSolarPi()
 
 async function runSolarPi() {
+    //const GrowattClient = await import("growatt-modbus")
     const growattClient = new GrowattClient({
         baudRate: 9600,
         device: '/dev/ttyAMA0',
