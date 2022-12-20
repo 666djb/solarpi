@@ -1,4 +1,6 @@
-// This class is specific to Growatt SPH3000 inverter
+// This class is specific to Growatt SPH3000 inverter but is likely to
+// work for other SPH inverters unless these have more than 2 strings
+// of panels (then only the first two will be read)
 
 import { ModbusRTU, ReadRegisterResult } from "modbus-serial/ModbusRTU"
 import { Inverter, inverterEntity } from "./inverter"

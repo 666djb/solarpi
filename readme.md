@@ -129,7 +129,13 @@ If you have used the install script or followed the complete set of manual steps
 * sudo rm -rf /home/solarpi
 
 ## Development
-So far, this has only been tested by me and does what I want it to reliably. I plan to add controls so that I can change e.g. the time when the inverter charges the battery from the grid and times when I might want to prevent the battery discharging as I charge my EV from the grid. These controls will be accessible as MQTT entities.
+So far, this has only been tested by me and does what I want it to reliably.
+
+### To do
+* Validate config file
+* Add robustness to install.sh script
+* Add controls to enable changes to the time when the inverter charges the battery from the grid and times to prevent the battery discharging as MQTT entities.
+* Local CSV logging of energy values
 
 Feel free to use this code for your own purposes. If you test this with a Growatt SPH inverter, please let me know, also if you add support for other inverters, I will look to merging changes in. I can't promise to provide tonnes of support, but will try to help.
 
