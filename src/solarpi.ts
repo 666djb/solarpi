@@ -16,11 +16,9 @@ async function runSolarPi() {
         const data = await growattClient.getData()
         console.log(`Data: ${data}`)
     } catch (error) {
-        if (error instanceof Error) {
-            console.error(`Error reading data: ${error.message}`)
-        } else {
-            console.error("Unknown error:", error)
-        }
+        console.error("Error:", error)
     }
-    console.log("Ending")
+    finally {
+        console.log("Ending")
+    }
 }
