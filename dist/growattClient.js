@@ -38,16 +38,16 @@ class GrowattClient {
         const inputRegisters = await this.client.readInputRegisters(0, 125);
         const holdingRegisters = await this.client.readHoldingRegisters(23, 5);
         const allHoldingRegisters = await this.client.readHoldingRegisters(0,51);
-        parseAllHoldingRegisters(allHoldingRegisters);
+        GrowattClient.parseAllHoldingRegisters(allHoldingRegisters);
 
         return {...GrowattClient.parseInputRegisters(inputRegisters), ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
     }
 
     static parseAllHoldingRegisters(allHoldingRegisters){
-        console.log("AllHolding:", allHoldingRegisters)
-        let serialNumber = allHoldingRegisters.slice(23,28).toString()
+        console.log("AllHolding:", allHoldingRegisters.buffer)
+        let serialNumber = allHoldingRegisters.buffer.slice(23,28).toString()
         console.log("This serial number:", serialNumber)
-        let dateTime = allHoldingRegisters.slice(45,50).toString()
+        let dateTime = allHoldingRegisters.buffer.slice(45,50).toString()
         console.log("This datatime:", dateTime)
 
     }
