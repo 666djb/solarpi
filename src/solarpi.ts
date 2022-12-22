@@ -7,7 +7,7 @@ runSolarPi()
 async function runSolarPi() {
     const growattClient = new GrowattClient({
         baudRate: 9600,
-        device: '/dev/ttyAMA0',
+        device: '/dev/ttyUSB0',
         modbusId: 1
     })
 
@@ -18,20 +18,11 @@ async function runSolarPi() {
         return
     }
 
-    while (true) {
-
-        try {
-            const data = await growattClient.getData()
-            console.log("Data:", data)
-        } catch (error) {
-            console.log("Error reading data:", error)
-        }
-
-        console.log("Waiting 5 seconds...")
-        setTimeout(() => {
-            console.log("Waited")
-        }, 5000)
-
+    try {
+        const data = await growattClient.getData()
+        console.log("Data:", data)
+    } catch (error) {
+        console.log("Error reading data:", error)
     }
 
 }
