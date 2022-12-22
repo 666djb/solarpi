@@ -18,17 +18,10 @@ async function runSolarPi() {
         return
     }
 
-    try {
-        while (true) {
-            const data = await growattClient.getData()
-            console.log(`Data: ${data}`)
-            console.log("Waiting 5 seconds...")
-            setTimeout(function() {
-              }, 5000)
-        }
-    } catch (error) {
-        console.error("Error:", error)
-        return
-    }
+    setTimeout(async function () {
+        console.log("Waiting 5 seconds...")
+        const data = await growattClient.getData()
+        console.log("Data:", data)
+    }, 5000)
 
 }
