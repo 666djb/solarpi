@@ -1,4 +1,5 @@
-import GrowattClient from 'growatt-modbus'
+//import GrowattClient from 'growatt-modbus'
+import GrowattClient from '../dist/growattClient.js'
 
 console.log("Starting SolarPi")
 
