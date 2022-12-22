@@ -13,12 +13,22 @@ async function runSolarPi() {
 
     try {
         await growattClient.init()
-        const data = await growattClient.getData()
-        console.log(`Data: ${data}`)
+    } catch (error) {
+        console.error("Error initialising connection:", error)
+        return
+    }
+
+    try {
+        while (true) {
+            const data = await growattClient.getData()
+            console.log(`Data: ${data}`)
+            console.log("Waiting 5 seconds...")
+            setTimeout(function() {
+              }, 5000)
+        }
     } catch (error) {
         console.error("Error:", error)
+        return
     }
-    finally {
-        console.log("Ending")
-    }
+
 }
