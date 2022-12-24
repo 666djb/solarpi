@@ -1,29 +1,54 @@
-//import GrowattClient from 'growatt-modbus'
-import GrowattClient from '../dist/growattClient.js'
+import { Publisher } from "./publisher.js"
+import { getConfig } from "./config.js"
+import GrowattClient from 'growatt-modbus'
 
-console.log("Starting SolarPi")
+console.log(`${Date().toLocaleString()} Starting SolarPi`)
 
-runSolarPi()
+const CONFIG_FILE = "options.json"
+const config = getConfig(CONFIG_FILE)
+const publisher = new Publisher(config.mqtt)
 
-async function runSolarPi() {
-    const growattClient = new GrowattClient({
-        baudRate: 9600,
-        device: '/dev/ttyUSB0',
-        modbusId: 1
-    })
+const growattClient = new GrowattClient({
+    baudRate: 9600,
+    device: '/dev/ttyUSB0',
+    modbusId: 1
+})
 
+publisher.on("Connect", () => {
+
+    runSolarPi()
+
+})
+
+publisher.on("Disconnect", () => {
+
+    // Todo do something here
+
+})
+
+function runSolarPi() {
+
+    let a = 0
     try {
-        await growattClient.init()
+        //await reader.growattClient.init()
     } catch (error) {
-        console.error("Error initialising connection:", error)
-        return
+        console.error(`${Date().toLocaleString()} Error initialising connection to Growatt`, error)
     }
+    setInterval(async () => {
 
-    try {
-        const data = await growattClient.getData()
-        console.log("Data:", data)
-    } catch (error) {
-        console.log("Error reading data:", error)
-    }
+        try {
+            // Here get the growattt data and pass to a new method in publisher that will parse it and then publish it
+            // Handle errors in getting data, publishing data
+        } catch (error) {
+            console.error(`${Date().toLocaleString()} Error reading Growatt data:`, error)
+        }
+
+        try {
+            await publisher.publishJSON("solarpi_energy_today", { status: `${a++}` })
+        } catch (error) {
+            console.error(`${Date().toLocaleString()} Error publishing data to MQTT:`, error)
+        }
+
+    }, config.growatt.interval * 1000)
 
 }

@@ -15,10 +15,12 @@
   "author": "David Brown",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^18.11.17",
     "typescript": "^4.9.4"
   },
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "growatt-modbus": "^1.0.6"
+    "growatt-modbus": "^1.0.6",
+    "mqtt": "^4.3.7"
   }
 }

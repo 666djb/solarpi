@@ -1,0 +1,43 @@
+* energy today (todayEnergy)
+* lifetime energy output (totalEnergy)
+money lifetime
+output power
+total money today
+
+* all pv wattage (inputPower)
+battery charged today
+battery charging
+battery discharged today
+battery discharging
+battery voltage
+export to grid
+export to grid today
+* grid voltage
+import from grid
+import from grid (load + charging)
+import from grid (load)
+last data update
+lifetime battery charged
+lifetime battery discharged
+lifetime export to grid
+lifetime load consumption
+lifetime solar energy
+load consumption
+load consumption today
+load consumption today (battery)
+load consumption today (solar)
+* pv1 wattage
+* pv2 wattage
+* pv1 voltage
+* pv2 voltage
+self consumption today (solar + battery)
+solar energy today
+statement of charge
+system production today (self-consumption + export)
+
+Others:
+status
+pv1 total energy
+pv2 total energy
+pv energy total
+inverter temperature

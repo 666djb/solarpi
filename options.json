@@ -1,0 +1,12 @@
+{
+	"mqtt": {
+		"brokerUrl": "mqtt://ha.home.djb.org.uk",
+		"discoveryTopic": "homeassistant",
+		"baseTopic": "solarpi",
+		"username": "mqtt",
+		"password": "Y6@eBp6ziMU8^i"
+	},
+	"growatt": {
+		"interval": 20
+	}
+}
