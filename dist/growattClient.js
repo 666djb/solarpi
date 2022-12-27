@@ -17,6 +17,7 @@ export class GrowattClient {
         this.client.setTimeout(5000);
     }
     async getData() {
+        // Can only read a max of 125 words in one go
         const inputRegisters = await this.client.readInputRegisters(0, 125);
         //const holdingRegisters = await this.client.readHoldingRegisters(23, 5)
         //const allHoldingRegisters = await this.client.readHoldingRegisters(0,51);
@@ -57,7 +58,7 @@ export class GrowattClient {
             407: 'Auto test didn’t pass.'
         };
         //const {data} = inputRegisters;
-        return {
+        let retVal = {
             status: statusMap[data[0]] || data[0],
             inputPower: (data[1] << 16 | data[2]) / 10.0,
             pv1Voltage: data[3] / 10.0,
@@ -85,6 +86,8 @@ export class GrowattClient {
             error: errorMap[data[105]] || data[105],
             realPowerPercent: data[113] //% 0-100
         };
+        console.log("retVal:", retVal);
+        return retVal;
     }
 }
 //export default GrowattClient;
