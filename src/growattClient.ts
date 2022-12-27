@@ -16,7 +16,7 @@ export class GrowattClient {
 
     async init() {
         if (this.client.isOpen) {
-            return
+            throw "Growatt connection already open"
         }
 
         await this.client.connectRTUBuffered(this.device, {
@@ -24,18 +24,19 @@ export class GrowattClient {
             dataBits: 8,
             stopBits: 1,
             parity: 'none'
-        });
+        })
+
         this.client.setID(this.modbusId)
         this.client.setTimeout(5000)
     }
 
     async getData() {
-        // Can only read a max of 125 words in one go
+        // Remember can only read a max of 125 words in one go
 
         const inputRegisters1 = await this.client.readInputRegisters(0, 125)
-        const inputRegisters2 = await this.client.readInputRegisters(1014, 1)
+        const inputRegisters2 = await this.client.readInputRegisters(1000, 25)
 
-        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2) } //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
+        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) }
     }
 
     private parseInputRegisters(inputRegisters: ReadRegisterResult) {
@@ -47,8 +48,14 @@ export class GrowattClient {
         // }
         const statusMap = {
             0: 'Waiting',
-            1: 'Normal',
-            3: 'Fault'
+            1: 'Self Test',
+            2: 'Reserved',
+            3: 'Fault',
+            4: 'Flash',
+            5: 'Normal',
+            6: 'Normal',
+            7: 'Normal',
+            8: 'Normal'
         }
         const errorMap = {
             201: 'Leakage current too high',
@@ -62,7 +69,7 @@ export class GrowattClient {
         }
 
         let retVal = {
-            inverterStatus: statusMap[data[0]] || data[0], // --- this seems to give a number not in the map
+            inverterStatus: statusMap[data[0]] || data[0],
             ppv: (data[1] << 16 | data[2]) / 10.0, //W
             vpv1: data[3] / 10.0, //V
             pv1Curr: data[4] / 10.0, //A
@@ -70,7 +77,7 @@ export class GrowattClient {
             vpv2: data[7] / 10.0, //V
             pv2Curr: data[8] / 10.0, //A
             ppv2: (data[9] << 16 | data[10]) / 10.0, //W
-            pac: (data[35] << 16 | data[36]) / 10, // W --- I think this is local consumption
+            pac: (data[35] << 16 | data[36]) / 10.0, // W --- I think this is local consumption
             fac: data[37] / 100.0, // Hz
             vac: data[38] / 10.0, //V
             iac: data[39] / 10.0, //A
@@ -95,9 +102,15 @@ export class GrowattClient {
         return retVal
     }
 
-    private parseSOC(socRegisters: ReadRegisterResult) {
-        const { data } = socRegisters
-        return { soc: data[0] }
+    private parseInputRegisters2(inputRegisters: ReadRegisterResult) {
+        const { data } = inputRegisters
+        return {
+            pDischarge: (data[9] << 16 | data[10]) / 10.0, // W battery charge
+            pCharge: (data[11] << 16 | data[12]) / 10.0, // W battery discharge
+            soc: data[14],
+            pToUser: (data[15] << 16 | data[16]) / 10.0, // W consumption
+            pToGrid: (data[23] << 16 | data[17]) / 10.0 // W export to grid
+        }
     }
 
 }

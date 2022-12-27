@@ -8,7 +8,7 @@ export class GrowattClient {
     }
     async init() {
         if (this.client.isOpen) {
-            return;
+            throw "Growatt connection already open";
         }
         await this.client.connectRTUBuffered(this.device, {
             baudRate: this.baudRate,
@@ -20,10 +20,10 @@ export class GrowattClient {
         this.client.setTimeout(5000);
     }
     async getData() {
-        // Can only read a max of 125 words in one go
+        // Remember can only read a max of 125 words in one go
         const inputRegisters1 = await this.client.readInputRegisters(0, 125);
-        const inputRegisters2 = await this.client.readInputRegisters(1014, 1);
-        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2) }; //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
+        const inputRegisters2 = await this.client.readInputRegisters(1000, 25);
+        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) };
     }
     parseInputRegisters(inputRegisters) {
         const { data } = inputRegisters;
@@ -33,8 +33,14 @@ export class GrowattClient {
         // }
         const statusMap = {
             0: 'Waiting',
-            1: 'Normal',
-            3: 'Fault'
+            1: 'Self Test',
+            2: 'Reserved',
+            3: 'Fault',
+            4: 'Flash',
+            5: 'Normal',
+            6: 'Normal',
+            7: 'Normal',
+            8: 'Normal'
         };
         const errorMap = {
             201: 'Leakage current too high',
@@ -55,7 +61,7 @@ export class GrowattClient {
             vpv2: data[7] / 10.0,
             pv2Curr: data[8] / 10.0,
             ppv2: (data[9] << 16 | data[10]) / 10.0,
-            pac: (data[35] << 16 | data[36]) / 10,
+            pac: (data[35] << 16 | data[36]) / 10.0,
             fac: data[37] / 100.0,
             vac: data[38] / 10.0,
             iac: data[39] / 10.0,
@@ -77,8 +83,14 @@ export class GrowattClient {
         //console.log("retVal:", retVal)
         return retVal;
     }
-    parseSOC(socRegisters) {
-        const { data } = socRegisters;
-        return { soc: data[0] };
+    parseInputRegisters2(inputRegisters) {
+        const { data } = inputRegisters;
+        return {
+            pDischarge: (data[9] << 16 | data[10]) / 10.0,
+            pCharge: (data[11] << 16 | data[12]) / 10.0,
+            soc: data[14],
+            pToUser: (data[15] << 16 | data[16]) / 10.0,
+            pToGrid: (data[23] << 16 | data[17]) / 10.0 // W export to grid
+        };
     }
 }

@@ -85,10 +85,42 @@ const entities = [
         unique_id: "solarpi_inverter_temperature"
     },
     {
+        name: "Battery Discharge",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_battery_discharge_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "Battery Charge",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_battery_charge_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
         name: "State of Charge",
         type: "sensor",
         unit_of_measurement: "%",
         unique_id: "solarpi_state_of_charge"
+    },
+    {
+        name: "Consumption Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_consumption_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "Export Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_export_power",
+        icon: "mdi:lightning-bolt"
     }
 ];
 // This maps from the names used in the Growatt documentation (but camelCased) to the unique_ids used here
@@ -106,7 +138,11 @@ const growattMap = {
     "eacToday": "solarpi_energy_today",
     "eacTotal": "solarpi_energy_lifetime",
     "inverterTemperature": "solarpi_inverter_temperature",
-    "soc": "solarpi_state_of_charge"
+    "pDischarge": "solarpi_battery_discharge_power",
+    "pCharge": "solarpi_battery_charge_power",
+    "soc": "solarpi_state_of_charge",
+    "pToUser": "solarpi_consumption_power",
+    "pToGrid": "solarpi_export_power"
 };
 export function getEntities() {
     return entities;
