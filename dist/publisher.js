@@ -67,6 +67,9 @@ export class Publisher extends events.EventEmitter {
     }
     async publish(subTopic, data, retain) {
         try {
+            if (!this.mqttClient.connected) {
+                throw "Not connected";
+            }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, data, { retain: retain || false });
         }
         catch (error) {
@@ -75,6 +78,9 @@ export class Publisher extends events.EventEmitter {
     }
     async publishJSON(subTopic, data, retain) {
         try {
+            if (!this.mqttClient.connected) {
+                throw "Not connected";
+            }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data), { retain: retain || false });
         }
         catch (error) {
@@ -83,6 +89,9 @@ export class Publisher extends events.EventEmitter {
     }
     async publishJSONdiscovery(discoveryTopic, data, retain) {
         try {
+            if (!this.mqttClient.connected) {
+                throw "Not connected";
+            }
             await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data), { retain: retain || false });
         }
         catch (error) {

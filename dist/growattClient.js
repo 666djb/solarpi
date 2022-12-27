@@ -7,6 +7,9 @@ export class GrowattClient {
         this.client = new ModbusRTU();
     }
     async init() {
+        if (this.client.isOpen) {
+            return;
+        }
         await this.client.connectRTUBuffered(this.device, {
             baudRate: this.baudRate,
             dataBits: 8,

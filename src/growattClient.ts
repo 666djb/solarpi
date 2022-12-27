@@ -7,7 +7,7 @@ export class GrowattClient {
     baudRate: number
     client: ModbusRTU
 
-    constructor({device = '/dev/ttyUSB0', modbusId = 1, baudRate = 9600} = {}) {
+    constructor({ device = '/dev/ttyUSB0', modbusId = 1, baudRate = 9600 } = {}) {
         this.device = device
         this.modbusId = modbusId
         this.baudRate = baudRate
@@ -15,6 +15,10 @@ export class GrowattClient {
     }
 
     async init() {
+        if (this.client.isOpen) {
+            return
+        }
+
         await this.client.connectRTUBuffered(this.device, {
             baudRate: this.baudRate,
             dataBits: 8,
@@ -31,11 +35,11 @@ export class GrowattClient {
         const inputRegisters1 = await this.client.readInputRegisters(0, 125)
         const inputRegisters2 = await this.client.readInputRegisters(1014, 1)
 
-        return {...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2)} //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
+        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2) } //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
     }
 
     private parseInputRegisters(inputRegisters: ReadRegisterResult) {
-        const {data} = inputRegisters
+        const { data } = inputRegisters
 
         // console.log("data length:", data.length)
         // for( let item in data){
@@ -58,7 +62,7 @@ export class GrowattClient {
         }
 
         let retVal = {
-            inverterStatus: statusMap[data[0]] || data[0],
+            inverterStatus: statusMap[data[0]] || data[0], // --- this seems to give a number not in the map
             ppv: (data[1] << 16 | data[2]) / 10.0, //W
             vpv1: data[3] / 10.0, //V
             pv1Curr: data[4] / 10.0, //A
@@ -66,12 +70,12 @@ export class GrowattClient {
             vpv2: data[7] / 10.0, //V
             pv2Curr: data[8] / 10.0, //A
             ppv2: (data[9] << 16 | data[10]) / 10.0, //W
-            pac: (data[35] << 16 | data[36]) / 10, // W
+            pac: (data[35] << 16 | data[36]) / 10, // W --- I think this is local consumption
             fac: data[37] / 100.0, // Hz
             vac: data[38] / 10.0, //V
             iac: data[39] / 10.0, //A
             pac1: (data[40] << 16 | data[41]) / 10.0, //VA
-            eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh
+            eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh --- I think this is grid consumption/export
             eacTotal: (data[55] << 16 | data[56]) / 10.0, //kWh
             //totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
             //pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
@@ -92,7 +96,7 @@ export class GrowattClient {
     }
 
     private parseSOC(socRegisters: ReadRegisterResult) {
-        const {data} = socRegisters
+        const { data } = socRegisters
         return { soc: data[0] }
     }
 

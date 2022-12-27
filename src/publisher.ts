@@ -81,6 +81,9 @@ export class Publisher extends events.EventEmitter {
 
     public async publish(subTopic: string, data: string, retain?: boolean) {
         try {
+            if(!this.mqttClient.connected){
+                throw "Not connected"
+            }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, data,
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
@@ -90,6 +93,9 @@ export class Publisher extends events.EventEmitter {
 
     public async publishJSON(subTopic: string, data: object, retain?: boolean) {
         try {
+            if(!this.mqttClient.connected){
+                throw "Not connected"
+            }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
@@ -99,6 +105,9 @@ export class Publisher extends events.EventEmitter {
 
     public async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
         try {
+            if(!this.mqttClient.connected){
+                throw "Not connected"
+            }
             await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
