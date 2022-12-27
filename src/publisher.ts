@@ -2,7 +2,8 @@ import { IClientOptions, IClientPublishOptions } from "mqtt"
 import MQTT, { AsyncMqttClient } from 'async-mqtt'
 import { MqttConfig } from "./config"
 import * as events from "events"
-import { growattEntity } from "./growattEntities";
+import { growattEntity } from "./growattEntities"
+import { logDate } from "./logDate.js"
 
 export class Publisher extends events.EventEmitter {
 
@@ -25,17 +26,15 @@ export class Publisher extends events.EventEmitter {
         this.mqttClient = MQTT.connect(config.brokerUrl, options)
 
         this.mqttClient.on("connect", () => {
-            console.log(`${Date().toLocaleString()} Connected to MQTT broker`)
             this.publishOnline(entities)
             this.emit("Connect")
         })
 
         this.mqttClient.on("reconnect", () => {
-            console.log(`${Date().toLocaleString()} Reconnecting to MQTT broker`)
+            this.emit("Reconnect")
         })
 
         this.mqttClient.on("disconnect", () => {
-            console.log(`${Date().toLocaleString()} Disconnected from MQTT broker`)
             this.emit("Disconnect")
         })
     }
@@ -75,7 +74,7 @@ export class Publisher extends events.EventEmitter {
             }
 
         } catch (ex) {
-            console.log(`${Date().toLocaleString()} publishOnline() error: ${ex}`)
+            console.log(`${logDate()} publishOnline() error: ${ex}`)
         }
     }
 
@@ -103,7 +102,7 @@ export class Publisher extends events.EventEmitter {
         }
     }
 
-    public async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
+    private async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
         try {
             if(!this.mqttClient.connected){
                 throw "Not connected"

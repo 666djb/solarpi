@@ -7,7 +7,6 @@ export interface growattEntity {
     icon?: string
 }
 
-// Todo need to add device class and unit of measurement
 const entities: growattEntity[] = [
     {
         name: "Inverter Status",
@@ -116,11 +115,11 @@ const entities: growattEntity[] = [
         unique_id: "solarpi_state_of_charge"
     },
     {
-        name: "Consumption Power",
+        name: "Import Power",
         type: "sensor",
         device_class: "power",
         unit_of_measurement: "W",
-        unique_id: "solarpi_consumption_power",
+        unique_id: "solarpi_import_power",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -152,7 +151,7 @@ const growattMap = {
     "pDischarge": "solarpi_battery_discharge_power",
     "pCharge": "solarpi_battery_charge_power",
     "soc": "solarpi_state_of_charge",
-    "pToUser": "solarpi_consumption_power",
+    "pFromGrid": "solarpi_import_power",
     "pToGrid": "solarpi_export_power"
 }
 

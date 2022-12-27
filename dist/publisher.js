@@ -1,5 +1,6 @@
 import MQTT from 'async-mqtt';
 import * as events from "events";
+import { logDate } from "./logDate.js";
 export class Publisher extends events.EventEmitter {
     constructor(config, entities) {
         super();
@@ -18,15 +19,13 @@ export class Publisher extends events.EventEmitter {
         };
         this.mqttClient = MQTT.connect(config.brokerUrl, options);
         this.mqttClient.on("connect", () => {
-            console.log(`${Date().toLocaleString()} Connected to MQTT broker`);
             this.publishOnline(entities);
             this.emit("Connect");
         });
         this.mqttClient.on("reconnect", () => {
-            console.log(`${Date().toLocaleString()} Reconnecting to MQTT broker`);
+            this.emit("Reconnect");
         });
         this.mqttClient.on("disconnect", () => {
-            console.log(`${Date().toLocaleString()} Disconnected from MQTT broker`);
             this.emit("Disconnect");
         });
     }
@@ -62,7 +61,7 @@ export class Publisher extends events.EventEmitter {
             }
         }
         catch (ex) {
-            console.log(`${Date().toLocaleString()} publishOnline() error: ${ex}`);
+            console.log(`${logDate()} publishOnline() error: ${ex}`);
         }
     }
     async publish(subTopic, data, retain) {

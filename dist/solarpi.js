@@ -13,18 +13,22 @@ const growattClient = new GrowattClient({
     modbusId: 1
 });
 publisher.on("Connect", () => {
-    // Todo do something here
+    console.log(`${logDate()} Connected to MQTT broker`);
+});
+publisher.on("Reconnect", () => {
+    console.log(`${logDate()} Reconnecting to MQTT broker`);
 });
 publisher.on("Disconnect", () => {
-    // Todo do something here
+    console.log(`${logDate()} Disconnected from MQTT broker`);
 });
 runSolarPi();
 async function runSolarPi() {
     try {
         await growattClient.init();
+        console.log(`${logDate()} Connected to inverter`);
     }
     catch (error) {
-        console.error(`${Date().toLocaleString()} Error initialising connection to Growatt`, error);
+        console.error(`${logDate()} Error initialising connection to Growatt`, error);
     }
     setInterval(async () => {
         let data = {};
@@ -32,11 +36,10 @@ async function runSolarPi() {
             data = await growattClient.getData();
         }
         catch (error) {
-            console.error(`${Date().toLocaleString()} Error reading Growatt data:`, error);
+            console.error(`${logDate()} Error reading Growatt data:`, error);
         }
         try {
             // Map GrowattClient key names to our entities and publish values
-            //console.log(`${Date().toLocaleString()} Publishing data`)
             console.log(`${logDate()} Publishing data`);
             for (const [key, value] of Object.entries(data)) {
                 let entity = getEntityfromMap(key);
@@ -47,7 +50,7 @@ async function runSolarPi() {
             }
         }
         catch (error) {
-            console.error(`${Date().toLocaleString()} Error publishing data to MQTT:`, error);
+            console.error(`${logDate()} Error publishing data to MQTT:`, error);
         }
     }, config.growatt.interval * 1000);
 }

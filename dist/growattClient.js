@@ -89,7 +89,7 @@ export class GrowattClient {
             pDischarge: (data[9] << 16 | data[10]) / 10.0,
             pCharge: (data[11] << 16 | data[12]) / 10.0,
             soc: data[14],
-            pToUser: (data[15] << 16 | data[16]) / 10.0,
+            pFromGrid: (data[15] << 16 | data[16]) / 10.0,
             pToGrid: (data[23] << 16 | data[17]) / 10.0 // W export to grid
         };
     }
