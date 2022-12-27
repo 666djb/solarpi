@@ -9,7 +9,7 @@ const entities = [
         name: "Total PV Power",
         type: "sensor",
         device_class: "power",
-        unit_of_measurement: "kW",
+        unit_of_measurement: "W",
         unique_id: "solarpi_total_pv_power",
         icon: "mdi:lightning-bolt"
     },
@@ -54,6 +54,14 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
+        name: "PAC1 Output Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_pac1_output_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
         name: "Energy Today",
         type: "sensor",
         device_class: "energy",
@@ -94,6 +102,7 @@ const growattMap = {
     "pv2Curr": undefined,
     "ppv2": "solarpi_pv2_power",
     "pac": "solarpi_output_power",
+    "pac1": "solarpi_pac1_output_power",
     "eacToday": "solarpi_energy_today",
     "eacTotal": "solarpi_energy_lifetime",
     "inverterTemperature": "solarpi_inverter_temperature",
