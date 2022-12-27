@@ -1,7 +1,7 @@
 import { Publisher } from "./publisher.js";
 import { getConfig } from "./config.js";
 import { getEntities, getEntityfromMap } from "./growattEntities.js";
-import GrowattClient from 'growatt-modbus';
+import { GrowattClient } from "./growattClient.js";
 console.log(`${Date().toLocaleString()} Starting SolarPi`);
 const CONFIG_FILE = "options.json";
 const config = getConfig(CONFIG_FILE);

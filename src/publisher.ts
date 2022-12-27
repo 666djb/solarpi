@@ -46,8 +46,8 @@ export class Publisher extends events.EventEmitter {
             }
         ]
 
-        // There is one device for SOLARPI we call this solarpi
-        // All of the entities belong to this device
+        // There is one device for SOLARPI we call this solarpi,
+        // all of the entities belong to this device
         let device = {
             identifiers: ["solarpi"],
             name: "SOLARPI",
@@ -56,77 +56,32 @@ export class Publisher extends events.EventEmitter {
             sw_version: "0.1"
         }
 
-        // These are the standard entities
-        // Todo: simplify this a bit - there's lots of duplication
-        // let solarpiEntities = [
-        //     // Energy Today
-        //     {
-        //         availability: availability,
-        //         device: device,
-        //         state_topic: `${this.config.baseTopic}/solarpi_energy_today`,
-        //         json_attributes_topic: `${this.config.baseTopic}/solarpi_energy_today`,
-        //         name: "Energy Today",
-        //         type: "sensor",
-        //         unique_id: "solarpi_energy_today",
-        //         value_template: '{{ value_json.status }}',
-        //         icon: "mdi:lightning-bolt"
-        //     },
-        //     // Energy Lifetime
-        //     {
-        //         availability: availability,
-        //         device: device,
-        //         state_topic: `${this.config.baseTopic}/solarpi_energy_lifetime`,
-        //         json_attributes_topic: `${this.config.baseTopic}/solarpi_energy_lifetime`,
-        //         name: "Energy Lifetime",
-        //         type: "sensor",
-        //         unique_id: "solarpi_energy_lifetime",
-        //         value_template: '{{ value_json.status }}',
-        //         icon: "mdi:lightning-bolt"
-        //     },
-        //     // PV1 Power
-        //     {
-        //         availability: availability,
-        //         device: device,
-        //         state_topic: `${this.config.baseTopic}/solarpi_pv1_power`,
-        //         json_attributes_topic: `${this.config.baseTopic}/solarpi_pv1_power`,
-        //         name: "PV1 Power",
-        //         type: "sensor",
-        //         unique_id: "solarpi_pv1_power",
-        //         value_template: '{{ value_json.status }}',
-        //         icon: "mdi:lightning-bolt"
-        //     },
-        //     // PV2 Power
-        //     {
-        //         availability: availability,
-        //         device: device,
-        //         state_topic: `${this.config.baseTopic}/solarpi_pv2_power`,
-        //         json_attributes_topic: `${this.config.baseTopic}/pv2_power`,
-        //         name: "PV2 Power",
-        //         type: "sensor",
-        //         unique_id: "solarpi_pv2_power",
-        //         value_template: '{{ value_json.status }}',
-        //         icon: "mdi:lightning-bolt"
-        //     }
-        // ]
-
         try {
             // Set our bridge availability to online
             await this.publish("bridge/availability", "online", true)
 
             // Advertise the presence of all standard entities so they can be discovered
             for (let entity in solarpiEntities) {
+                // let thisEntity = {
+                //     availability: availability,
+                //     device: device,
+                //     state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].id}`,
+                //     json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].id}`,
+                //     name: solarpiEntities[entity].name,
+                //     type: solarpiEntities[entity].type,
+                //     unique_id: solarpiEntities[entity].id,
+                //     value_template: '{{ value_json.status }}',
+                //     icon: solarpiEntities[entity].icon
+                // }
                 let thisEntity = {
                     availability: availability,
                     device: device,
-                    state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].id}`,
-                    json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].id}`,
-                    name: solarpiEntities[entity].name,
-                    type: solarpiEntities[entity].type,
-                    unique_id: solarpiEntities[entity].id,
+                    state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
+                    json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     value_template: '{{ value_json.status }}',
-                    icon: solarpiEntities[entity].icon
+                    ...solarpiEntities[entity],
                 }
-                await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, solarpiEntities[entity], true)
+                await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, false)
             }
 
         } catch (ex) {

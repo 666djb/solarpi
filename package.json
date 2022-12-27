@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "growatt-modbus": "^1.0.6",
+    "modbus-serial": "^8.0.8",
     "mqtt": "^4.3.7"
   }
 }

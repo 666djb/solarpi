@@ -1,14 +1,5 @@
-export interface growattEntity {
-    name: string,
-    type: string,
-    device_class: string,
-    unit_of_measurement: string,
-    unique_id: string,
-    icon: string
-}
-
 // Todo need to add device class and unit of measurement
-const entities: growattEntity[] = [
+const entities = [
     {
         name: "Energy Today",
         type: "sensor",
@@ -41,19 +32,16 @@ const entities: growattEntity[] = [
         unique_id: "solarpi_pv2_power",
         icon: "mdi:lightning-bolt"
     }
-]
-
+];
 const growattMap = {
     "todayEnergy": "solarpi_energy_today",
     "totalEnergy": "solarpi_energy_lifetime",
     "pv1Current": "solarpi_pv1_power",
     "pv2Current": "solarpi_pv2_power"
+};
+export function getEntities() {
+    return entities;
 }
-
-export function getEntities(): growattEntity[] {
-    return entities
-}
-
-export function getEntityfromMap(gwClientString: string): string {
-    return growattMap[gwClientString]
+export function getEntityfromMap(gwClientString) {
+    return growattMap[gwClientString];
 }
