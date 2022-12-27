@@ -36,8 +36,10 @@ export class GrowattClient {
     //     }
     // }
     static parseInputRegisters(inputRegisters) {
-        for (let item in inputRegisters) {
-            console.log(`Item: ${item} Value: ${inputRegisters[item]}`);
+        const { data } = inputRegisters;
+        console.log("data length:", data.length);
+        for (let item in data) {
+            console.log(`Item: ${item} Value: ${data[item]}`);
         }
         const statusMap = {
             0: 'Waiting',
@@ -54,7 +56,7 @@ export class GrowattClient {
             304: 'Voltage of Neutral and PE above 30V.',
             407: 'Auto test didn’t pass.'
         };
-        const { data } = inputRegisters;
+        //const {data} = inputRegisters;
         return {
             status: statusMap[data[0]] || data[0],
             inputPower: (data[1] << 16 | data[2]) / 10.0,

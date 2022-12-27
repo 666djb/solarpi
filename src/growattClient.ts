@@ -50,8 +50,10 @@ export class GrowattClient {
     // }
 
     static parseInputRegisters(inputRegisters: ReadRegisterResult) {
-        for( let item in inputRegisters){
-            console.log(`Item: ${item} Value: ${inputRegisters[item]}`)
+        const {data} = inputRegisters
+        console.log("data length:", data.length)
+        for( let item in data){
+            console.log(`Item: ${item} Value: ${data[item]}`)
         }
         const statusMap = {
             0: 'Waiting',
@@ -69,7 +71,7 @@ export class GrowattClient {
             407: 'Auto test didn’t pass.'
         }
 
-        const {data} = inputRegisters;
+        //const {data} = inputRegisters;
 
         return {
             status: statusMap[data[0]] || data[0],
