@@ -16,6 +16,7 @@ export class Publisher extends events.EventEmitter {
                 payload: 'offline',
                 retain: true,
             },
+            reconnectPeriod: 30000,
             username: config.username,
             password: config.password,
             clientId: "SOLARPI"
