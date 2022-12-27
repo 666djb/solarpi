@@ -2,6 +2,7 @@ import { Publisher } from "./publisher.js";
 import { getConfig } from "./config.js";
 import { getEntities, getEntityfromMap } from "./growattEntities.js";
 import { GrowattClient } from "./growattClient.js";
+import { logDate } from "./logDate.js";
 console.log(`${Date().toLocaleString()} Starting SolarPi`);
 const CONFIG_FILE = "options.json";
 const config = getConfig(CONFIG_FILE);
@@ -35,7 +36,8 @@ async function runSolarPi() {
         }
         try {
             // Map GrowattClient key names to our entities and publish values
-            console.log(`${Date().toLocaleString()} Publishing data`);
+            //console.log(`${Date().toLocaleString()} Publishing data`)
+            console.log(`${logDate()} Publishing data`);
             for (const [key, value] of Object.entries(data)) {
                 let entity = getEntityfromMap(key);
                 if (entity) {
