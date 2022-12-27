@@ -31,18 +31,8 @@ export class GrowattClient {
         const inputRegisters1 = await this.client.readInputRegisters(0, 125)
         const inputRegisters2 = await this.client.readInputRegisters(1014, 1)
 
-        //const holdingRegisters = await this.client.readHoldingRegisters(23, 5)
-
         return {...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2)} //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
     }
-
-    
-
-    // static parseHoldingRegisters(holdingRegisters) {
-    //     return {
-    //         serialNumber: holdingRegisters.buffer.toString()
-    //     }
-    // }
 
     private parseInputRegisters(inputRegisters: ReadRegisterResult) {
         const {data} = inputRegisters

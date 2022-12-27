@@ -20,14 +20,8 @@ export class GrowattClient {
         // Can only read a max of 125 words in one go
         const inputRegisters1 = await this.client.readInputRegisters(0, 125);
         const inputRegisters2 = await this.client.readInputRegisters(1014, 1);
-        //const holdingRegisters = await this.client.readHoldingRegisters(23, 5)
         return { ...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2) }; //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
     }
-    // static parseHoldingRegisters(holdingRegisters) {
-    //     return {
-    //         serialNumber: holdingRegisters.buffer.toString()
-    //     }
-    // }
     parseInputRegisters(inputRegisters) {
         const { data } = inputRegisters;
         console.log("data length:", data.length);

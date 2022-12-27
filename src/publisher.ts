@@ -62,17 +62,6 @@ export class Publisher extends events.EventEmitter {
 
             // Advertise the presence of all standard entities so they can be discovered
             for (let entity in solarpiEntities) {
-                // let thisEntity = {
-                //     availability: availability,
-                //     device: device,
-                //     state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].id}`,
-                //     json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].id}`,
-                //     name: solarpiEntities[entity].name,
-                //     type: solarpiEntities[entity].type,
-                //     unique_id: solarpiEntities[entity].id,
-                //     value_template: '{{ value_json.status }}',
-                //     icon: solarpiEntities[entity].icon
-                // }
                 let thisEntity = {
                     availability: availability,
                     device: device,

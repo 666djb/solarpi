@@ -79,6 +79,7 @@ const entities = [
     {
         name: "State of Charge",
         type: "sensor",
+        unit_of_measurement: "%",
         unique_id: "solarpi_state_of_charge"
     }
 ];
