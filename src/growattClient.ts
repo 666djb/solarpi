@@ -37,10 +37,10 @@ export class GrowattClient {
     private parseInputRegisters(inputRegisters: ReadRegisterResult) {
         const {data} = inputRegisters
 
-        console.log("data length:", data.length)
-        for( let item in data){
-            console.log(`Item: ${item} Value: ${data[item]}`)
-        }
+        // console.log("data length:", data.length)
+        // for( let item in data){
+        //     console.log(`Item: ${item} Value: ${data[item]}`)
+        // }
         const statusMap = {
             0: 'Waiting',
             1: 'Normal',
@@ -86,7 +86,7 @@ export class GrowattClient {
             //realPowerPercent: data[113] //% 0-100
         }
 
-        console.log("retVal:", retVal)
+        //console.log("retVal:", retVal)
 
         return retVal
     }
