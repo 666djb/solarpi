@@ -68,6 +68,7 @@ export class Publisher extends events.EventEmitter {
                     state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     value_template: '{{ value_json.status }}',
+                    force_update: true,
                     ...solarpiEntities[entity],
                 }
                 await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, false)
