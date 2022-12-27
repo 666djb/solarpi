@@ -31,24 +31,12 @@ export class GrowattClient {
         const inputRegisters1 = await this.client.readInputRegisters(0, 125)
         const inputRegisters2 = await this.client.readInputRegisters(1014, 1)
 
-        const {data} = inputRegisters2
-        console.log("SOC:", data[0])
-        
         //const holdingRegisters = await this.client.readHoldingRegisters(23, 5)
-        //const allHoldingRegisters = await this.client.readHoldingRegisters(0,51);
-        //parseAllHoldingRegisters(allHoldingRegisters);
 
-        return {...GrowattClient.parseInputRegisters(inputRegisters1)} //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
+        return {...this.parseInputRegisters(inputRegisters1), ...this.parseSOC(inputRegisters2)} //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
     }
 
-    // static parseAllHoldingRegisters(allHoldingRegisters){
-    //     console.log("AllHolding:", allHoldingRegisters)
-    //     let serialNumber = allHoldingRegisters.slice(23,28).toString()
-    //     console.log("This serial number:", serialNumber)
-    //     let dateTime = allHoldingRegisters.slice(45,50).toString()
-    //     console.log("This datatime:", dateTime)
-
-    // }
+    
 
     // static parseHoldingRegisters(holdingRegisters) {
     //     return {
@@ -56,7 +44,7 @@ export class GrowattClient {
     //     }
     // }
 
-    static parseInputRegisters(inputRegisters: ReadRegisterResult) {
+    private parseInputRegisters(inputRegisters: ReadRegisterResult) {
         const {data} = inputRegisters
 
         console.log("data length:", data.length)
@@ -79,8 +67,6 @@ export class GrowattClient {
             407: 'Auto test didn’t pass.'
         }
 
-        //const {data} = inputRegisters;
-
         let retVal = {
             inverterStatus: statusMap[data[0]] || data[0],
             ppv: (data[1] << 16 | data[2]) / 10.0, //W
@@ -91,27 +77,33 @@ export class GrowattClient {
             pv2Curr: data[8] / 10.0, //A
             ppv2: (data[9] << 16 | data[10]) / 10.0, //W
             pac: (data[35] << 16 | data[36]) / 10, // W
-            gridFrequency: data[37] / 100.0, // Hz
-            gridVoltage: data[38] / 10.0, //V
-            gridOutputCurrent: data[39] / 10.0, //A
-            gridOutputPower: (data[40] << 16 | data[41]) / 10.0, //VA
-            todayEnergy: (data[53] << 16 | data[54]) / 10.0, //kWh
-            totalEnergy: (data[55] << 16 | data[56]) / 10.0, //kWh
-            totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
-            pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
-            pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
-            pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
-            pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
-            pvEnergyTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
+            fac: data[37] / 100.0, // Hz
+            vac: data[38] / 10.0, //V
+            iac: data[39] / 10.0, //A
+            pac1: (data[40] << 16 | data[41]) / 10.0, //VA
+            eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh
+            eacTotal: (data[55] << 16 | data[56]) / 10.0, //kWh
+            //totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
+            //pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
+            //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
+            //pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
+            //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
+            //epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
             inverterTemperature: data[93] / 10.0, //°C
-            ipmTemperature: data[94] / 10.0, //°C
-            inverterOutputPf: data[100], //powerfactor 0-20000
-            error: errorMap[data[105]] || data[105],
-            realPowerPercent: data[113] //% 0-100
+            //ipmTemperature: data[94] / 10.0, //°C
+            //inverterOutputPf: data[100], //powerfactor 0-20000
+            error: errorMap[data[105]] || data[105]
+            //realPowerPercent: data[113] //% 0-100
         }
 
         console.log("retVal:", retVal)
 
         return retVal
     }
+
+    private parseSOC(socRegisters: ReadRegisterResult) {
+        const {data} = socRegisters
+        return { soc: data[0] }
+    }
+
 }

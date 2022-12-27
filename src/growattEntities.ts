@@ -84,6 +84,11 @@ const entities: growattEntity[] = [
         device_class: "temperature",
         unit_of_measurement: "°C",
         unique_id: "solarpi_inverter_temperature"
+    },
+    {
+        name: "State of Charge",
+        type: "sensor",
+        unique_id: "solarpi_state_of_charge"
     }
 
     
@@ -102,7 +107,8 @@ const growattMap = {
     "pac": "solarpi_output_power",
     "eacToday": "solarpi_energy_today",
     "eacTotal": "solarpi_energy_lifetime",
-    "inverterTemperature": "solarpi_inverter_temperature"
+    "inverterTemperature": "solarpi_inverter_temperature",
+    "soc": "solarpi_state_of_charge"
 
     
 }

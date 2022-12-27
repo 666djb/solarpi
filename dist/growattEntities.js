@@ -75,6 +75,11 @@ const entities = [
         device_class: "temperature",
         unit_of_measurement: "°C",
         unique_id: "solarpi_inverter_temperature"
+    },
+    {
+        name: "State of Charge",
+        type: "sensor",
+        unique_id: "solarpi_state_of_charge"
     }
 ];
 // This maps from the names used in the Growatt documentation (but camelCased) to the unique_ids used here
@@ -90,7 +95,8 @@ const growattMap = {
     "pac": "solarpi_output_power",
     "eacToday": "solarpi_energy_today",
     "eacTotal": "solarpi_energy_lifetime",
-    "inverterTemperature": "solarpi_inverter_temperature"
+    "inverterTemperature": "solarpi_inverter_temperature",
+    "soc": "solarpi_state_of_charge"
 };
 export function getEntities() {
     return entities;
