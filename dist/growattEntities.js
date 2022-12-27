@@ -1,6 +1,59 @@
 // Todo need to add device class and unit of measurement
 const entities = [
     {
+        name: "Inverter Status",
+        type: "sensor",
+        unique_id: "solarpi_inverter_status"
+    },
+    {
+        name: "Total PV Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "kW",
+        unique_id: "solarpi_total_pv_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "PV1 Voltage",
+        type: "sensor",
+        device_class: "voltage",
+        unit_of_measurement: "V",
+        unique_id: "solarpi_pv1_voltage",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "PV1 Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_pv1_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "PV2 Voltage",
+        type: "sensor",
+        device_class: "voltage",
+        unit_of_measurement: "V",
+        unique_id: "solarpi_pv2_voltage",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "PV2 Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_pv2_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "Output Power",
+        type: "sensor",
+        device_class: "power",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_output_power",
+        icon: "mdi:lightning-bolt"
+    },
+    {
         name: "Energy Today",
         type: "sensor",
         device_class: "energy",
@@ -17,27 +70,27 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "PV1 Power",
+        name: "Inverter Temperature",
         type: "sensor",
-        device_class: "power",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_pv1_power",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "PV2 Power",
-        type: "sensor",
-        device_class: "power",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_pv2_power",
-        icon: "mdi:lightning-bolt"
+        device_class: "temperature",
+        unit_of_measurement: "°C",
+        unique_id: "solarpi_inverter_temperature"
     }
 ];
+// This maps from the names used in the Growatt documentation (but camelCased) to the unique_ids used here
 const growattMap = {
-    "todayEnergy": "solarpi_energy_today",
-    "totalEnergy": "solarpi_energy_lifetime",
-    "pv1Current": "solarpi_pv1_power",
-    "pv2Current": "solarpi_pv2_power"
+    "inverterStatus": "solarpi_inverter_status",
+    "ppv": "solarpi_total_pv_power",
+    "vpv1": "solarpi_pv1_voltage",
+    "pv1Curr": undefined,
+    "ppv1": "solarpi_pv1_power",
+    "vpv2": "solarpi_pv2_voltage",
+    "pv2Curr": undefined,
+    "ppv2": "solarpi_pv2_power",
+    "pac": "solarpi_output_power",
+    "eacToday": "solarpi_energy_today",
+    "eacTotal": "solarpi_energy_lifetime",
+    "inverterTemperature": "solarpi_inverter_temperature"
 };
 export function getEntities() {
     return entities;

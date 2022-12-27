@@ -28,12 +28,17 @@ export class GrowattClient {
     async getData() {
         // Can only read a max of 125 words in one go
 
-        const inputRegisters = await this.client.readInputRegisters(0, 125)
+        const inputRegisters1 = await this.client.readInputRegisters(0, 125)
+        const inputRegisters2 = await this.client.readInputRegisters(1014, 1)
+
+        const {data} = inputRegisters2
+        console.log("SOC:", data[0])
+        
         //const holdingRegisters = await this.client.readHoldingRegisters(23, 5)
         //const allHoldingRegisters = await this.client.readHoldingRegisters(0,51);
         //parseAllHoldingRegisters(allHoldingRegisters);
 
-        return {...GrowattClient.parseInputRegisters(inputRegisters)} //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
+        return {...GrowattClient.parseInputRegisters(inputRegisters1)} //, ...GrowattClient.parseHoldingRegisters(holdingRegisters)};
     }
 
     // static parseAllHoldingRegisters(allHoldingRegisters){
@@ -53,6 +58,7 @@ export class GrowattClient {
 
     static parseInputRegisters(inputRegisters: ReadRegisterResult) {
         const {data} = inputRegisters
+
         console.log("data length:", data.length)
         for( let item in data){
             console.log(`Item: ${item} Value: ${data[item]}`)
@@ -76,15 +82,15 @@ export class GrowattClient {
         //const {data} = inputRegisters;
 
         let retVal = {
-            status: statusMap[data[0]] || data[0],
-            inputPower: (data[1] << 16 | data[2]) / 10.0, //W
-            pv1Voltage: data[3] / 10.0, //V
-            pv1Current: data[4] / 10.0, //A
-            pv1InputPower: (data[5] << 16 | data[6]) / 10.0, //W
-            pv2Voltage: data[7] / 10.0, //V
-            pv2Current: data[8] / 10.0, //A
-            pv2InputPower: (data[9] << 16 | data[10]) / 10.0, //W
-            outputPower: (data[35] << 16 | data[36]) / 10, // W
+            inverterStatus: statusMap[data[0]] || data[0],
+            ppv: (data[1] << 16 | data[2]) / 10.0, //W
+            vpv1: data[3] / 10.0, //V
+            pv1Curr: data[4] / 10.0, //A
+            ppv1: (data[5] << 16 | data[6]) / 10.0, //W
+            vpv2: data[7] / 10.0, //V
+            pv2Curr: data[8] / 10.0, //A
+            ppv2: (data[9] << 16 | data[10]) / 10.0, //W
+            pac: (data[35] << 16 | data[36]) / 10, // W
             gridFrequency: data[37] / 100.0, // Hz
             gridVoltage: data[38] / 10.0, //V
             gridOutputCurrent: data[39] / 10.0, //A
@@ -109,5 +115,3 @@ export class GrowattClient {
         return retVal
     }
 }
-
-//export default GrowattClient;
