@@ -58,6 +58,15 @@ const entities: growattEntity[] = [
         icon: "mdi:lightning-bolt"
     },
     {
+        name: "PV Energy Total",
+        type: "sensor",
+        device_class: "energy",
+        state_class: "total",
+        unit_of_measurement: "kWh",
+        unique_id: "solarpi_energy_pv_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
         name: "Inverter Temperature",
         type: "sensor",
         device_class: "temperature",
@@ -172,6 +181,7 @@ const growattMap = {
     "ppv1": "solarpi_power_pv1",
     "vpv2": "solarpi_voltage_pv2",
     "ppv2": "solarpi_power_pv2",
+    "epvTotal": "solarpi_energy_pv_total",
     "inverterTemperature": "solarpi_temperature_inverter",
     "pDischarge": "solarpi_power_discharge",
     "pCharge": "solarpi_power_charge",

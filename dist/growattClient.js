@@ -73,7 +73,7 @@ export class GrowattClient {
             //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
             //pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
             //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
-            //epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
+            epvTotal: (data[91] << 16 | data[92]) / 10.0,
             inverterTemperature: data[93] / 10.0,
             error: errorMap[data[105]] || data[105]
         };

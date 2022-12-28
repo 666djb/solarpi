@@ -89,7 +89,7 @@ export class GrowattClient {
             //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
             //pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
             //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
-            //epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
+            epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
             inverterTemperature: data[93] / 10.0, //°C
             error: errorMap[data[105]] || data[105]
         }
@@ -108,11 +108,11 @@ export class GrowattClient {
             pImport: (data[21] << 16 | data[22]) / 10.0, // W consumption from grid *** assumed
             pExport: (data[29] << 16 | data[30]) / 10.0, // W export to grid *** assumed same as above
             pLoad: (data[37] << 16 | data[38]) / 10.0, // W inverter to local load *** assumed same as above
-            eImportTotal: (data[46] <<16 | data[47]) / 10.0, // kWh
-            eExportTotal: (data[50] <<16 | data[51]) / 10.0, // kWh
-            eDischargeTotal: (data[54] <<16 | data[55]) / 10.0, // kWh
-            eChargeTotal: (data[58] <<16 | data[59]) / 10.0, // kWh
-            eLoadTotal: (data[62] <<16 | data[63]) / 10.0, // kWh
+            eImportTotal: (data[46] << 16 | data[47]) / 10.0, // kWh
+            eExportTotal: (data[50] << 16 | data[51]) / 10.0, // kWh
+            eDischargeTotal: (data[54] << 16 | data[55]) / 10.0, // kWh
+            eChargeTotal: (data[58] << 16 | data[59]) / 10.0, // kWh
+            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
         }
     }
 
