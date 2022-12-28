@@ -81,21 +81,12 @@ const entities = [
         unique_id: "solarpi_state_of_charge"
     },
     {
-        name: "To User Power",
+        name: "Import Power",
         type: "sensor",
         device_class: "power",
         state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_power_to_user",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "To User Power All",
-        type: "sensor",
-        device_class: "power",
-        state_class: "measurement",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_power_to_user_total",
+        unique_id: "solarpi_power_import",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -104,20 +95,11 @@ const entities = [
         device_class: "power",
         state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_power_to_grid",
+        unique_id: "solarpi_power_export",
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "Export Power All",
-        type: "sensor",
-        device_class: "power",
-        state_class: "measurement",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_power_to_grid_total",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "To Load Power",
+        name: "Load Power",
         type: "sensor",
         device_class: "power",
         state_class: "measurement",
@@ -126,30 +108,21 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "To Load Power All",
-        type: "sensor",
-        device_class: "power",
-        state_class: "measurement",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_power_to_load_total",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "To User Energy Total",
+        name: "Import Energy Total",
         type: "sensor",
         device_class: "energy",
         state_class: "total",
         unit_of_measurement: "kWh",
-        unique_id: "solarpi_energy_to_user_total",
+        unique_id: "solarpi_energy_import_total",
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "To Grid Energy Total",
+        name: "Export Energy Total",
         type: "sensor",
         device_class: "energy",
         state_class: "total",
         unit_of_measurement: "kWh",
-        unique_id: "solarpi_energy_to_grid_total",
+        unique_id: "solarpi_energy_export_total",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -171,12 +144,12 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "To Load Energy Total",
+        name: "Load Energy Total",
         type: "sensor",
         device_class: "energy",
         state_class: "total",
         unit_of_measurement: "kWh",
-        unique_id: "solarpi_energy_to load_total",
+        unique_id: "solarpi_energy_to_load_total",
         icon: "mdi:lightning-bolt"
     }
 ];
@@ -185,26 +158,21 @@ const growattMap = {
     "inverterStatus": "solarpi_inverter_status",
     "ppv": "solarpi_power_pv",
     "vpv1": "solarpi_voltage_pv1",
-    //"pv1Curr": undefined,
     "ppv1": "solarpi_power_pv1",
     "vpv2": "solarpi_voltage_pv2",
-    //"pv2Curr": undefined,
     "ppv2": "solarpi_power_pv2",
     "inverterTemperature": "solarpi_temperature_inverter",
     "pDischarge": "solarpi_power_discharge",
     "pCharge": "solarpi_power_charge",
     "soc": "solarpi_state_of_charge",
-    "pToUser": "solarpi_power_to_user",
-    "pToUserTotal": "solarpi_power_to_user_total",
-    "pToGrid": "solarpi_power_to_grid",
-    "pToGridTotal": "solarpi_power_to_grid_total",
-    "pToLocalLoad": "solarpi_power_to_load",
-    "pToLocalLoadTotal": "solarpi_power_to_load_total",
-    "eToUserTotal": "solarpi_energy_to_user_total",
-    "eToGridTotal": "solarpi_energy_to_grid_total",
+    "pImport": "solarpi_power_import",
+    "pExport": "solarpi_power_export",
+    "pLoad": "solarpi_power_to_load",
+    "eImportTotal": "solarpi_energy_import_total",
+    "eExportTotal": "solarpi_energy_export_total",
     "eDischargeTotal": "solarpi_energy_discharge_total",
     "eChargeTotal": "solarpi_energy_charge_total",
-    "eLocalLoadTotal": "solarpi_energy_to load_total"
+    "eLoadTotal": "solarpi_energy_to_load_total"
 };
 export function getEntities() {
     return entities;
