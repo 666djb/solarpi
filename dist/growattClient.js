@@ -86,14 +86,14 @@ export class GrowattClient {
             pDischarge: (data[9] << 16 | data[10]) / 10.0,
             pCharge: (data[11] << 16 | data[12]) / 10.0,
             soc: data[14],
-            pToUser: (data[21] << 16 | data[22]) / 10.0,
-            pToGrid: (data[29] << 16 | data[30]) / 10.0,
-            pToLoad: (data[37] << 16 | data[38]) / 10.0,
-            eToUserTotal: (data[46] << 16 | data[47]) / 10.0,
-            eToGridTotal: (data[50] << 16 | data[51]) / 10.0,
+            pImport: (data[21] << 16 | data[22]) / 10.0,
+            pExport: (data[29] << 16 | data[30]) / 10.0,
+            pLoad: (data[37] << 16 | data[38]) / 10.0,
+            eImportTotal: (data[46] << 16 | data[47]) / 10.0,
+            eExportTotal: (data[50] << 16 | data[51]) / 10.0,
             eDischargeTotal: (data[54] << 16 | data[55]) / 10.0,
             eChargeTotal: (data[58] << 16 | data[59]) / 10.0,
-            eToLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
+            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
         };
     }
 }

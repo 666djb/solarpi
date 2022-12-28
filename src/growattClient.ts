@@ -105,14 +105,14 @@ export class GrowattClient {
             pDischarge: (data[9] << 16 | data[10]) / 10.0, // W battery charge
             pCharge: (data[11] << 16 | data[12]) / 10.0, // W battery discharge
             soc: data[14], // % state of charge
-            pToUser: (data[21] << 16 | data[22]) / 10.0, // W consumption from grid *** assumed
-            pToGrid: (data[29] << 16 | data[30]) / 10.0, // W export to grid *** assumed same as above
-            pToLoad: (data[37] << 16 | data[38]) / 10.0, // W inverter to local load *** assumed same as above
-            eToUserTotal: (data[46] <<16 | data[47]) / 10.0, // kWh
-            eToGridTotal: (data[50] <<16 | data[51]) / 10.0, // kWh
+            pImport: (data[21] << 16 | data[22]) / 10.0, // W consumption from grid *** assumed
+            pExport: (data[29] << 16 | data[30]) / 10.0, // W export to grid *** assumed same as above
+            pLoad: (data[37] << 16 | data[38]) / 10.0, // W inverter to local load *** assumed same as above
+            eImportTotal: (data[46] <<16 | data[47]) / 10.0, // kWh
+            eExportTotal: (data[50] <<16 | data[51]) / 10.0, // kWh
             eDischargeTotal: (data[54] <<16 | data[55]) / 10.0, // kWh
             eChargeTotal: (data[58] <<16 | data[59]) / 10.0, // kWh
-            eToLoadTotal: (data[62] <<16 | data[63]) / 10.0, // kWh
+            eLoadTotal: (data[62] <<16 | data[63]) / 10.0, // kWh
         }
     }
 
