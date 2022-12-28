@@ -55,7 +55,6 @@ async function runSolarPi() {
             for (const [key, value] of Object.entries(data)) {
                 let entity = getEntityfromMap(key)
                 if (entity) {
-                    //console.log(`Publishing: ${entity}:${value}`)
                     await publisher.publishJSON(entity, { status: value })
                 }
             }
