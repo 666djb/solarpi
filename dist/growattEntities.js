@@ -56,7 +56,7 @@ const entities = [
         unique_id: "solarpi_temperature_inverter"
     },
     {
-        name: "Battery Discharge",
+        name: "Battery Discharge Power",
         type: "sensor",
         device_class: "power",
         state_class: "measurement",
@@ -65,7 +65,7 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "Battery Charge",
+        name: "Battery Charge Power",
         type: "sensor",
         device_class: "power",
         state_class: "measurement",
@@ -126,7 +126,7 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "Discharge Energy Total",
+        name: "Battery Discharge Energy Total",
         type: "sensor",
         device_class: "energy",
         state_class: "total",
@@ -135,7 +135,7 @@ const entities = [
         icon: "mdi:lightning-bolt"
     },
     {
-        name: "Charge Energy Total",
+        name: "Battery Charge Energy Total",
         type: "sensor",
         device_class: "energy",
         state_class: "total",
