@@ -2,6 +2,7 @@ export interface growattEntity {
     name: string,
     type: string,
     device_class?: string,
+    state_class?: string,
     unit_of_measurement?: string,
     unique_id: string,
     icon?: string
@@ -14,11 +15,12 @@ const entities: growattEntity[] = [
         unique_id: "solarpi_inverter_status"
     },
     {
-        name: "Total PV Power",
+        name: "PV Power",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_total_pv_power",
+        unique_id: "solarpi_power_pv",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -26,15 +28,16 @@ const entities: growattEntity[] = [
         type: "sensor",
         device_class: "voltage",
         unit_of_measurement: "V",
-        unique_id: "solarpi_pv1_voltage",
+        unique_id: "solarpi_voltage_pv1",
         icon: "mdi:lightning-bolt"
     },
     {
         name: "PV1 Power",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_pv1_power",
+        unique_id: "solarpi_power_pv1",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -42,117 +45,178 @@ const entities: growattEntity[] = [
         type: "sensor",
         device_class: "voltage",
         unit_of_measurement: "V",
-        unique_id: "solarpi_pv2_voltage",
+        unique_id: "solarpi_voltage_pv2",
         icon: "mdi:lightning-bolt"
     },
     {
         name: "PV2 Power",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_pv2_power",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "Output Power",
-        type: "sensor",
-        device_class: "power",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_output_power",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "PAC1 Output Power",
-        type: "sensor",
-        device_class: "power",
-        unit_of_measurement: "W",
-        unique_id: "solarpi_pac1_output_power",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "Energy Today",
-        type: "sensor",
-        device_class: "energy",
-        unit_of_measurement: "kWh",
-        unique_id: "solarpi_energy_today",
-        icon: "mdi:lightning-bolt"
-    },
-    {
-        name: "Energy Lifetime",
-        type: "sensor",
-        device_class: "energy",
-        unit_of_measurement: "kWh",
-        unique_id: "solarpi_energy_lifetime",
+        unique_id: "solarpi_power_pv2",
         icon: "mdi:lightning-bolt"
     },
     {
         name: "Inverter Temperature",
         type: "sensor",
         device_class: "temperature",
+        state_class: "measurement",
         unit_of_measurement: "°C",
-        unique_id: "solarpi_inverter_temperature"
+        unique_id: "solarpi_temperature_inverter"
     },
     {
         name: "Battery Discharge",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_battery_discharge_power",
+        unique_id: "solarpi_power_discharge",
         icon: "mdi:lightning-bolt"
     },
     {
         name: "Battery Charge",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_battery_charge_power",
+        unique_id: "solarpi_power_charge",
         icon: "mdi:lightning-bolt"
     },
     {
         name: "State of Charge",
         type: "sensor",
+        state_class: "measurement",
         unit_of_measurement: "%",
         unique_id: "solarpi_state_of_charge"
     },
     {
-        name: "Import Power",
+        name: "To User Power",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_import_power",
+        unique_id: "solarpi_power_to_user",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "To User Power All",
+        type: "sensor",
+        device_class: "power",
+        state_class: "measurement",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_power_to_user_total",
         icon: "mdi:lightning-bolt"
     },
     {
         name: "Export Power",
         type: "sensor",
         device_class: "power",
+        state_class: "measurement",
         unit_of_measurement: "W",
-        unique_id: "solarpi_export_power",
+        unique_id: "solarpi_power_to_grid",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "Export Power All",
+        type: "sensor",
+        device_class: "power",
+        state_class: "measurement",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_power_to_grid_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "To Load Power",
+        type: "sensor",
+        device_class: "power",
+        state_class: "measurement",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_power_to_load",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "To Load Power All",
+        type: "sensor",
+        device_class: "power",
+        state_class: "measurement",
+        unit_of_measurement: "W",
+        unique_id: "solarpi_power_to_load_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "To User Energy Total",
+        type: "sensor",
+        device_class: "energy",
+        state_class: "total",
+        unit_of_measurement: "kWh",
+        unique_id: "solarpi_energy_to_user_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "To Grid Energy Total",
+        type: "sensor",
+        device_class: "energy",
+        state_class: "total",
+        unit_of_measurement: "kWh",
+        unique_id: "solarpi_energy_to_grid_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "Discharge Energy Total",
+        type: "sensor",
+        device_class: "energy",
+        state_class: "total",
+        unit_of_measurement: "kWh",
+        unique_id: "solarpi_energy_discharge_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "Charge Energy Total",
+        type: "sensor",
+        device_class: "energy",
+        state_class: "total",
+        unit_of_measurement: "kWh",
+        unique_id: "solarpi_energy_charge_total",
+        icon: "mdi:lightning-bolt"
+    },
+    {
+        name: "To Load Energy Total",
+        type: "sensor",
+        device_class: "energy",
+        state_class: "total",
+        unit_of_measurement: "kWh",
+        unique_id: "solarpi_energy_to load_total",
         icon: "mdi:lightning-bolt"
     }
-    
 ]
 
 // This maps from the names used in the Growatt documentation (but camelCased) to the unique_ids used here
 const growattMap = {
     "inverterStatus": "solarpi_inverter_status",
-    "ppv": "solarpi_total_pv_power",
-    "vpv1": "solarpi_pv1_voltage",
-    "pv1Curr": undefined,
-    "ppv1": "solarpi_pv1_power",
-    "vpv2": "solarpi_pv2_voltage",
-    "pv2Curr": undefined,
-    "ppv2": "solarpi_pv2_power",
-    "pac": "solarpi_output_power",
-    "pac1": "solarpi_pac1_output_power",
-    "eacToday": "solarpi_energy_today",
-    "eacTotal": "solarpi_energy_lifetime",
-    "inverterTemperature": "solarpi_inverter_temperature",
-    "pDischarge": "solarpi_battery_discharge_power",
-    "pCharge": "solarpi_battery_charge_power",
+    "ppv": "solarpi_power_pv",
+    "vpv1": "solarpi_voltage_pv1",
+    //"pv1Curr": undefined,
+    "ppv1": "solarpi_power_pv1",
+    "vpv2": "solarpi_voltage_pv2",
+    //"pv2Curr": undefined,
+    "ppv2": "solarpi_power_pv2",
+    "inverterTemperature": "solarpi_temperature_inverter",
+    "pDischarge": "solarpi_power_discharge",
+    "pCharge": "solarpi_power_charge",
     "soc": "solarpi_state_of_charge",
-    "pFromGrid": "solarpi_import_power",
-    "pToGrid": "solarpi_export_power"
+    "pToUser": "solarpi_power_to_user",
+    "pToUserTotal": "solarpi_power_to_user_total",
+    "pToGrid": "solarpi_power_to_grid",
+    "pToGridTotal": "solarpi_power_to_grid_total",
+    "pToLocalLoad": "solarpi_power_to_load",
+    "pToLocalLoadTotal": "solarpi_power_to_load_total",
+    "eToUserTotal": "solarpi_energy_to_user_total",
+    "eToGridTotal": "solarpi_energy_to_grid_total",
+    "eDischargeTotal": "solarpi_energy_discharge_total",
+    "eChargeTotal": "solarpi_energy_charge_total",
+    "eLocalLoadTotal": "solarpi_energy_to load_total"
+
 }
 
 export function getEntities(): growattEntity[] {

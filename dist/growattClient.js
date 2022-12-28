@@ -22,7 +22,7 @@ export class GrowattClient {
     async getData() {
         // Remember can only read a max of 125 words in one go
         const inputRegisters1 = await this.client.readInputRegisters(0, 125);
-        const inputRegisters2 = await this.client.readInputRegisters(1000, 25);
+        const inputRegisters2 = await this.client.readInputRegisters(1000, 64);
         return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) };
     }
     parseInputRegisters(inputRegisters) {
@@ -61,13 +61,13 @@ export class GrowattClient {
             vpv2: data[7] / 10.0,
             pv2Curr: data[8] / 10.0,
             ppv2: (data[9] << 16 | data[10]) / 10.0,
-            pac: (data[35] << 16 | data[36]) / 10.0,
-            fac: data[37] / 100.0,
-            vac: data[38] / 10.0,
-            iac: data[39] / 10.0,
-            pac1: (data[40] << 16 | data[41]) / 10.0,
-            eacToday: (data[53] << 16 | data[54]) / 10.0,
-            eacTotal: (data[55] << 16 | data[56]) / 10.0,
+            //pac: (data[35] << 16 | data[36]) / 10.0, // W --- I think this is local consumption
+            //fac: data[37] / 100.0, // Hz
+            //vac: data[38] / 10.0, //V
+            //iac: data[39] / 10.0, //A
+            //pac1: (data[40] << 16 | data[41]) / 10.0, //VA
+            //eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh --- I think this is grid consumption/export
+            //eacTotal: (data[55] << 16 | data[56]) / 10.0, //kWh
             //totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
             //pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
             //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
@@ -75,10 +75,7 @@ export class GrowattClient {
             //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
             //epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
             inverterTemperature: data[93] / 10.0,
-            //ipmTemperature: data[94] / 10.0, //°C
-            //inverterOutputPf: data[100], //powerfactor 0-20000
             error: errorMap[data[105]] || data[105]
-            //realPowerPercent: data[113] //% 0-100
         };
         //console.log("retVal:", retVal)
         return retVal;
@@ -89,8 +86,17 @@ export class GrowattClient {
             pDischarge: (data[9] << 16 | data[10]) / 10.0,
             pCharge: (data[11] << 16 | data[12]) / 10.0,
             soc: data[14],
-            pFromGrid: (data[15] << 16 | data[16]) / 10.0,
-            pToGrid: (data[23] << 16 | data[17]) / 10.0 // W export to grid
+            pToUser: (data[15] << 16 | data[16]) / 10.0,
+            pToUserTotal: (data[21] << 16 | data[22]) / 10.0,
+            pToGrid: (data[23] << 16 | data[24]) / 10.0,
+            pToGridTotal: (data[29] << 16 | data[30]) / 10.0,
+            pToLocalLoad: (data[31] << 16 | data[32]) / 10.0,
+            pToLocalLoadTotal: (data[37] << 16 | data[38]) / 10.0,
+            eToUserTotal: (data[46] << 16 | data[47]) / 10.0,
+            eToGridTotal: (data[50] << 16 | data[51]) / 10.0,
+            eDischargeTotal: (data[54] << 16 | data[55]) / 10.0,
+            eChargeTotal: (data[58] << 16 | data[59]) / 10.0,
+            eLocalLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
         };
     }
 }

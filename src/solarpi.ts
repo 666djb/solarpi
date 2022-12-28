@@ -1,3 +1,5 @@
+// Tested with Growatt SPH3000 - ModBus version 3.05
+
 import { Publisher } from "./publisher.js"
 import { getConfig } from "./config.js"
 import { getEntities, getEntityfromMap } from "./growattEntities.js"

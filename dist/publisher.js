@@ -55,6 +55,7 @@ export class Publisher extends events.EventEmitter {
                     state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     value_template: '{{ value_json.status }}',
+                    object_id: solarpiEntities[entity].unique_id,
                     force_update: true,
                     ...solarpiEntities[entity],
                 };
