@@ -72,7 +72,7 @@ export class Publisher extends events.EventEmitter {
                     force_update: true,
                     ...solarpiEntities[entity],
                 }
-                await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, false)
+                await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
             }
 
         } catch (ex) {
