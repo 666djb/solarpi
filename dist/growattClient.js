@@ -19,18 +19,21 @@ export class GrowattClient {
         this.client.setID(this.modbusId);
         this.client.setTimeout(5000);
     }
-    async getData() {
+    async getDataOld() {
         // Remember can only read a max of 125 words in one go
         const inputRegisters1 = await this.client.readInputRegisters(0, 125);
         const inputRegisters2 = await this.client.readInputRegisters(1000, 64);
         return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) };
     }
+    async getData() {
+        // Remember can only read a max of 125 words in one go
+        const inputRegisters1 = await this.client.readInputRegisters(0, 125);
+        const inputRegisters2 = await this.client.readInputRegisters(1000, 64);
+        console.log("The data is:", { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) });
+        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) };
+    }
     parseInputRegisters(inputRegisters) {
         const { data } = inputRegisters;
-        // console.log("data length:", data.length)
-        // for( let item in data){
-        //     console.log(`Item: ${item} Value: ${data[item]}`)
-        // }
         const statusMap = {
             0: 'Waiting',
             1: 'Self Test',
@@ -52,7 +55,7 @@ export class GrowattClient {
             304: 'Voltage of Neutral and PE above 30V.',
             407: 'Auto test didn’t pass.'
         };
-        let retVal = {
+        return {
             inverterStatus: statusMap[data[0]] || data[0],
             ppv: (data[1] << 16 | data[2]) / 10.0,
             vpv1: data[3] / 10.0,
@@ -77,8 +80,6 @@ export class GrowattClient {
             inverterTemperature: data[93] / 10.0,
             error: errorMap[data[105]] || data[105]
         };
-        //console.log("retVal:", retVal)
-        return retVal;
     }
     parseInputRegisters2(inputRegisters) {
         const { data } = inputRegisters;

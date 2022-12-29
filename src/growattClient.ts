@@ -30,7 +30,7 @@ export class GrowattClient {
         this.client.setTimeout(5000)
     }
 
-    async getData() {
+    async getDataOld() {
         // Remember can only read a max of 125 words in one go
 
         const inputRegisters1 = await this.client.readInputRegisters(0, 125)
@@ -39,13 +39,20 @@ export class GrowattClient {
         return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) }
     }
 
+    async getData() {
+        // Remember can only read a max of 125 words in one go
+
+        const inputRegisters1 = await this.client.readInputRegisters(0, 125)
+        const inputRegisters2 = await this.client.readInputRegisters(1000, 64)
+
+        console.log("The data is:", {...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2)})
+
+        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) }
+    }
+
     private parseInputRegisters(inputRegisters: ReadRegisterResult) {
         const { data } = inputRegisters
 
-        // console.log("data length:", data.length)
-        // for( let item in data){
-        //     console.log(`Item: ${item} Value: ${data[item]}`)
-        // }
         const statusMap = {
             0: 'Waiting',
             1: 'Self Test',
@@ -57,6 +64,7 @@ export class GrowattClient {
             7: 'Normal',
             8: 'Normal'
         }
+
         const errorMap = {
             201: 'Leakage current too high',
             202: 'The DC input voltage is exceeding the maximum tolerable value.',
@@ -68,7 +76,7 @@ export class GrowattClient {
             407: 'Auto test didn’t pass.'
         }
 
-        let retVal = {
+        return {
             inverterStatus: statusMap[data[0]] || data[0],
             ppv: (data[1] << 16 | data[2]) / 10.0, //W --- total PV power
             vpv1: data[3] / 10.0, //V
@@ -93,10 +101,6 @@ export class GrowattClient {
             inverterTemperature: data[93] / 10.0, //°C
             error: errorMap[data[105]] || data[105]
         }
-
-        //console.log("retVal:", retVal)
-
-        return retVal
     }
 
     private parseInputRegisters2(inputRegisters: ReadRegisterResult) {

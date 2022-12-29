@@ -1,8 +1,10 @@
+// Todo turn into class
 const entities = [
     {
         name: "Inverter Status",
         type: "sensor",
-        unique_id: "solarpi_inverter_status"
+        unique_id: "solarpi_inverter_status",
+        value_template: "{{ value_json.inverterStatus }}"
     },
     {
         name: "PV Power",
@@ -11,6 +13,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_pv",
+        value_template: "{{ value_json.ppv }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -19,6 +22,7 @@ const entities = [
         device_class: "voltage",
         unit_of_measurement: "V",
         unique_id: "solarpi_voltage_pv1",
+        value_template: "{{ value_json.vpv1 }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -28,6 +32,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_pv1",
+        value_template: "{{ value_json.ppv1 }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -36,6 +41,7 @@ const entities = [
         device_class: "voltage",
         unit_of_measurement: "V",
         unique_id: "solarpi_voltage_pv2",
+        value_template: "{{ value_json.ppv2 }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -45,6 +51,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_pv2",
+        value_template: "{{ value_json.ppv2 }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -54,6 +61,7 @@ const entities = [
         state_class: "total",
         unit_of_measurement: "kWh",
         unique_id: "solarpi_energy_pv_total",
+        value_template: "{{ value_json.epvTotal }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -62,7 +70,8 @@ const entities = [
         device_class: "temperature",
         state_class: "measurement",
         unit_of_measurement: "°C",
-        unique_id: "solarpi_temperature_inverter"
+        unique_id: "solarpi_temperature_inverter",
+        value_template: "{{ value_json.inverterTemperature }}"
     },
     {
         name: "Battery Discharge Power",
@@ -71,6 +80,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_discharge",
+        value_template: "{{ value_json.pDischarge }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -80,6 +90,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_charge",
+        value_template: "{{ value_json.pCharge }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -87,7 +98,8 @@ const entities = [
         type: "sensor",
         state_class: "measurement",
         unit_of_measurement: "%",
-        unique_id: "solarpi_state_of_charge"
+        unique_id: "solarpi_state_of_charge",
+        value_template: "{{ value_json.soc }}"
     },
     {
         name: "Import Power",
@@ -96,6 +108,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_import",
+        value_template: "{{ value_json.pImport }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -105,6 +118,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_export",
+        value_template: "{{ value_json.pExport }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -114,6 +128,7 @@ const entities = [
         state_class: "measurement",
         unit_of_measurement: "W",
         unique_id: "solarpi_power_to_load",
+        value_template: "{{ value_json.pLoad }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -123,6 +138,7 @@ const entities = [
         state_class: "total",
         unit_of_measurement: "kWh",
         unique_id: "solarpi_energy_import_total",
+        value_template: "{{ value_json.eImportTotal }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -132,6 +148,7 @@ const entities = [
         state_class: "total",
         unit_of_measurement: "kWh",
         unique_id: "solarpi_energy_export_total",
+        value_template: "{{ value_json.eExportTotal }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -141,6 +158,7 @@ const entities = [
         state_class: "total",
         unit_of_measurement: "kWh",
         unique_id: "solarpi_energy_discharge_total",
+        value_template: "{{ value_json.eDischargeTotal }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -150,6 +168,7 @@ const entities = [
         state_class: "total",
         unit_of_measurement: "kWh",
         unique_id: "solarpi_energy_charge_total",
+        value_template: "{{ value_json.eChargeTotal }}",
         icon: "mdi:lightning-bolt"
     },
     {
@@ -159,6 +178,7 @@ const entities = [
         state_class: "total",
         unit_of_measurement: "kWh",
         unique_id: "solarpi_energy_to_load_total",
+        value_template: "{{ value_json.eLoadTotal }}",
         icon: "mdi:lightning-bolt"
     }
 ];
