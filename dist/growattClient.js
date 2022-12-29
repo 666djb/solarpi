@@ -1,5 +1,5 @@
 import ModbusRTU from "modbus-serial";
-import { GrowattSPH3000 } from "./growattSPH3000";
+import { GrowattSPH3000 } from "./growattSPH3000.js";
 export class GrowattClient {
     constructor({ device = '/dev/ttyUSB0', modbusId = 1, baudRate = 9600 } = {}) {
         this.device = device;
