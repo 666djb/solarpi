@@ -296,7 +296,7 @@ export class GrowattSPH3000 {
             epvToday: (data[53] << 16 | data[54]) /10.0, // Combined PV energy today (kWH)
             epvTotal: (data[91] << 16 | data[92]) / 10.0, // Combined PV energy total (kWH)
             inverterTemperature: data[93] / 10.0, //°C
-            inveterError: errorMap[data[105]] || data[105]
+            inverterError: errorMap[data[105]] || data[105]
         }
     }
 

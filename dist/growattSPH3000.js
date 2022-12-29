@@ -289,7 +289,7 @@ export class GrowattSPH3000 {
             epvToday: (data[53] << 16 | data[54]) / 10.0,
             epvTotal: (data[91] << 16 | data[92]) / 10.0,
             inverterTemperature: data[93] / 10.0,
-            inveterError: errorMap[data[105]] || data[105]
+            inverterError: errorMap[data[105]] || data[105]
         };
     }
     parseInputRegisters2(inputRegisters) {
