@@ -1,7 +1,6 @@
 import ModbusRTU from "modbus-serial"
-import { ReadRegisterResult } from "modbus-serial/ModbusRTU"
-import { GrowattSPH3000 } from "./growattSPH3000"
-import { growattEntity } from "./growattEntity"
+import { GrowattSPH3000 } from "./growattSPH3000.js"
+import { growattEntity } from "./growattEntity.js"
 
 export class GrowattClient {
     device: string

@@ -1,8 +1,8 @@
 import { IClientOptions, IClientPublishOptions } from "mqtt"
 import MQTT, { AsyncMqttClient } from 'async-mqtt'
-import { MqttConfig } from "./config"
+import { MqttConfig } from "./config.js"
 import * as events from "events"
-import { growattEntity } from "./growattEntity"
+import { growattEntity } from "./growattEntity.js"
 import { logDate } from "./logDate.js"
 
 export class Publisher extends events.EventEmitter {

@@ -2,7 +2,7 @@
 // Apart from the interface everything here is specific to SPH3000
 
 import { ReadRegisterResult } from "modbus-serial/ModbusRTU";
-import { growattEntity } from "./growattEntity";
+import { growattEntity } from "./growattEntity.js";
 
 export class GrowattSPH3000 {
     readonly entities: growattEntity[] = [
