@@ -1,7 +1,7 @@
 // Tested with Growatt SPH3000 - ModBus version 3.05
 
-import { Publisher } from "./publisher"
-import { getConfig } from "./config"
+import { Publisher } from "./publisher.js"
+import { getConfig } from "./config.js"
 import { GrowattClient } from "./growattClient.js"
 import { logDate } from "./logDate.js"
 
