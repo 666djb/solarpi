@@ -1,20 +1,24 @@
 import ModbusRTU from "modbus-serial"
 import { ReadRegisterResult } from "modbus-serial/ModbusRTU"
+import { GrowattSPH3000 } from "./growattSPH3000"
+import { growattEntity } from "./growattEntity"
 
 export class GrowattClient {
     device: string
     modbusId: number
     baudRate: number
     client: ModbusRTU
+    inverter: GrowattSPH3000
 
     constructor({ device = '/dev/ttyUSB0', modbusId = 1, baudRate = 9600 } = {}) {
         this.device = device
         this.modbusId = modbusId
         this.baudRate = baudRate
         this.client = new ModbusRTU()
+        this.inverter = new GrowattSPH3000()
     }
 
-    async init() {
+    public async init() {
         if (this.client.isOpen) {
             throw "Growatt connection already open"
         }
@@ -30,94 +34,19 @@ export class GrowattClient {
         this.client.setTimeout(5000)
     }
 
-    async getDataOld() {
+    public getEntities(): growattEntity[]{
+        return this.inverter.entities
+    }
+
+    public async getData() {
         // Remember can only read a max of 125 words in one go
 
-        const inputRegisters1 = await this.client.readInputRegisters(0, 125)
-        const inputRegisters2 = await this.client.readInputRegisters(1000, 64)
+        // const inputRegisters1 = await this.client.readInputRegisters(0, 125)
+        // const inputRegisters2 = await this.client.readInputRegisters(1000, 64)
 
-        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) }
+        const inputRegisters1 = await this.client.readInputRegisters(this.inverter.inputRegister1Start, this.inverter.inputRegister1Count)
+        const inputRegisters2 = await this.client.readInputRegisters(this.inverter.inputRegister2Start, this.inverter.inputRegister2Count)
+
+        return { ...this.inverter.parseInputRegisters1(inputRegisters1), ...this.inverter.parseInputRegisters2(inputRegisters2) }
     }
-
-    async getData() {
-        // Remember can only read a max of 125 words in one go
-
-        const inputRegisters1 = await this.client.readInputRegisters(0, 125)
-        const inputRegisters2 = await this.client.readInputRegisters(1000, 64)
-
-        //console.log("The data is:", {...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2)})
-
-        return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) }
-    }
-
-    private parseInputRegisters(inputRegisters: ReadRegisterResult) {
-        const { data } = inputRegisters
-
-        const statusMap = {
-            0: 'Waiting',
-            1: 'Self Test',
-            2: 'Reserved',
-            3: 'Fault',
-            4: 'Flash',
-            5: 'Normal',
-            6: 'Normal',
-            7: 'Normal',
-            8: 'Normal'
-        }
-
-        const errorMap = {
-            201: 'Leakage current too high',
-            202: 'The DC input voltage is exceeding the maximum tolerable value.',
-            203: 'Insulation problem',
-            300: 'Utility grid voltage is out of permissible range.',
-            302: 'No AC connection',
-            303: 'Utility grid frequency out of permissible range.',
-            304: 'Voltage of Neutral and PE above 30V.',
-            407: 'Auto test didn’t pass.'
-        }
-
-        return {
-            inverterStatus: statusMap[data[0]] || data[0],
-            ppv: (data[1] << 16 | data[2]) / 10.0, //W --- total PV power
-            vpv1: data[3] / 10.0, //V
-            pv1Curr: data[4] / 10.0, //A
-            ppv1: (data[5] << 16 | data[6]) / 10.0, //W
-            vpv2: data[7] / 10.0, //V
-            pv2Curr: data[8] / 10.0, //A
-            ppv2: (data[9] << 16 | data[10]) / 10.0, //W
-            //pac: (data[35] << 16 | data[36]) / 10.0, // W --- I think this is local consumption
-            //fac: data[37] / 100.0, // Hz
-            //vac: data[38] / 10.0, //V
-            //iac: data[39] / 10.0, //A
-            //pac1: (data[40] << 16 | data[41]) / 10.0, //VA
-            //eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh --- I think this is grid consumption/export
-            //eacTotal: (data[55] << 16 | data[56]) / 10.0, //kWh
-            //totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
-            //pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
-            //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
-            //pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
-            //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
-            epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
-            inverterTemperature: data[93] / 10.0, //°C
-            error: errorMap[data[105]] || data[105]
-        }
-    }
-
-    private parseInputRegisters2(inputRegisters: ReadRegisterResult) {
-        const { data } = inputRegisters
-        return {
-            pDischarge: (data[9] << 16 | data[10]) / 10.0, // W battery charge
-            pCharge: (data[11] << 16 | data[12]) / 10.0, // W battery discharge
-            soc: data[14], // % state of charge
-            pImport: (data[21] << 16 | data[22]) / 10.0, // W consumption from grid *** assumed
-            pExport: (data[29] << 16 | data[30]) / 10.0, // W export to grid *** assumed same as above
-            pLoad: (data[37] << 16 | data[38]) / 10.0, // W inverter to local load *** assumed same as above
-            eImportTotal: (data[46] << 16 | data[47]) / 10.0, // kWh
-            eExportTotal: (data[50] << 16 | data[51]) / 10.0, // kWh
-            eDischargeTotal: (data[54] << 16 | data[55]) / 10.0, // kWh
-            eChargeTotal: (data[58] << 16 | data[59]) / 10.0, // kWh
-            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
-        }
-    }
-
 }

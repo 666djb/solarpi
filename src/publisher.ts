@@ -2,7 +2,7 @@ import { IClientOptions, IClientPublishOptions } from "mqtt"
 import MQTT, { AsyncMqttClient } from 'async-mqtt'
 import { MqttConfig } from "./config"
 import * as events from "events"
-import { growattEntity } from "./growattEntities"
+import { growattEntity } from "./growattEntity"
 import { logDate } from "./logDate.js"
 
 export class Publisher extends events.EventEmitter {
@@ -65,11 +65,8 @@ export class Publisher extends events.EventEmitter {
                 let thisEntity = {
                     availability: availability,
                     device: device,
-                    //state_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     state_topic: `${this.config.baseTopic}/inverter`,
-                    //json_attributes_topic: `${this.config.baseTopic}/${solarpiEntities[entity].unique_id}`,
                     json_attributes_topic: `${this.config.baseTopic}/inverter`,
-                    //value_template: '{{ value_json.status }}',
                     object_id: solarpiEntities[entity].unique_id,
                     force_update: true,
                     ...solarpiEntities[entity],
@@ -82,7 +79,7 @@ export class Publisher extends events.EventEmitter {
         }
     }
 
-    public async publish(subTopic: string, data: string, retain?: boolean) {
+    private async publish(subTopic: string, data: string, retain?: boolean) {
         try {
             if(!this.mqttClient.connected){
                 throw "Not connected"
@@ -94,12 +91,12 @@ export class Publisher extends events.EventEmitter {
         }
     }
 
-    public async publishJSON(subTopic: string, data: object, retain?: boolean) {
+    public async publishData(data: object, retain?: boolean) {
         try {
             if(!this.mqttClient.connected){
                 throw "Not connected"
             }
-            await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
+            await this.mqttClient.publish(`${this.config.baseTopic}/inverter`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
             throw `publishJSON() error ${error}`
@@ -111,7 +108,6 @@ export class Publisher extends events.EventEmitter {
             if(!this.mqttClient.connected){
                 throw "Not connected"
             }
-            //console.log("Would publish:", JSON.stringify(data))
             await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
