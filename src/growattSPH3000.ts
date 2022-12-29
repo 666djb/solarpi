@@ -61,6 +61,16 @@ export class GrowattSPH3000 {
             icon: "mdi:lightning-bolt"
         },
         {
+            name: "PV Energy Today",
+            type: "sensor",
+            device_class: "energy",
+            state_class: "total",
+            unit_of_measurement: "kWh",
+            unique_id: "solarpi_energy_pv_today",
+            value_template: "{{ value_json.epvToday }}",
+            icon: "mdi:lightning-bolt"
+        },
+        {
             name: "PV Energy Total",
             type: "sensor",
             device_class: "energy",
@@ -78,6 +88,12 @@ export class GrowattSPH3000 {
             unit_of_measurement: "°C",
             unique_id: "solarpi_temperature_inverter",
             value_template: "{{ value_json.inverterTemperature }}"
+        },
+        {
+            name: "Inverter Error",
+            type: "sensor",
+            unique_id: "solarpi_inverter_error",
+            value_template: "{{ value_json.inverterError }}"
         },
         {
             name: "Battery Discharge Power",
@@ -138,6 +154,16 @@ export class GrowattSPH3000 {
             icon: "mdi:lightning-bolt"
         },
         {
+            name: "Import Energy Today",
+            type: "sensor",
+            device_class: "energy",
+            state_class: "total",
+            unit_of_measurement: "kWh",
+            unique_id: "solarpi_energy_import_today",
+            value_template: "{{ value_json.eImportToday }}",
+            icon: "mdi:lightning-bolt"
+        },
+        {
             name: "Import Energy Total",
             type: "sensor",
             device_class: "energy",
@@ -145,6 +171,16 @@ export class GrowattSPH3000 {
             unit_of_measurement: "kWh",
             unique_id: "solarpi_energy_import_total",
             value_template: "{{ value_json.eImportTotal }}",
+            icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Export Energy Today",
+            type: "sensor",
+            device_class: "energy",
+            state_class: "total",
+            unit_of_measurement: "kWh",
+            unique_id: "solarpi_energy_export_today",
+            value_template: "{{ value_json.eExportToday }}",
             icon: "mdi:lightning-bolt"
         },
         {
@@ -158,6 +194,16 @@ export class GrowattSPH3000 {
             icon: "mdi:lightning-bolt"
         },
         {
+            name: "Battery Discharge Energy Today",
+            type: "sensor",
+            device_class: "energy",
+            state_class: "total",
+            unit_of_measurement: "kWh",
+            unique_id: "solarpi_energy_discharge_today",
+            value_template: "{{ value_json.eDischargeToday }}",
+            icon: "mdi:lightning-bolt"
+        },
+        {
             name: "Battery Discharge Energy Total",
             type: "sensor",
             device_class: "energy",
@@ -168,6 +214,16 @@ export class GrowattSPH3000 {
             icon: "mdi:lightning-bolt"
         },
         {
+            name: "Battery Charge Energy Today",
+            type: "sensor",
+            device_class: "energy",
+            state_class: "total",
+            unit_of_measurement: "kWh",
+            unique_id: "solarpi_energy_charge_today",
+            value_template: "{{ value_json.eChargeToday }}",
+            icon: "mdi:lightning-bolt"
+        },
+        {
             name: "Battery Charge Energy Total",
             type: "sensor",
             device_class: "energy",
@@ -175,6 +231,16 @@ export class GrowattSPH3000 {
             unit_of_measurement: "kWh",
             unique_id: "solarpi_energy_charge_total",
             value_template: "{{ value_json.eChargeTotal }}",
+            icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Load Energy Today",
+            type: "sensor",
+            device_class: "energy",
+            state_class: "total",
+            unit_of_measurement: "kWh",
+            unique_id: "solarpi_energy_to_load_today",
+            value_template: "{{ value_json.eLoadToday }}",
             icon: "mdi:lightning-bolt"
         },
         {
@@ -190,7 +256,7 @@ export class GrowattSPH3000 {
     ]
 
     readonly inputRegister1Start = 0
-    readonly inputRegister1Count = 125
+    readonly inputRegister1Count = 106
     readonly inputRegister2Start = 1000
     readonly inputRegister2Count = 64
 
@@ -221,46 +287,38 @@ export class GrowattSPH3000 {
         }
 
         return {
-            inverterStatus: statusMap[data[0]] || data[0],
-            ppv: (data[1] << 16 | data[2]) / 10.0, //W --- total PV power
-            vpv1: data[3] / 10.0, //V
-            pv1Curr: data[4] / 10.0, //A
-            ppv1: (data[5] << 16 | data[6]) / 10.0, //W
-            vpv2: data[7] / 10.0, //V
-            pv2Curr: data[8] / 10.0, //A
-            ppv2: (data[9] << 16 | data[10]) / 10.0, //W
-            //pac: (data[35] << 16 | data[36]) / 10.0, // W --- I think this is local consumption
-            //fac: data[37] / 100.0, // Hz
-            //vac: data[38] / 10.0, //V
-            //iac: data[39] / 10.0, //A
-            //pac1: (data[40] << 16 | data[41]) / 10.0, //VA
-            //eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh --- I think this is grid consumption/export
-            //eacTotal: (data[55] << 16 | data[56]) / 10.0, //kWh
-            //totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
-            //pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
-            //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
-            //pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
-            //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
-            epvTotal: (data[91] << 16 | data[92]) / 10.0, //kWh
+            inverterStatus: statusMap[data[0]] || data[0], // Status from map above or the numeric value
+            ppv: (data[1] << 16 | data[2]) / 10.0, // Combined PV power (W)
+            vpv1: data[3] / 10.0, // PV1 voltage (V) 
+            ppv1: (data[5] << 16 | data[6]) / 10.0, // PV1 power (W)
+            vpv2: data[7] / 10.0, // PV2 voltage (V)
+            ppv2: (data[9] << 16 | data[10]) / 10.0, // PV2 power (W)
+            epvToday: (data[53] << 16 | data[54]) /10.0, // Combined PV energy today (kWH)
+            epvTotal: (data[91] << 16 | data[92]) / 10.0, // Combined PV energy total (kWH)
             inverterTemperature: data[93] / 10.0, //°C
-            error: errorMap[data[105]] || data[105]
+            inveterError: errorMap[data[105]] || data[105]
         }
     }
 
     public parseInputRegisters2(inputRegisters: ReadRegisterResult) {
         const { data } = inputRegisters
         return {
-            pDischarge: (data[9] << 16 | data[10]) / 10.0, // W battery charge
-            pCharge: (data[11] << 16 | data[12]) / 10.0, // W battery discharge
-            soc: data[14], // % state of charge
-            pImport: (data[21] << 16 | data[22]) / 10.0, // W consumption from grid *** assumed
-            pExport: (data[29] << 16 | data[30]) / 10.0, // W export to grid *** assumed same as above
-            pLoad: (data[37] << 16 | data[38]) / 10.0, // W inverter to local load *** assumed same as above
-            eImportTotal: (data[46] << 16 | data[47]) / 10.0, // kWh
-            eExportTotal: (data[50] << 16 | data[51]) / 10.0, // kWh
-            eDischargeTotal: (data[54] << 16 | data[55]) / 10.0, // kWh
-            eChargeTotal: (data[58] << 16 | data[59]) / 10.0, // kWh
-            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
+            pDischarge: (data[9] << 16 | data[10]) / 10.0, // Battery discharge power (W)
+            pCharge: (data[11] << 16 | data[12]) / 10.0, // Battery charge power (W)
+            soc: data[14], // Battery state of charge (%)
+            pImport: (data[21] << 16 | data[22]) / 10.0, // Import power (W)
+            pExport: (data[29] << 16 | data[30]) / 10.0, // Export power (W)
+            pLoad: (data[37] << 16 | data[38]) / 10.0, // Load (consumption) power (W)
+            eImportToday: (data[44] << 16 | data[45]) / 10.0, // Import energy today (kWh)
+            eImportTotal: (data[46] << 16 | data[47]) / 10.0, // Import energy total (kWh)
+            eExportToday: (data[48] << 16 | data[49]) / 10.0, // Export energy today (kWh)
+            eExportTotal: (data[50] << 16 | data[51]) / 10.0, // Export energy total (kWh)
+            eDischargeToday: (data[52] << 16 | data[53])/ 10.0, // Battery discharge energy today (kWh)
+            eDischargeTotal: (data[54] << 16 | data[55]) / 10.0, // Battery discharge energy total (kWh)
+            eChargeToday: (data[56] << 16 | data[57]) / 10.0, // Battery charge energy today (kWh)
+            eChargeTotal: (data[58] << 16 | data[59]) / 10.0, // Battery charge energy total (kWh)
+            eLoadToday: (data[60] << 16 | data[61]) / 10.0, // Load energy today (kWh)
+            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // Load energy total (kWh)
         }
     }
 }

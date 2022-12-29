@@ -58,6 +58,16 @@ export class GrowattSPH3000 {
                 icon: "mdi:lightning-bolt"
             },
             {
+                name: "PV Energy Today",
+                type: "sensor",
+                device_class: "energy",
+                state_class: "total",
+                unit_of_measurement: "kWh",
+                unique_id: "solarpi_energy_pv_today",
+                value_template: "{{ value_json.epvToday }}",
+                icon: "mdi:lightning-bolt"
+            },
+            {
                 name: "PV Energy Total",
                 type: "sensor",
                 device_class: "energy",
@@ -75,6 +85,12 @@ export class GrowattSPH3000 {
                 unit_of_measurement: "°C",
                 unique_id: "solarpi_temperature_inverter",
                 value_template: "{{ value_json.inverterTemperature }}"
+            },
+            {
+                name: "Inverter Error",
+                type: "sensor",
+                unique_id: "solarpi_inverter_error",
+                value_template: "{{ value_json.inverterError }}"
             },
             {
                 name: "Battery Discharge Power",
@@ -135,6 +151,16 @@ export class GrowattSPH3000 {
                 icon: "mdi:lightning-bolt"
             },
             {
+                name: "Import Energy Today",
+                type: "sensor",
+                device_class: "energy",
+                state_class: "total",
+                unit_of_measurement: "kWh",
+                unique_id: "solarpi_energy_import_today",
+                value_template: "{{ value_json.eImportToday }}",
+                icon: "mdi:lightning-bolt"
+            },
+            {
                 name: "Import Energy Total",
                 type: "sensor",
                 device_class: "energy",
@@ -142,6 +168,16 @@ export class GrowattSPH3000 {
                 unit_of_measurement: "kWh",
                 unique_id: "solarpi_energy_import_total",
                 value_template: "{{ value_json.eImportTotal }}",
+                icon: "mdi:lightning-bolt"
+            },
+            {
+                name: "Export Energy Today",
+                type: "sensor",
+                device_class: "energy",
+                state_class: "total",
+                unit_of_measurement: "kWh",
+                unique_id: "solarpi_energy_export_today",
+                value_template: "{{ value_json.eExportToday }}",
                 icon: "mdi:lightning-bolt"
             },
             {
@@ -155,6 +191,16 @@ export class GrowattSPH3000 {
                 icon: "mdi:lightning-bolt"
             },
             {
+                name: "Battery Discharge Energy Today",
+                type: "sensor",
+                device_class: "energy",
+                state_class: "total",
+                unit_of_measurement: "kWh",
+                unique_id: "solarpi_energy_discharge_today",
+                value_template: "{{ value_json.eDischargeToday }}",
+                icon: "mdi:lightning-bolt"
+            },
+            {
                 name: "Battery Discharge Energy Total",
                 type: "sensor",
                 device_class: "energy",
@@ -165,6 +211,16 @@ export class GrowattSPH3000 {
                 icon: "mdi:lightning-bolt"
             },
             {
+                name: "Battery Charge Energy Today",
+                type: "sensor",
+                device_class: "energy",
+                state_class: "total",
+                unit_of_measurement: "kWh",
+                unique_id: "solarpi_energy_charge_today",
+                value_template: "{{ value_json.eChargeToday }}",
+                icon: "mdi:lightning-bolt"
+            },
+            {
                 name: "Battery Charge Energy Total",
                 type: "sensor",
                 device_class: "energy",
@@ -172,6 +228,16 @@ export class GrowattSPH3000 {
                 unit_of_measurement: "kWh",
                 unique_id: "solarpi_energy_charge_total",
                 value_template: "{{ value_json.eChargeTotal }}",
+                icon: "mdi:lightning-bolt"
+            },
+            {
+                name: "Load Energy Today",
+                type: "sensor",
+                device_class: "energy",
+                state_class: "total",
+                unit_of_measurement: "kWh",
+                unique_id: "solarpi_energy_to_load_today",
+                value_template: "{{ value_json.eLoadToday }}",
                 icon: "mdi:lightning-bolt"
             },
             {
@@ -186,7 +252,7 @@ export class GrowattSPH3000 {
             }
         ];
         this.inputRegister1Start = 0;
-        this.inputRegister1Count = 125;
+        this.inputRegister1Count = 106;
         this.inputRegister2Start = 1000;
         this.inputRegister2Count = 64;
     }
@@ -217,26 +283,13 @@ export class GrowattSPH3000 {
             inverterStatus: statusMap[data[0]] || data[0],
             ppv: (data[1] << 16 | data[2]) / 10.0,
             vpv1: data[3] / 10.0,
-            pv1Curr: data[4] / 10.0,
             ppv1: (data[5] << 16 | data[6]) / 10.0,
             vpv2: data[7] / 10.0,
-            pv2Curr: data[8] / 10.0,
             ppv2: (data[9] << 16 | data[10]) / 10.0,
-            //pac: (data[35] << 16 | data[36]) / 10.0, // W --- I think this is local consumption
-            //fac: data[37] / 100.0, // Hz
-            //vac: data[38] / 10.0, //V
-            //iac: data[39] / 10.0, //A
-            //pac1: (data[40] << 16 | data[41]) / 10.0, //VA
-            //eacToday: (data[53] << 16 | data[54]) / 10.0, //kWh --- I think this is grid consumption/export
-            //eacTotal: (data[55] << 16 | data[56]) / 10.0, //kWh
-            //totalWorkTime: (data[57] << 16 | data[58]) / 2, //s
-            //pv1TodayEnergy: (data[59] << 16 | data[60]) / 10.0, //kWh
-            //pv1TotalEnergy: (data[61] << 16 | data[62]) / 10.0, //kWh
-            //pv2TodayEnergy: (data[63] << 16 | data[64]) / 10.0, //kWh
-            //pv2TotalEnergy: (data[65] << 16 | data[66]) / 10.0, //kWh
+            epvToday: (data[53] << 16 | data[54]) / 10.0,
             epvTotal: (data[91] << 16 | data[92]) / 10.0,
             inverterTemperature: data[93] / 10.0,
-            error: errorMap[data[105]] || data[105]
+            inveterError: errorMap[data[105]] || data[105]
         };
     }
     parseInputRegisters2(inputRegisters) {
@@ -248,11 +301,16 @@ export class GrowattSPH3000 {
             pImport: (data[21] << 16 | data[22]) / 10.0,
             pExport: (data[29] << 16 | data[30]) / 10.0,
             pLoad: (data[37] << 16 | data[38]) / 10.0,
+            eImportToday: (data[44] << 16 | data[45]) / 10.0,
             eImportTotal: (data[46] << 16 | data[47]) / 10.0,
+            eExportToday: (data[48] << 16 | data[49]) / 10.0,
             eExportTotal: (data[50] << 16 | data[51]) / 10.0,
+            eDischargeToday: (data[52] << 16 | data[53]) / 10.0,
             eDischargeTotal: (data[54] << 16 | data[55]) / 10.0,
+            eChargeToday: (data[56] << 16 | data[57]) / 10.0,
             eChargeTotal: (data[58] << 16 | data[59]) / 10.0,
-            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // kWh
+            eLoadToday: (data[60] << 16 | data[61]) / 10.0,
+            eLoadTotal: (data[62] << 16 | data[63]) / 10.0, // Load energy total (kWh)
         };
     }
 }
