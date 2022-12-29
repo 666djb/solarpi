@@ -293,7 +293,8 @@ export class GrowattSPH3000 {
             ppv1: (data[5] << 16 | data[6]) / 10.0, // PV1 power (W)
             vpv2: data[7] / 10.0, // PV2 voltage (V)
             ppv2: (data[9] << 16 | data[10]) / 10.0, // PV2 power (W)
-            epvToday: (data[53] << 16 | data[54]) /10.0, // Combined PV energy today (kWH)
+            //epvToday: (data[53] << 16 | data[54]) /10.0, // Combined PV energy today (kWH) *** This does not give a sane result, so trying the next line
+            epvToday: ((data[59] << 16 | data[60]) + (data[63] << 16 | data[64])) / 10.0,
             epvTotal: (data[91] << 16 | data[92]) / 10.0, // Combined PV energy total (kWH)
             inverterTemperature: data[93] / 10.0, //°C
             inverterError: errorMap[data[105]] || data[105]
