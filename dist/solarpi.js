@@ -1,7 +1,7 @@
 // Tested with Growatt SPH3000 - ModBus version 3.05
 import { Publisher } from "./publisher.js";
 import { getConfig } from "./config.js";
-import { getEntities, getEntityfromMap } from "./growattEntities.js";
+import { getEntities } from "./growattEntities.js";
 import { GrowattClient } from "./growattClient.js";
 import { logDate } from "./logDate.js";
 console.log(`${logDate()} Starting SolarPi`);
@@ -42,12 +42,13 @@ async function runSolarPi() {
         try {
             // Map GrowattClient key names to our entities and publish values
             console.log(`${logDate()} Publishing data`);
-            for (const [key, value] of Object.entries(data)) {
-                let entity = getEntityfromMap(key);
-                if (entity) {
-                    //await publisher.publishJSON(entity, { status: value })
-                }
-            }
+            await publisher.publishJSON("inverter", data);
+            // for (const [key, value] of Object.entries(data)) {
+            //     let entity = getEntityfromMap(key)
+            //     if (entity) {
+            //         await publisher.publishJSON(entity, { status: value })
+            //     }
+            // }
         }
         catch (error) {
             console.error(`${logDate()} Error publishing data to MQTT:`, error);

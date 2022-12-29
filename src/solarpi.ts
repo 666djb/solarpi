@@ -51,13 +51,14 @@ async function runSolarPi() {
         try {
             // Map GrowattClient key names to our entities and publish values
             console.log(`${logDate()} Publishing data`)
+            await publisher.publishJSON("inverter", data)
 
-            for (const [key, value] of Object.entries(data)) {
-                let entity = getEntityfromMap(key)
-                if (entity) {
-                    //await publisher.publishJSON(entity, { status: value })
-                }
-            }
+            // for (const [key, value] of Object.entries(data)) {
+            //     let entity = getEntityfromMap(key)
+            //     if (entity) {
+            //         await publisher.publishJSON(entity, { status: value })
+            //     }
+            // }
         } catch (error) {
             console.error(`${logDate()} Error publishing data to MQTT:`, error)
         }

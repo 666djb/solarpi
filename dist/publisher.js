@@ -95,9 +95,8 @@ export class Publisher extends events.EventEmitter {
             if (!this.mqttClient.connected) {
                 throw "Not connected";
             }
-            console.log("Would publish:", JSON.stringify(data));
-            //await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data),
-            //    { retain: retain || false } as IClientPublishOptions)
+            //console.log("Would publish:", JSON.stringify(data))
+            await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data), { retain: retain || false });
         }
         catch (error) {
             throw `publishJSONdiscovery() error ${error}`;

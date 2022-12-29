@@ -29,7 +29,7 @@ export class GrowattClient {
         // Remember can only read a max of 125 words in one go
         const inputRegisters1 = await this.client.readInputRegisters(0, 125);
         const inputRegisters2 = await this.client.readInputRegisters(1000, 64);
-        console.log("The data is:", { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) });
+        //console.log("The data is:", {...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2)})
         return { ...this.parseInputRegisters(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) };
     }
     parseInputRegisters(inputRegisters) {
