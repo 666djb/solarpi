@@ -10,6 +10,8 @@ console.log(`${logDate()} Starting SolarPi`)
 const CONFIG_FILE = "options.json"
 const config = getConfig(CONFIG_FILE)
 
+console.log("Inverter model:", config.inverter.model)
+
 const growattClient = new GrowattClient({
     baudRate: 9600,
     device: '/dev/ttyUSB0',
@@ -55,5 +57,5 @@ async function runSolarPi() {
             console.error(`${logDate()} Error publishing data to MQTT:`, error)
         }
 
-    }, config.growatt.interval * 1000)
+    }, config.inverter.interval * 1000)
 }

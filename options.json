@@ -6,7 +6,8 @@
 		"username": "mqtt",
 		"password": "Y6@eBp6ziMU8^i"
 	},
-	"growatt": {
+	"inverter": {
+		"model": "SPH3000",
 		"interval": 60
 	}
 }

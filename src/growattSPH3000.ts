@@ -1,7 +1,6 @@
-// Todo turn into class
-// Apart from the interface everything here is specific to SPH3000
+// This class is specific to Growatt SPH3000 inverter
 
-import { ReadRegisterResult } from "modbus-serial/ModbusRTU";
+import { ModbusRTU, ReadRegisterResult } from "modbus-serial/ModbusRTU";
 import { growattEntity } from "./growattEntity.js";
 
 export class GrowattSPH3000 {
@@ -255,12 +254,17 @@ export class GrowattSPH3000 {
         }
     ]
 
-    readonly inputRegister1Start = 0
-    readonly inputRegister1Count = 106
-    readonly inputRegister2Start = 1000
-    readonly inputRegister2Count = 64
+    public async getData(modbusClient: ModbusRTU): Promise<{}>{
+        // For SPH3000 read the first 106 register values starting at address 0, then the first 64 register values
+        // starting at address 1000
+        const inputRegisters1 = await modbusClient.readInputRegisters(0, 106)
+        const inputRegisters2 = await modbusClient.readInputRegisters(1000, 64)
 
-    public parseInputRegisters1(inputRegisters: ReadRegisterResult) {
+        // Parse these two buffers then combine into an object and return
+        return {...this.parseInputRegisters1(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2)}
+    }
+
+    private parseInputRegisters1(inputRegisters: ReadRegisterResult) {
         const { data } = inputRegisters
 
         const statusMap = {
@@ -301,7 +305,7 @@ export class GrowattSPH3000 {
         }
     }
 
-    public parseInputRegisters2(inputRegisters: ReadRegisterResult) {
+    private parseInputRegisters2(inputRegisters: ReadRegisterResult) {
         const { data } = inputRegisters
         return {
             pDischarge: (data[9] << 16 | data[10]) / 10.0, // Battery discharge power (W)

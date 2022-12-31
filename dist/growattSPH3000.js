@@ -1,5 +1,4 @@
-// Todo turn into class
-// Apart from the interface everything here is specific to SPH3000
+// This class is specific to Growatt SPH3000 inverter
 export class GrowattSPH3000 {
     constructor() {
         this.entities = [
@@ -251,10 +250,14 @@ export class GrowattSPH3000 {
                 icon: "mdi:lightning-bolt"
             }
         ];
-        this.inputRegister1Start = 0;
-        this.inputRegister1Count = 106;
-        this.inputRegister2Start = 1000;
-        this.inputRegister2Count = 64;
+    }
+    async getData(modbusClient) {
+        // For SPH3000 read the first 106 register values starting at address 0, then the first 64 register values
+        // starting at address 1000
+        const inputRegisters1 = await modbusClient.readInputRegisters(0, 106);
+        const inputRegisters2 = await modbusClient.readInputRegisters(1000, 64);
+        // Parse these two buffers then combine into an object and return
+        return { ...this.parseInputRegisters1(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) };
     }
     parseInputRegisters1(inputRegisters) {
         const { data } = inputRegisters;

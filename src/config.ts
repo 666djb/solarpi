@@ -2,18 +2,24 @@ import fs from 'fs'
 
 export interface Config {
     mqtt: MqttConfig,
-    growatt: GrowattConfig
+    inverter: InverterConfig
 }
 
 export interface MqttConfig {
-    brokerUrl: string
-    baseTopic: string
-    username: string
-    password: string
+    brokerUrl: string,
+    baseTopic: string,
+    username: string,
+    password: string,
     discoveryTopic: string
 }
 
-export interface GrowattConfig {
+enum models{
+    "SPH3000",
+    "Other"
+}
+
+export interface InverterConfig {
+    model: models,
     interval: number
 }
 
