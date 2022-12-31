@@ -13,7 +13,7 @@ export interface MqttConfig {
     discoveryTopic: string
 }
 
-enum models{
+export enum models{
     "SPH3000",
     "Other"
 }

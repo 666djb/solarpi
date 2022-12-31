@@ -2,14 +2,14 @@ import { IClientOptions, IClientPublishOptions } from "mqtt"
 import MQTT, { AsyncMqttClient } from 'async-mqtt'
 import { MqttConfig } from "./config.js"
 import * as events from "events"
-import { growattEntity } from "./growattEntity.js"
 import { logDate } from "./logDate.js"
+import { inverterEntity } from "./inverter.js"
 
 export class Publisher extends events.EventEmitter {
 
     mqttClient: AsyncMqttClient;
 
-    constructor(private config: MqttConfig, private entities: growattEntity[]) {
+    constructor(private config: MqttConfig, private entities: inverterEntity[]) {
         super()
         const options = {
             will: {
@@ -39,7 +39,7 @@ export class Publisher extends events.EventEmitter {
         })
     }
 
-    private async publishOnline(solarpiEntities: growattEntity[]): Promise<any> {
+    private async publishOnline(solarpiEntities: inverterEntity[]): Promise<any> {
         const availability = [
             {
                 topic: `${this.config.baseTopic}/bridge/availability`

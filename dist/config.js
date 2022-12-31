@@ -1,5 +1,5 @@
 import fs from 'fs';
-var models;
+export var models;
 (function (models) {
     models[models["SPH3000"] = 0] = "SPH3000";
     models[models["Other"] = 1] = "Other";
