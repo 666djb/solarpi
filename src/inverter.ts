@@ -1,7 +1,7 @@
 import { ModbusRTU } from "modbus-serial/ModbusRTU";
-//import { inverterEntity } from "./inverterEntity";
 
 // Abstract class prototype for inverter
+// This enables other inverter types to be defined
 export abstract class Inverter {
     public abstract getData(modbusClient: ModbusRTU): Promise<{}>
     public abstract entities: inverterEntity[]

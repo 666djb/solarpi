@@ -1,6 +1,5 @@
 import ModbusRTU from "modbus-serial"
 import { GrowattSPH3000 } from "./growattSPH3000.js"
-//import { inverterEntity } from "./inverterEntity.js"
 import { Inverter, inverterEntity } from "./inverter.js"
 
 export class InverterClient {
