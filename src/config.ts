@@ -14,8 +14,8 @@ export interface MqttConfig {
 }
 
 export enum models{
-    "SPH3000",
-    "Other"
+    SPH3000 = "SPH3000",
+    Other = "Other"
 }
 
 export interface InverterConfig {

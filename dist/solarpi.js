@@ -11,8 +11,8 @@ let inverter;
 // This is where alternative inverter models can be selected based on the model entry in the config file
 // To define a new model interface, create a new class that implements the Inverter abstract class and
 // add a case statement here.
-console.log("config.inverter.model:", config.inverter.model);
-console.log("models.SPH3000:", models.SPH3000);
+//console.log("config.inverter.model:", config.inverter.model)
+//console.log("models.SPH3000:", models.SPH3000)
 switch (config.inverter.model) {
     case models.SPH3000:
         inverter = new GrowattSPH3000;
