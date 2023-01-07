@@ -1,10 +1,10 @@
 {
 	"mqtt": {
-		"brokerUrl": "mqtt://ha.home.djb.org.uk",
+		"brokerUrl": "mqtt://homeassistant.local",
 		"discoveryTopic": "homeassistant",
 		"baseTopic": "solarpi",
-		"username": "mqtt",
-		"password": "Y6@eBp6ziMU8^i"
+		"username": "username",
+		"password": "password"
 	},
 	"inverter": {
 		"model": "SPH3000",

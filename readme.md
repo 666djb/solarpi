@@ -73,7 +73,7 @@ These instructions should get you set up with a connection to the inverter and t
 8. Start solarpi for the first time 
 
 ### Install script
-Run the install.sh script using the command line "sudo . ./install.sh". I recommend you familiarise yourself with what the script does first (basically, it creates a solapi user, copies the contents of the folder to /opt/solarpi and installs a systemd service so that solarpi is automatically started on boot and can be controlled using systemctl).
+Run the install.sh script using the command line ". ./install.sh". I recommend you familiarise yourself with what the script does first (basically, it creates a solapi user, copies the contents of the folder to /opt/solarpi and installs a systemd service so that solarpi is automatically started on boot and can be controlled using systemctl).
 
 Skip the manual steps below if you use this script.
 
@@ -96,8 +96,6 @@ If you want solarpi to run automatically at boot do the following:
     * sudo cp solarpi.service /etc/systemd/system/
     * sudo systemctl daemon-reload
     * sudo systemctl enable solarpi
-6. Start the solarpi service:
-    * sudo service myapp start
 
 ### Configure SolarPi
 Edit the file /opt/solarpi/options.json to provide the following:
@@ -110,6 +108,16 @@ Edit the file /opt/solarpi/options.json to provide the following:
 Now test solarpi installation at this point by running it:
 * cd /opt/solarpi
 * sudo -u solarpi npm start
+* Press Control-C to exit at any time
+
+If you've used the install script or followed the manual steps and installed the solarpi systemd service, you can either reboot or run the following to start the service after you've finished testing:
+* sudo service solarpi start
+
+Use the following to monitor the output of the service:
+* journalctl -f -u solarpi
+
+and then to stop the service (if you need to):
+* sudo service solarpi stop
 
 ### Uninstall
 If you have used the install script or followed the complete set of manual steps, solarpi can be removed totally by following these steps:
@@ -118,6 +126,7 @@ If you have used the install script or followed the complete set of manual steps
 * sudo rm /etc/systemd/system/solarpi.service
 * sudo rm -rf /opt/solarpi
 * sudo deluser solarpi
+* sudo rm -rf /home/solarpi
 
 ## Development
 So far, this has only been tested by me and does what I want it to reliably. I plan to add controls so that I can change e.g. the time when the inverter charges the battery from the grid and times when I might want to prevent the battery discharging as I charge my EV from the grid. These controls will be accessible as MQTT entities.
