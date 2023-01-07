@@ -12,7 +12,7 @@ sudo chown -R solarpi:solarpi /opt/solarpi
 echo "Getting Node.JS modules and compiling solarpi"
 cd /opt/solarpi
 sudo -u solarpi npm install
-echo "Creating systemd service for solarpi"
+echo "Creating and enabling systemd service for solarpi"
 sudo cp solarpi.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable solarpi
