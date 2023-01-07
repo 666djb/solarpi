@@ -96,8 +96,6 @@ If you want solarpi to run automatically at boot do the following:
     * sudo cp solarpi.service /etc/systemd/system/
     * sudo systemctl daemon-reload
     * sudo systemctl enable solarpi
-6. Start the solarpi service:
-    * sudo service myapp start
 
 ### Configure SolarPi
 Edit the file /opt/solarpi/options.json to provide the following:
@@ -115,7 +113,10 @@ Now test solarpi installation at this point by running it:
 If you've used the install script or followed the manual steps and installed the solarpi systemd service, you can either reboot or run the following to start the service after you've finished testing:
 * sudo service solarpi start
 
-and then to stop it (if you need to):
+Use the following to monitor the output of the service:
+* journalctl -f -u solarpi
+
+and then to stop the service (if you need to):
 * sudo service solarpi stop
 
 ### Uninstall
