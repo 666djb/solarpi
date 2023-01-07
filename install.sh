@@ -15,5 +15,5 @@ sudo cp solarpi.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable solarpi
 echo "Starting solarpi service"
-#sudo service myapp start
+sudo service myapp start
 cd $pwd

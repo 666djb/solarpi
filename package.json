@@ -1,7 +1,7 @@
 {
   "name": "solarpi",
-  "version": "0.0.1",
-  "description": "MQTT bridge for Growatt SPH Inverter",
+  "version": "1.0.1",
+  "description": "Solar Inverter to MQTT bridge",
   "main": "./dist/solarpi.js",
   "type": "module",
   "scripts": {
