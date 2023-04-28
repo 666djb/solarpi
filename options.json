@@ -8,6 +8,7 @@
 	},
 	"inverter": {
 		"model": "SPH3000",
+		"usbDevice": "/dev/ttyUSB0",
 		"interval": 60
 	}
 }

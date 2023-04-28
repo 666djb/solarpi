@@ -1,4 +1,4 @@
-# SolarPi v1.0.3
+# SolarPi v1.0.4
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -23,7 +23,7 @@ SolarPi reads and write the following Time of Use charging values:
 * AC Charging on/off
 * Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
 
-Home Assistant automations can be simply written to control when the battery is charged and how much it is charged - e.g. if the forecast for the next day is good, then only charge the battery 50% over night.
+Home Assistant automations can be simply written to control when the battery is charged and how much it is charged - e.g. if the forecast for the next day is good, then only charge the battery 50% over night. I use an auomation in Home Assistant to set the "Stop Charging SOC %" based on the next day' Solar Forecast.
 
 This creates and updates the following Device and Sensor Entities in Home Assistant:
 ![Device and Entities](SolarPi%20Home%20Assistant%20Entities%201.png)
@@ -42,7 +42,7 @@ I am running this code on a Raspberry Pi Zero W with an RS485-USB adapter (speci
 I have designed SolarPi so that the code is extensible to integrate other Growatt inverters and potentially other brands of inverter.
 
 ## Status
-I have had this running continuously for two months with a 60 second update of values.
+I have had this running continuously for several months with a 60 second update of values.
 
 ## Changes
 ### 1.0.1
@@ -54,6 +54,8 @@ I have had this running continuously for two months with a 60 second update of v
 * Added bounds to entities published by MQTT (e.g. limiting hours to 0-23)
 * Shorted names of entities published by MQTT so they can be more easily directly used in dashboards
 * Added command to get the time from the inverter (does nothing more than create a button entity and trigger an MQTT message right now)
+### 1.0.4
+* Added USB device path configuration to options.json file to allow different USB adapters to be used without the need to edit the code
 
 I will add some pictures of the hardware and connection to the inverter soon.
 
@@ -61,17 +63,17 @@ I will add some pictures of the hardware and connection to the inverter soon.
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
 
 1. Optionally add a plug to RS485 converter (if you are using the Amazon item above, this needs an RJ45 plug adding in order to physically connect to the inverter).
-    * The white and green wires (serial data lines) from the adapter need connecting to pins 4 and 5 of an RJ45 connector. These can be connected either way as the adapter will automatically detect polarity.
-    * The thin wire gauge makes crimping a connector on difficult - getting a good crimp is hard, so I recommend chopping off an old ethernet patch cable and joing the two together.
-2. Configure SPH3000 inverter to use the RS485 port for monitoring:
+    * The white and green wires (serial data lines) from the adapter need connecting to pins 4 and 5 of an RJ45 connector. These can be connected either way as the adapter will automatically detect polarity. If you find problems using pins 4 and 5, try pins 1 and 5 instead - they should be equivalent.
+    * The thin wire gauge makes crimping a connector on difficult - getting a good crimp is hard, so I recommend chopping off an old ethernet patch cable and joining the two together.
+2. Configure the inverter to use the RS485 port for monitoring (these are the steps for the SPH3000):
     * Press and hold the OK key on the inverter for 3 seconds and release to enter the "Basic Parameter" menu
     * Press OK to enter the "RS485 Setting" menu
     * Press OK to enter the "Port" menu
     * Use up/down arrows to select "VPP" as the "Port"
-2. Install RaspberryPi OS on Raspberry Pi.
+3. Install RaspberryPi OS on Raspberry Pi.
     * You may want to enable ssh access, set your username/password and setup WiFi before starting the OS.
-3. Update the OS installation (sudo apt update; sudo apt upgrade).
-4. Plug in the USB adapter and check that it has been recognised by running dmesg and looking for something like the following output:
+4. Update the OS installation (sudo apt update; sudo apt upgrade).
+5. Plug in the USB adapter and check that it has been recognised by running dmesg and looking for something like the following output:
 
 ```
 [   33.890325] ftdi_sio 1-1:1.0: FTDI USB Serial Device converter detected
@@ -79,7 +81,10 @@ These instructions should get you set up with a connection to the inverter and t
 [   34.332027] usb 1-1: FTDI USB Serial Device converter now attached to ttyUSB0
 ```
 
-5. Install node.js (I am using version 16.16.0).
+6. Note the USB device that the converter has created, in the above output text this is "ttyUSB0", it may be "ttyACM0" instead. You will need to put this device path
+in the config file (options.json) later.
+
+7. Install node.js (I am using version 16.16.0).
     * First get the binary package using a command line like this:
         * wget https://unofficial-builds.nodejs.org/download/release/v16.16.0/node-v16.16.0-linux-armv6l.tar.xz
     * Then unzip it:
@@ -90,11 +95,11 @@ These instructions should get you set up with a connection to the inverter and t
     * Other versions of node.js should work, but I've not tested with them.
     * This page: https://hassancorrigan.com/blog/install-nodejs-on-a-raspberry-pi-zero/ gives instructions for the above.
 
-6. Download ZIP archive of this repository and unpack to a temporary folder (alternatively clone using Git).
+8. Download ZIP archive of this repository and unpack to a temporary folder (alternatively clone using Git).
 
-7. **Either** run the install script **or** follow/adapt the manual steps below to install the SolarPi code.
+9. **Either** run the install script **or** follow/adapt the manual steps below to install the SolarPi code.
 
-8. Start solarpi for the first time 
+10. Start solarpi for the first time 
 
 ### Install script
 Run the install.sh script using the command line ". ./install.sh". I recommend you familiarise yourself with what the script does first (basically, it creates a solapi user, copies the contents of the folder to /opt/solarpi and installs a systemd service so that solarpi is automatically started on boot and can be controlled using systemctl).
@@ -126,7 +131,8 @@ Edit the file /opt/solarpi/options.json to provide the following:
 * The hostname or IP address of your Home Assistant's MQTT broker ("brokerUrl" in the options file)
 * The username and password to access your MQTT broker (these are set in Home Assistant) ("username" and "password" in the options file)
 * Set the time in seconds between each poll for values from the inverter ("interval" in the options file)
-* Don't change the Inverter Model from SPH3000 as no other models have been defined yet (feel free to adapt the code to support other models though!)
+* The Inverter Model can currently be set to either SPH3000 or SPH6000 but nothing else as no other models have been defined yet (feel free to adapt the code to support other models though!)
+* Set the USB device path based on Installation Steps 5 and 6 above, prefixing the path with /dev (e.g. /dev/ttyUSB0) ("usbDevice" in the options file)
 
 ### Starting SolarPi
 Now test solarpi installation at this point by running it:
@@ -154,6 +160,7 @@ If you have used the install script or followed the complete set of manual steps
 
 ## Development
 So far, this has only been tested by me and does what I want it to reliably.
+If you make improvements, find bugs (in the code or this doc), let me know and, time permitting, I'll try to fix.
 
 ### To do
 * Validate config file

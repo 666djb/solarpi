@@ -15,11 +15,13 @@ export interface MqttConfig {
 
 export enum models{
     SPH3000 = "SPH3000",
+    SPH6000 = "SPH6000",
     Other = "Other"
 }
 
 export interface InverterConfig {
     model: models,
+    usbDevice: string,
     interval: number
 }
 

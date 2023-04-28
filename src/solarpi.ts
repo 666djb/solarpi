@@ -1,4 +1,4 @@
-// Tested with Growatt SPH3000 - ModBus version 3.05
+// Tested with Growatt SPH3000 and SPH6000TL3
 
 import { Publisher } from "./publisher.js"
 import { getConfig, models } from "./config.js"
@@ -19,7 +19,8 @@ let inverter: Inverter
 // add a case statement here.
 switch (config.inverter.model) {
     case models.SPH3000:
-        inverter = new GrowattSPH3000()
+    case models.SPH6000:
+        inverter = new GrowattSPH3000() // 3000 and 6000 appear to use the same structures
         break
     default:
         console.error("Unsupported inverter model in configuration:", config.inverter.model)
@@ -27,12 +28,10 @@ switch (config.inverter.model) {
 }
 
 const inverterClient = new InverterClient(
-    {
-        baudRate: 9600,
-        device: '/dev/ttyUSB0',
-        modbusId: 1
-    },
-    inverter
+    config.inverter.usbDevice, // The USB device path
+    9600, // Baud rate
+    1, // Modbus ID
+    inverter // Inverter object
 )
 
 const publisher = new Publisher(config.mqtt, inverterClient.getSensorEntities(),

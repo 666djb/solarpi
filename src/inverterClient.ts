@@ -8,12 +8,12 @@ export class InverterClient {
     modbusClient: ModbusRTU
     inverter: Inverter
 
-    constructor({ device = "/dev/ttyUSB0", modbusId = 1, baudRate = 9600 } = {}, inverter: Inverter) {
+    constructor(device: string, baudRate: number, modbusId: number, inverter: Inverter) {
         this.device = device
-        this.modbusId = modbusId
         this.baudRate = baudRate
-        this.modbusClient = new ModbusRTU()
+        this.modbusId = modbusId
         this.inverter = inverter
+        this.modbusClient = new ModbusRTU()
     }
 
     public async init() {
