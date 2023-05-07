@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 pwd=$(pwd)
 echo "Note updating to version 1.0.4 requires an additional line in the configuration file options.json to be added for the USB device path"
 echo "Updating solarpi installation"
