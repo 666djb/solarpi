@@ -23,9 +23,9 @@ SolarPi reads and write the following Time of Use charging values:
 * AC Charging on/off
 * Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
 
-Home Assistant automations can be simply written to control when the battery is charged and how much it is charged - e.g. if the forecast for the next day is good, then only charge the battery 50% over night. I use an auomation in Home Assistant to set the "Stop Charging SOC %" based on the next day' Solar Forecast.
+Home Assistant automations can be simply written to control when the battery is charged and how much it is charged - e.g. if the forecast for the next day is good, then only charge the battery 50% over night. I use an automation in Home Assistant to set the "Stop Charging SOC %" based on the next day' Solar Forecast.
 
-This creates and updates the following Device and Sensor Entities in Home Assistant:
+This creates and updates the following Device (SOLARPI Bridge), Control Entities and Sensor Entities in Home Assistant:
 ![Device and Entities](SolarPi%20Home%20Assistant%20Entities%201.png)
 ![Device and Entities](SolarPi%20Home%20Assistant%20Entities%202.png)
 
@@ -56,8 +56,6 @@ I have had this running continuously for several months with a 60 second update 
 * Added command to get the time from the inverter (does nothing more than create a button entity and trigger an MQTT message right now)
 ### 1.0.4
 * Added USB device path configuration to options.json file to allow different USB adapters to be used without the need to edit the code
-
-I will add some pictures of the hardware and connection to the inverter soon.
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
@@ -163,6 +161,7 @@ So far, this has only been tested by me and does what I want it to reliably.
 If you make improvements, find bugs (in the code or this doc), let me know and, time permitting, I'll try to fix.
 
 ### To do
+* Add some pictures of the hardware and connection to the inverter
 * Validate config file
 * Add robustness to install.sh script
 * Local CSV logging of energy values
