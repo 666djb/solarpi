@@ -83,7 +83,7 @@ export class GrowattSPH3000 implements Inverter {
             device_class: "voltage",
             unit_of_measurement: "V",
             unique_id: "solarpi_voltage_pv2",
-            value_template: "{{ value_json.ppv2 }}",
+            value_template: "{{ value_json.vpv2 }}",
             icon: "mdi:lightning-bolt"
         },
         {
