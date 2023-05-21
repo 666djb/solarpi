@@ -1,4 +1,4 @@
-# SolarPi v1.0.5
+# SolarPi v1.0.6
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -16,6 +16,7 @@ SolarPi reads the following values from the inverter:
 * Grid Import/Export Energy (today and total)
 * Load Energy (today and total)
 * Battery Charge/Discharge Energy (today and total)
+* Grid Voltage
 
 SolarPi reads and write the following Time of Use charging values:
 * Charging Power %
@@ -58,6 +59,8 @@ I have had this running continuously for several months with a 60 second update 
 * Added USB device path configuration to options.json file to allow different USB adapters to be used without the need to edit the code
 ### 1.0.5
 * Fixed PV2 voltage incorrectly reading PV2 power
+### 1.0.6
+* Added grid voltage sensor entity
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
