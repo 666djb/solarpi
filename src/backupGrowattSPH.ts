@@ -4,11 +4,10 @@ import fs from "fs"
 
 const CONFIG_FILE = "options.json"
 
-let modbusClient = new ModbusRTU()
-
 runBackup()
 
 async function runBackup() {
+    const modbusClient = new ModbusRTU()
     const config = getConfig(CONFIG_FILE)
 
     console.log("This back up utility is currently only written for SPH inverters")
@@ -73,5 +72,8 @@ async function runBackup() {
 
     console.log("Backup done")
 
-    //modbusClient.close
+    modbusClient.close(() => {
+
+    })
+
 }
