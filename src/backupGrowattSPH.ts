@@ -1,14 +1,19 @@
 import ModbusRTU from "modbus-serial"
+import { getConfig, models } from "./config.js"
 import fs from "fs"
+
+const CONFIG_FILE = "options.json"
 
 runBackup()
 
 async function runBackup() {
-    let modbusClient = new ModbusRTU()
+    const modbusClient = new ModbusRTU()
+    const config = getConfig(CONFIG_FILE)
 
+    console.log("This back up utility is currently only written for SPH inverters")
     console.log("Connecting to inverter")
 
-    await modbusClient.connectRTUBuffered("/dev/ttyUSB0", {
+    await modbusClient.connectRTUBuffered(config.inverter.usbDevice, {
         baudRate: 9600,
         dataBits: 8,
         stopBits: 1,
@@ -67,5 +72,8 @@ async function runBackup() {
 
     console.log("Backup done")
 
-    modbusClient.close
+    modbusClient.close(() => {
+
+    })
+
 }
