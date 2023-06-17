@@ -25,24 +25,24 @@ async function runBackup() {
 
     console.log("Reading values")
 
-    console.log("Reading Holding Registers 0-249")
-    const fromHoldingRegisters1 = await modbusClient.readHoldingRegisters(0, 250)
+    console.log("Reading Holding Registers 0-124")
+    const fromHoldingRegisters1 = await modbusClient.readHoldingRegisters(0, 125)
     console.log("Reading Holding Registers 1000-1124")
     const fromHoldingRegisters2 = await modbusClient.readHoldingRegisters(1000, 125)
     console.log("Reading Holding Registers 3000-3124")
     const fromHoldingRegisters3 = await modbusClient.readHoldingRegisters(3000, 125)
-    console.log("Reading Input Registers 0-249")
-    const fromInputRegisters1 = await modbusClient.readInputRegisters(0, 250)
-    console.log("Reading Input Registers 1000-1249")
-    const fromInputRegisters2 = await modbusClient.readInputRegisters(1000, 250)
+    console.log("Reading Input Registers 0-124")
+    const fromInputRegisters1 = await modbusClient.readInputRegisters(0, 125)
+    console.log("Reading Input Registers 1000-1124")
+    const fromInputRegisters2 = await modbusClient.readInputRegisters(1000, 125)
     console.log("Reading Input Registers 2000-2124")
     const fromInputRegisters3 = await modbusClient.readInputRegisters(2000, 125)
-    console.log("Reading Input Registers 3000-3249")
-    const fromInputRegisters4 = await modbusClient.readInputRegisters(3000, 250)
+    console.log("Reading Input Registers 3000-3124")
+    const fromInputRegisters4 = await modbusClient.readInputRegisters(3000, 125)
 
     let backupText: string = ""
 
-    backupText = backupText.concat("Growatt Registers Backup\nHolding Registers 0-249\n")
+    backupText = backupText.concat("Growatt Registers Backup\nHolding Registers 0-124\n")
 
     const { data: data1 } = fromHoldingRegisters1
     for (let i in data1) {
@@ -63,14 +63,14 @@ async function runBackup() {
         backupText = backupText.concat(`${3000 + parseInt(i)} ${data3[i]}\n`)
     }
 
-    backupText = backupText.concat("Input Registers 0-249\n")
+    backupText = backupText.concat("Input Registers 0-124\n")
 
     const { data: data4 } = fromInputRegisters1
     for (let i in data4) {
         backupText = backupText.concat(`${i} ${data4[i]}\n`)
     }
 
-    backupText = backupText.concat("Input Registers 1000-1249\n")
+    backupText = backupText.concat("Input Registers 1000-1124\n")
 
     const { data: data5 } = fromInputRegisters2
     for (let i in data5) {
@@ -84,7 +84,7 @@ async function runBackup() {
         backupText = backupText.concat(`${2000 + parseInt(i)} ${data6[i]}\n`)
     }
 
-    backupText = backupText.concat("Input Registers 3000-3249\n")
+    backupText = backupText.concat("Input Registers 3000-3124\n")
 
     const { data: data7 } = fromInputRegisters4
     for (let i in data7) {
