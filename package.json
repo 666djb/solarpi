@@ -1,6 +1,6 @@
 {
   "name": "solarpi",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Solar Inverter to MQTT bridge",
   "main": "./dist/solarpi.js",
   "type": "module",
