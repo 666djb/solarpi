@@ -35,6 +35,7 @@ async function runBackup() {
 
     let backupText: string = ""
 
+    console.log("Reading Holding Registers 0-249")
     backupText = backupText.concat("Growatt Registers Backup\nHolding Registers 0-249\n")
 
     const { data: data1 } = fromHoldingRegisters1
@@ -42,6 +43,7 @@ async function runBackup() {
         backupText = backupText.concat(`${i} ${data1[i]}\n`)
     }
 
+    console.log("Reading Holding Registers 1000-1124")
     backupText = backupText.concat("Holding Registers 1000-1124\n")
 
     const { data: data2 } = fromHoldingRegisters2
@@ -49,6 +51,7 @@ async function runBackup() {
         backupText = backupText.concat(`${1000 + parseInt(i)} ${data2[i]}\n`)
     }
 
+    console.log("Reading Holding Registers 3000-3124")
     backupText = backupText.concat("Holding Registers 3000-3124\n")
 
     const { data: data3 } = fromHoldingRegisters3
@@ -56,6 +59,7 @@ async function runBackup() {
         backupText = backupText.concat(`${3000 + parseInt(i)} ${data3[i]}\n`)
     }
 
+    console.log("Reading Input Registers 0-249")
     backupText = backupText.concat("Input Registers 0-249\n")
 
     const { data: data4 } = fromInputRegisters1
@@ -63,6 +67,7 @@ async function runBackup() {
         backupText = backupText.concat(`${i} ${data4[i]}\n`)
     }
 
+    console.log("Reading Input Registers 1000-1249")
     backupText = backupText.concat("Input Registers 1000-1249\n")
 
     const { data: data5 } = fromInputRegisters2
@@ -70,6 +75,7 @@ async function runBackup() {
         backupText = backupText.concat(`${1000 + parseInt(i)} ${data5[i]}\n`)
     }
 
+    console.log("Reading Input Registers 2000-2124")
     backupText = backupText.concat("Input Registers 2000-2124\n")
 
     const { data: data6 } = fromInputRegisters3
@@ -77,6 +83,7 @@ async function runBackup() {
         backupText = backupText.concat(`${2000 + parseInt(i)} ${data6[i]}\n`)
     }
 
+    console.log("Reading Input Registers 3000-3249")
     backupText = backupText.concat("Input Registers 3000-3249\n")
 
     const { data: data7 } = fromInputRegisters4
