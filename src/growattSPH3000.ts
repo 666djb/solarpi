@@ -791,6 +791,7 @@ export class GrowattSPH3000 implements Inverter {
             ppv1: (data[5] << 16 | data[6]) / 10.0, // PV1 power (W)
             vpv2: data[7] / 10.0, // PV2 voltage (V)
             ppv2: (data[9] << 16 | data[10]) / 10.0, // PV2 power (W)
+            // Grid voltage is data[37] / 10.0
             epvToday: ((data[59] << 16 | data[60]) + (data[63] << 16 | data[64])) / 10.0, // Combined PV energy today (kWH) (achieved by adding PV1 and PV2)
             epvTotal: (data[91] << 16 | data[92]) / 10.0, // Combined PV energy total (kWH)
             inverterTemperature: data[93] / 10.0, //°C

@@ -169,6 +169,7 @@ If you make improvements, find bugs (in the code or this doc), let me know and, 
 * Local CSV logging of energy values
 * Implement Inverter Time MQTT entities for reading (as sensors)
 * Implement automatic time setting and configuration file item to enable (e.g. use localtime on Raspberry Pi to update inverter time)
+* Implement grid voltage entity
 
 Feel free to use this code for your own purposes. If you test this with a Growatt SPH inverter, please let me know, also if you add support for other inverters, I will look to merging changes in. I can't promise to provide tonnes of support, but will try to help.
 
