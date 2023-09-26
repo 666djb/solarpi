@@ -759,7 +759,7 @@ export class GrowattSPH3000 implements Inverter {
 
     // Object to retain TOU charging values which have been read from the inverter
     // or modified by MQTT messages
-    private touValues: TouChargingValues = {
+    private touChargingValues: TouChargingValues = {
         chargePower: 100,
         stopSOC: 100,
         ac: "OFF",
@@ -782,7 +782,7 @@ export class GrowattSPH3000 implements Inverter {
 
     // Object to retain TOU charging values which have been read from the inverter
     // or modified by MQTT messages
-    private touDischargeValues: TouDischargingValues = {
+    private touDischargingValues: TouDischargingValues = {
         dischargePower: 100,
         stopSOC: 10, //TODO check this makes sense as a default
         timePeriod1StartHour: 0,
@@ -873,8 +873,8 @@ export class GrowattSPH3000 implements Inverter {
         const keys = Object.keys(control)
 
         keys.forEach((key, index) => {
-            if (typeof this.touValues[key] !== 'undefined') {
-                this.touValues[key] = control[key]
+            if (typeof this.touChargingValues[key] !== 'undefined') {
+                this.touChargingValues[key] = control[key]
             }
         })
 
@@ -882,22 +882,21 @@ export class GrowattSPH3000 implements Inverter {
         return [
             {
                 subTopic: "touCharging",
-                values: this.touValues
+                values: this.touChargingValues
             }
         ]
     }
 
     public async getControlValues(modbusClient: ModbusRTU): Promise<ControlData[]> {
-        //TODO add touDischarging when done
         return [
             {
                 subTopic: "touCharging",
-                values: this.getTouCharging(modbusClient)
-            }/*,
+                values: await this.getTouCharging(modbusClient)
+            },
             {
-                topic: "touDischarging",
-                values: this.getTouDischarging(modbusClient)
-            }*/
+                subTopic: "touDischarging",
+                values: await this.getTouDischarging(modbusClient)
+            }
         ]
     }
 
@@ -944,27 +943,27 @@ export class GrowattSPH3000 implements Inverter {
             additionalProperties: false
         }
         const validate = ajv.compile(touValuesSchema)
-        if (!validate(this.touValues)) {
+        if (!validate(this.touChargingValues)) {
             console.log("Validate errors:", validate.errors)
             throw "Error validating setTouCharging"
         }
 
         const writeRegisters1: Array<number> = [
-            this.touValues.chargePower,
-            this.touValues.stopSOC,
-            (this.touValues.ac === "ON") ? 1 : 0
+            this.touChargingValues.chargePower,
+            this.touChargingValues.stopSOC,
+            (this.touChargingValues.ac === "ON") ? 1 : 0
         ]
 
         const writeRegisters2: Array<number> = [
-            (this.touValues.timePeriod1StartHour << 8) | this.touValues.timePeriod1StartMinute,
-            (this.touValues.timePeriod1StopHour << 8) | this.touValues.timePeriod1StopMinute,
-            this.touValues.timePeriod1Enable === "ON" ? 1 : 0,
-            (this.touValues.timePeriod2StartHour << 8) | this.touValues.timePeriod2StartMinute,
-            (this.touValues.timePeriod2StopHour << 8) | this.touValues.timePeriod2StopMinute,
-            this.touValues.timePeriod2Enable === "ON" ? 1 : 0,
-            (this.touValues.timePeriod3StartHour << 8) | this.touValues.timePeriod3StartMinute,
-            (this.touValues.timePeriod3StopHour << 8) | this.touValues.timePeriod3StopMinute,
-            this.touValues.timePeriod3Enable === "ON" ? 1 : 0
+            (this.touChargingValues.timePeriod1StartHour << 8) | this.touChargingValues.timePeriod1StartMinute,
+            (this.touChargingValues.timePeriod1StopHour << 8) | this.touChargingValues.timePeriod1StopMinute,
+            this.touChargingValues.timePeriod1Enable === "ON" ? 1 : 0,
+            (this.touChargingValues.timePeriod2StartHour << 8) | this.touChargingValues.timePeriod2StartMinute,
+            (this.touChargingValues.timePeriod2StopHour << 8) | this.touChargingValues.timePeriod2StopMinute,
+            this.touChargingValues.timePeriod2Enable === "ON" ? 1 : 0,
+            (this.touChargingValues.timePeriod3StartHour << 8) | this.touChargingValues.timePeriod3StartMinute,
+            (this.touChargingValues.timePeriod3StopHour << 8) | this.touChargingValues.timePeriod3StopMinute,
+            this.touChargingValues.timePeriod3Enable === "ON" ? 1 : 0
         ]
 
         // Write writeRegisters1 to holding registers 1090-1092
@@ -987,7 +986,7 @@ export class GrowattSPH3000 implements Inverter {
         const { data: data2 } = holdingRegisters2
 
         // TODO review why this is saved to class scoped variable and returned from a private function
-        this.touValues = {
+        this.touChargingValues = {
             chargePower: data1[0],
             stopSOC: data1[1],
             ac: (data1[2] == 1) ? "ON" : "OFF",
@@ -1008,13 +1007,39 @@ export class GrowattSPH3000 implements Inverter {
             timePeriod3Enable: (data2[8] == 1) ? "ON" : "OFF"
         }
 
-        return this.touValues
+        return this.touChargingValues
     }
 
     // TODO
     private async getTouDischarging(modbusClient: ModbusRTU): Promise<TouDischargingValues> {
-        throw "Not implemented"
-        return this.touDischargeValues
+        const holdingRegisters1 = await this.readHoldingRegisters(modbusClient, 1070, 2)
+        const holdingRegisters2 = await this.readHoldingRegisters(modbusClient, 1080, 9)
+
+        const { data: data1 } = holdingRegisters1
+        const { data: data2 } = holdingRegisters2
+
+        // TODO review why this is saved to class scoped variable and returned from a private function
+        this.touDischargingValues = {
+            dischargePower: data1[0],
+            stopSOC: data1[1],
+            timePeriod1StartHour: data2[0] >> 8,
+            timePeriod1StartMinute: data2[0] & 0xFF,
+            timePeriod1StopHour: data2[1] >> 8,
+            timePeriod1StopMinute: data2[1] & 0xFF,
+            timePeriod1Enable: (data2[2] == 1) ? "ON" : "OFF",
+            timePeriod2StartHour: data2[3] >> 8,
+            timePeriod2StartMinute: data2[3] & 0xFF,
+            timePeriod2StopHour: data2[4] >> 8,
+            timePeriod2StopMinute: data2[4] & 0xFF,
+            timePeriod2Enable: (data2[5] == 1) ? "ON" : "OFF",
+            timePeriod3StartHour: data2[6] >> 8,
+            timePeriod3StartMinute: data2[6] & 0xFF,
+            timePeriod3StopHour: data2[7] >> 8,
+            timePeriod3StopMinute: data2[7] & 0xFF,
+            timePeriod3Enable: (data2[8] == 1) ? "ON" : "OFF"
+        }
+
+        return this.touDischargingValues
     }
 
     private async getTime(modbusClient: ModbusRTU): Promise<TimeValues> {
@@ -1047,7 +1072,7 @@ export class GrowattSPH3000 implements Inverter {
                 return [
                     {
                         subTopic: "touCharging",
-                        values: this.getTouCharging(modbusClient)
+                        values: await this.getTouCharging(modbusClient)
                     }
                 ]
             case "setTouDischarging":
@@ -1056,19 +1081,18 @@ export class GrowattSPH3000 implements Inverter {
                 return null
             case "getTouDischarging":
                 console.log(`${logDate()} Received Get TOU Discharging command`)
-                //TODO uncomment when done
-                return null /*[
+                return [
                     {
                         subTopic: "touDischarging",
-                        values: this.getTouDischarging(modbusClient)
+                        values: await this.getTouDischarging(modbusClient)
                     }
-                ]*/
+                ]
             case "getTime":
                 console.log(`${logDate()} Received Get Time command`)
                 return [
                     {
                         subTopic: "time",
-                        values: this.getTime(modbusClient)
+                        values: await this.getTime(modbusClient)
                     }
                 ]
             default:

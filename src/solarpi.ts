@@ -55,6 +55,7 @@ async function runSolarPi() {
             try {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
+                console.log(`DEBUG ${logDate()} Command response:`,response)
                 await publisher.publishCommandResponse({ "error": false })
                 if (response!=null) {
                     await publisher.publishControlData(response)
