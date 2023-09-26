@@ -5,11 +5,11 @@ import { ModbusRTU } from "modbus-serial/ModbusRTU";
 export abstract class Inverter {
     public abstract getSensorEntities(): SensorEntities
     public abstract getCommandEntities(): CommandEntities
-    public abstract getControlEntities(): ControlEntities
+    public abstract getControlEntities(): ControlEntities[]
     public abstract getSensorData(modbusClient: ModbusRTU): Promise<{}>
-    public abstract sendCommand(modbusClient: ModbusRTU, command: string): Promise<{}>
-    public abstract updateControl(controlMessage: string): {}
-    public abstract getControlValues(modbusClient: ModbusRTU): {}
+    public abstract sendCommand(modbusClient: ModbusRTU, command: string): Promise<ControlData[] | null>
+    public abstract updateControl(controlMessage: string): ControlData[]
+    public abstract getControlValues(modbusClient: ModbusRTU): Promise<ControlData[]>
 }
 
 export interface Command {
@@ -69,4 +69,9 @@ export interface CommandEntities {
 export interface ControlEntities {
     subTopic: string,
     entities: ControlEntity[]
+}
+
+export interface ControlData {
+    subTopic: string,
+    values: object
 }

@@ -3,7 +3,7 @@
 // of panels (then only the first two will be read)
 
 import { ModbusRTU, ReadRegisterResult, WriteMultipleResult } from "modbus-serial/ModbusRTU"
-import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities } from "./inverter"
+import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities, ControlData } from "./inverter"
 import Ajv from "ajv"
 import { Mutex } from 'async-mutex'
 import { logDate } from "./logDate.js"
@@ -12,6 +12,26 @@ interface TouChargingValues {
     chargePower: number,
     stopSOC: number,
     ac: string,
+    timePeriod1StartHour: number,
+    timePeriod1StartMinute: number,
+    timePeriod1StopHour: number,
+    timePeriod1StopMinute: number,
+    timePeriod1Enable: string,
+    timePeriod2StartHour: number,
+    timePeriod2StartMinute: number,
+    timePeriod2StopHour: number,
+    timePeriod2StopMinute: number,
+    timePeriod2Enable: string,
+    timePeriod3StartHour: number,
+    timePeriod3StartMinute: number,
+    timePeriod3StopHour: number,
+    timePeriod3StopMinute: number,
+    timePeriod3Enable: string
+}
+
+interface TouDischargingValues {
+    dischargePower: number,
+    stopSOC: number,
     timePeriod1StartHour: number,
     timePeriod1StartMinute: number,
     timePeriod1StopHour: number,
@@ -318,6 +338,22 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:check"
         },
         {
+            name: "Get TOU Discharge",
+            type: "button",
+            unique_id: "solarpi_tou_discharge_get",
+            command_template: '{ "command": {{ value }} }',
+            payload_press: '"getTouDischarging"',
+            icon: "mdi:help"
+        },
+        {
+            name: "Set TOU Discharge",
+            type: "button",
+            unique_id: "solarpi_tou_discharge_set",
+            command_template: '{ "command": {{ value }} }',
+            payload_press: '"setTouDischarging"',
+            icon: "mdi:check"
+        },
+        {
             name: "Get Inverter Time",
             type: "button",
             unique_id: "solarpi_time_get",
@@ -528,6 +564,196 @@ export class GrowattSPH3000 implements Inverter {
         }
     ]
 
+    private touDischargingControlEntities: ControlEntity[] = [
+        {
+            name: "Discharge Power",
+            type: "number",
+            state_class: "measurement",
+            unit_of_measurement: "%",
+            unique_id: "solarpi_tou_discharge_power",
+            value_template: "{{ value_json.dischargePower }}",
+            command_template: '{{ {"dischargePower": value} }}',
+            mode: "box",
+            min: 0,
+            max: 100,
+            icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Stop SOC",
+            type: "number",
+            state_class: "measurement",
+            unit_of_measurement: "%",
+            unique_id: "solarpi_tou_discharge_stop_soc",
+            value_template: "{{ value_json.dischargeStopSOC }}",
+            command_template: '{{ {"dischargeStopSOC": value} }}',
+            mode: "box",
+            min: 0,
+            max: 100,
+            icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Period 1 Start Hour",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_1_start_hour",
+            value_template: "{{ value_json.dischargeTimePeriod1StartHour }}",
+            command_template: '{{ {"dischargeTimePeriod1StartHour": value} }}',
+            mode: "box",
+            min: 0,
+            max: 23,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 1 Start Minute",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_1_start_minute",
+            value_template: "{{ value_json.dischargeTimePeriod1StartMinute }}",
+            command_template: '{{ {"dischargeTimePeriod1StartMinute": value} }}',
+            mode: "box",
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 1 Stop Hour",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_1_stop_hour",
+            value_template: "{{ value_json.dischargeTimePeriod1StopHour }}",
+            command_template: '{{ {"dischargeTimePeriod1StopHour": value} }}',
+            mode: "box",
+            min: 0,
+            max: 23,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 1 Stop Minute",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_1_stop_minute",
+            value_template: "{{ value_json.dischargeTimePeriod1StopMinute }}",
+            command_template: '{{ {"dischargeTimePeriod1StopMinute": value} }}',
+            mode: "box",
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 1 Enable",
+            type: "switch",
+            unique_id: "solarpi_tou_discharge_1_enable",
+            value_template: "{{ value_json.dischargeTimePeriod1Enable }}",
+            payload_off: '{"dischargeTimePeriod1Enable": "OFF"}',
+            payload_on: '{"dischargeTimePeriod1Enable": "ON"}',
+            state_off: "OFF",
+            state_on: "ON",
+            icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Period 2 Start Hour",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_2_start_hour",
+            value_template: "{{ value_json.dischargeTimePeriod2StartHour }}",
+            command_template: '{{ {"dischargeTimePeriod2StartHour": value} }}',
+            mode: "box",
+            min: 0,
+            max: 23,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 2 Start Minute",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_2_start_minute",
+            value_template: "{{ value_json.dischargeTimePeriod2StartMinute }}",
+            command_template: '{{ {"dischargeTimePeriod2StartMinute": value} }}',
+            mode: "box",
+            min: 0,
+            max: 59,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 2 Stop Hour",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_2_stop_hour",
+            value_template: "{{ value_json.dischargeTimePeriod2StopHour }}",
+            command_template: '{{ {"dischargeTimePeriod2StopHour": value} }}',
+            mode: "box",
+            min: 0,
+            max: 23,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 2 Stop Minute",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_2_stop_minute",
+            value_template: "{{ value_json.dischargeTimePeriod2StopMinute }}",
+            command_template: '{{ {"dischargeTimePeriod2StopMinute": value} }}',
+            mode: "box",
+            min: 0,
+            max: 59,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 2 Enable",
+            type: "switch",
+            unique_id: "solarpi_tou_discharge_2_enable",
+            value_template: "{{ value_json.dischargeTimePeriod2Enable }}",
+            payload_off: '{"dischargeTimePeriod2Enable": "OFF"}',
+            payload_on: '{"dischargeTimePeriod2Enable": "ON"}',
+            state_off: "OFF",
+            state_on: "ON",
+            icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Period 3 Start Hour",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_3_start_hour",
+            value_template: "{{ value_json.dischargeTimePeriod3StartHour }}",
+            command_template: '{{ {"dischargeTimePeriod3StartHour": value} }}',
+            mode: "box",
+            min: 0,
+            max: 23,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 3 Start Minute",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_3_start_minute",
+            value_template: "{{ value_json.dischargeTimePeriod3StartMinute }}",
+            command_template: '{{ {"dischargeTimePeriod3StartMinute": value} }}',
+            mode: "box",
+            min: 0,
+            max: 59,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 3 Stop Hour",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_3_stop_hour",
+            value_template: "{{ value_json.dischargeTimePeriod3StopHour }}",
+            command_template: '{{ {"dischargeTimePeriod3StopHour": value} }}',
+            mode: "box",
+            min: 0,
+            max: 23,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 3 Stop Minute",
+            type: "number",
+            unique_id: "solarpi_tou_discharge_3_stop_minute",
+            value_template: "{{ value_json.dischargeTimePeriod3StopMinute }}",
+            command_template: '{{ {"dischargeTimePeriod3StopMinute": value} }}',
+            mode: "box",
+            min: 0,
+            max: 59,
+            icon: "mdi:clock-outline"
+        },
+        {
+            name: "Period 3 Enable",
+            type: "switch",
+            unique_id: "solarpi_tou_discharge_3_enable",
+            value_template: "{{ value_json.dischargeTimePeriod3Enable }}",
+            payload_off: '{"dischargeTimePeriod3Enable": "OFF"}',
+            payload_on: '{"dischargeTimePeriod3Enable": "ON"}',
+            state_off: "OFF",
+            state_on: "ON",
+            icon: "mdi:lightning-bolt"
+        }
+    ]
+
     // Object to retain TOU charging values which have been read from the inverter
     // or modified by MQTT messages
     private touValues: TouChargingValues = {
@@ -551,9 +777,31 @@ export class GrowattSPH3000 implements Inverter {
         timePeriod3Enable: "OFF"
     }
 
+    // Object to retain TOU charging values which have been read from the inverter
+    // or modified by MQTT messages
+    private touDischargeValues: TouDischargingValues = {
+        dischargePower: 100,
+        stopSOC: 10, //TODO check this makes sense as a default
+        timePeriod1StartHour: 0,
+        timePeriod1StartMinute: 0,
+        timePeriod1StopHour: 0,
+        timePeriod1StopMinute: 0,
+        timePeriod1Enable: "OFF",
+        timePeriod2StartHour: 0,
+        timePeriod2StartMinute: 0,
+        timePeriod2StopHour: 0,
+        timePeriod2StopMinute: 0,
+        timePeriod2Enable: "OFF",
+        timePeriod3StartHour: 0,
+        timePeriod3StartMinute: 0,
+        timePeriod3StopHour: 0,
+        timePeriod3StopMinute: 0,
+        timePeriod3Enable: "OFF"
+    }
+
     // Wrapper methods to allow use of mutex as it seems ModbusRTU allows
     // read and writes to overlap
-    // Todo create class that extends ModbusRTU with mutexed methods (and with timeouts)
+    // TODO create class that extends ModbusRTU with mutexed methods (and with timeouts)
     private async readInputRegisters(modbusClient: ModbusRTU, dataAddress: number, length: number): Promise<ReadRegisterResult> {
         const release = await this.mutex.acquire()
         let result: ReadRegisterResult
@@ -601,15 +849,23 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
-    // Todo would need to return an array of ControlEntities to accomodate other controls with different subtopics
-    public getControlEntities(): ControlEntities {
-        return {
-            subTopic: "touCharging",
-            entities: this.touChargingControlEntities
-        }
+    public getControlEntities(): ControlEntities[] {
+        return [
+            {
+                subTopic: "touCharging",
+                entities: this.touChargingControlEntities
+            },
+            {
+                subTopic: "touDischarging",
+                entities: this.touDischargingControlEntities
+            }
+        ]
     }
 
-    public updateControl(controlMessage: string): {} {
+    public updateControl(controlMessage: string): ControlData[] {
+        //TODO need to handle control messages other than touCharging
+        console.log(`Debug got controlMessage: ${controlMessage}`)
+
         const control = JSON.parse(controlMessage.replace(/'/g, '"'))
         const keys = Object.keys(control)
 
@@ -620,11 +876,26 @@ export class GrowattSPH3000 implements Inverter {
         })
 
         // Return the control values (at this time this is only touValues, but could be expanded)
-        return this.touValues
+        return [
+            {
+                subTopic: "touCharging",
+                values: this.touValues
+            }
+        ]
     }
 
-    public async getControlValues(modbusClient: ModbusRTU): Promise<TouChargingValues> {
-        return this.getTouCharging(modbusClient)
+    public async getControlValues(modbusClient: ModbusRTU): Promise<ControlData[]> {
+        //TODO add touDischarging when done
+        return [
+            {
+                subTopic: "touCharging",
+                values: this.getTouCharging(modbusClient)
+            }/*,
+            {
+                topic: "touDischarging",
+                values: this.getTouDischarging(modbusClient)
+            }*/
+        ]
     }
 
     public async getSensorData(modbusClient: ModbusRTU): Promise<{}> {
@@ -700,6 +971,11 @@ export class GrowattSPH3000 implements Inverter {
         await this.writeRegisters(modbusClient, 1100, writeRegisters2)
     }
 
+    // TODO
+    private async setTouDischarging(modbusClient: ModbusRTU): Promise<void> {
+        throw "Not implemented"
+    }
+
     private async getTouCharging(modbusClient: ModbusRTU): Promise<TouChargingValues> {
         const holdingRegisters1 = await this.readHoldingRegisters(modbusClient, 1090, 3)
         const holdingRegisters2 = await this.readHoldingRegisters(modbusClient, 1100, 9)
@@ -707,6 +983,7 @@ export class GrowattSPH3000 implements Inverter {
         const { data: data1 } = holdingRegisters1
         const { data: data2 } = holdingRegisters2
 
+        // TODO review why this is saved to class scoped variable and returned from a private function
         this.touValues = {
             chargePower: data1[0],
             stopSOC: data1[1],
@@ -731,7 +1008,13 @@ export class GrowattSPH3000 implements Inverter {
         return this.touValues
     }
 
-    private async getTime(modbusClient: ModbusRTU): Promise<TimeValues>{
+    // TODO
+    private async getTouDischarging(modbusClient: ModbusRTU): Promise<TouDischargingValues> {
+        throw "Not implemented"
+        return this.touDischargeValues
+    }
+
+    private async getTime(modbusClient: ModbusRTU): Promise<TimeValues> {
         const holdingRegisters = await this.readHoldingRegisters(modbusClient, 45, 6)
 
         const { data } = holdingRegisters
@@ -746,7 +1029,7 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
-    public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<{}> {
+    public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData[] | null> {
         // First find out what type of command this is
         const command: Command = JSON.parse(commandString)
 
@@ -755,13 +1038,36 @@ export class GrowattSPH3000 implements Inverter {
             case "setTouCharging":
                 console.log(`${logDate()} Received Set TOU Charging command`)
                 await this.setTouCharging(modbusClient)
-                return {}
+                return null
             case "getTouCharging":
                 console.log(`${logDate()} Received Get TOU Charging command`)
-                return this.getTouCharging(modbusClient)
+                return [
+                    {
+                        subTopic: "touCharging",
+                        values: this.getTouCharging(modbusClient)
+                    }
+                ]
+            case "setTouDischarging":
+                console.log(`${logDate()} Received Set TOU Discharging command`)
+                await this.setTouDischarging(modbusClient)
+                return null
+            case "getTouDischarging":
+                console.log(`${logDate()} Received Get TOU Discharging command`)
+                //TODO uncomment when done
+                return null /*[
+                    {
+                        subTopic: "touDischarging",
+                        values: this.getTouDischarging(modbusClient)
+                    }
+                ]*/
             case "getTime":
                 console.log(`${logDate()} Received Get Time command`)
-                return this.getTime(modbusClient)
+                return [
+                    {
+                        subTopic: "time",
+                        values: this.getTime(modbusClient)
+                    }
+                ]
             default:
                 throw `Unknown command: ${command.command}`
         }
