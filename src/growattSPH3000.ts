@@ -363,6 +363,9 @@ export class GrowattSPH3000 implements Inverter {
         }
     ]
 
+    //TODO (at next release) make breaking change in the following to simplify
+    // timePeriod1StartHour will become charge1StartHour etc.
+    // This will require dashboards and automations to be updated
     private touChargingControlEntities: ControlEntity[] = [
         {
             name: "Charge Power",
@@ -378,7 +381,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Stop SOC",
+            name: "Charge Stop SOC",
             type: "number",
             state_class: "measurement",
             unit_of_measurement: "%",
@@ -391,7 +394,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Use AC",
+            name: "Charge Using AC",
             type: "switch",
             unique_id: "solarpi_tou_charge_ac",
             value_template: "{{ value_json.ac }}",
@@ -402,7 +405,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Period 1 Start Hour",
+            name: "Charge 1 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_1_start_hour",
             value_template: "{{ value_json.timePeriod1StartHour }}",
@@ -413,7 +416,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Start Minute",
+            name: "Charge 1 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_1_start_minute",
             value_template: "{{ value_json.timePeriod1StartMinute }}",
@@ -422,7 +425,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Stop Hour",
+            name: "Charge 1 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_1_stop_hour",
             value_template: "{{ value_json.timePeriod1StopHour }}",
@@ -433,7 +436,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Stop Minute",
+            name: "Charge 1 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_1_stop_minute",
             value_template: "{{ value_json.timePeriod1StopMinute }}",
@@ -442,7 +445,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Enable",
+            name: "Charge 1 Enable",
             type: "switch",
             unique_id: "solarpi_tou_charge_1_enable",
             value_template: "{{ value_json.timePeriod1Enable }}",
@@ -453,7 +456,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Period 2 Start Hour",
+            name: "Charge 2 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_2_start_hour",
             value_template: "{{ value_json.timePeriod2StartHour }}",
@@ -464,7 +467,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Start Minute",
+            name: "Charge 2 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_2_start_minute",
             value_template: "{{ value_json.timePeriod2StartMinute }}",
@@ -475,7 +478,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Stop Hour",
+            name: "Charge 2 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_2_stop_hour",
             value_template: "{{ value_json.timePeriod2StopHour }}",
@@ -486,7 +489,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Stop Minute",
+            name: "Charge 2 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_2_stop_minute",
             value_template: "{{ value_json.timePeriod2StopMinute }}",
@@ -497,7 +500,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Enable",
+            name: "Charge 2 Enable",
             type: "switch",
             unique_id: "solarpi_tou_charge_2_enable",
             value_template: "{{ value_json.timePeriod2Enable }}",
@@ -508,7 +511,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Period 3 Start Hour",
+            name: "Charge 3 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_3_start_hour",
             value_template: "{{ value_json.timePeriod3StartHour }}",
@@ -519,7 +522,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Start Minute",
+            name: "Charge 3 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_3_start_minute",
             value_template: "{{ value_json.timePeriod3StartMinute }}",
@@ -530,7 +533,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Stop Hour",
+            name: "Charge 3 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_3_stop_hour",
             value_template: "{{ value_json.timePeriod3StopHour }}",
@@ -541,7 +544,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Stop Minute",
+            name: "Charge 3 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_3_stop_minute",
             value_template: "{{ value_json.timePeriod3StopMinute }}",
@@ -552,7 +555,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Enable",
+            name: "Charge 3 Enable",
             type: "switch",
             unique_id: "solarpi_tou_charge_3_enable",
             value_template: "{{ value_json.timePeriod3Enable }}",
@@ -579,7 +582,7 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Stop SOC",
+            name: "Discharge Stop SOC",
             type: "number",
             state_class: "measurement",
             unit_of_measurement: "%",
@@ -592,162 +595,162 @@ export class GrowattSPH3000 implements Inverter {
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Period 1 Start Hour",
+            name: "Discharge 1 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_start_hour",
-            value_template: "{{ value_json.dischargeTimePeriod1StartHour }}",
-            command_template: '{{ {"dischargeTimePeriod1StartHour": value} }}',
+            value_template: "{{ value_json.discharge1StartHour }}",
+            command_template: '{{ {"discharge1StartHour": value} }}',
             mode: "box",
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Start Minute",
+            name: "Discharge 1 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_start_minute",
-            value_template: "{{ value_json.dischargeTimePeriod1StartMinute }}",
-            command_template: '{{ {"dischargeTimePeriod1StartMinute": value} }}',
+            value_template: "{{ value_json.discharge1StartMinute }}",
+            command_template: '{{ {"discharge1StartMinute": value} }}',
             mode: "box",
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Stop Hour",
+            name: "Discharge 1 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_stop_hour",
-            value_template: "{{ value_json.dischargeTimePeriod1StopHour }}",
-            command_template: '{{ {"dischargeTimePeriod1StopHour": value} }}',
+            value_template: "{{ value_json.discharge1StopHour }}",
+            command_template: '{{ {"discharge1StopHour": value} }}',
             mode: "box",
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Stop Minute",
+            name: "Discharge 1 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_stop_minute",
-            value_template: "{{ value_json.dischargeTimePeriod1StopMinute }}",
-            command_template: '{{ {"dischargeTimePeriod1StopMinute": value} }}',
+            value_template: "{{ value_json.discharge1StopMinute }}",
+            command_template: '{{ {"discharge1StopMinute": value} }}',
             mode: "box",
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 1 Enable",
+            name: "Discharge 1 Enable",
             type: "switch",
             unique_id: "solarpi_tou_discharge_1_enable",
-            value_template: "{{ value_json.dischargeTimePeriod1Enable }}",
-            payload_off: '{"dischargeTimePeriod1Enable": "OFF"}',
-            payload_on: '{"dischargeTimePeriod1Enable": "ON"}',
+            value_template: "{{ value_json.discharge1Enable }}",
+            payload_off: '{"discharge1Enable": "OFF"}',
+            payload_on: '{"discharge1Enable": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Period 2 Start Hour",
+            name: "Discharge 2 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_start_hour",
-            value_template: "{{ value_json.dischargeTimePeriod2StartHour }}",
-            command_template: '{{ {"dischargeTimePeriod2StartHour": value} }}',
+            value_template: "{{ value_json.discharge2StartHour }}",
+            command_template: '{{ {"discharge2StartHour": value} }}',
             mode: "box",
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Start Minute",
+            name: "Discharge 2 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_start_minute",
-            value_template: "{{ value_json.dischargeTimePeriod2StartMinute }}",
-            command_template: '{{ {"dischargeTimePeriod2StartMinute": value} }}',
+            value_template: "{{ value_json.discharge2StartMinute }}",
+            command_template: '{{ {"discharge2StartMinute": value} }}',
             mode: "box",
             min: 0,
             max: 59,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Stop Hour",
+            name: "Discharge 2 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_stop_hour",
-            value_template: "{{ value_json.dischargeTimePeriod2StopHour }}",
-            command_template: '{{ {"dischargeTimePeriod2StopHour": value} }}',
+            value_template: "{{ value_json.discharge2StopHour }}",
+            command_template: '{{ {"discharge2StopHour": value} }}',
             mode: "box",
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Stop Minute",
+            name: "Discharge 2 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_stop_minute",
-            value_template: "{{ value_json.dischargeTimePeriod2StopMinute }}",
-            command_template: '{{ {"dischargeTimePeriod2StopMinute": value} }}',
+            value_template: "{{ value_json.discharge2StopMinute }}",
+            command_template: '{{ {"discharge2StopMinute": value} }}',
             mode: "box",
             min: 0,
             max: 59,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 2 Enable",
+            name: "Discharge 2 Enable",
             type: "switch",
             unique_id: "solarpi_tou_discharge_2_enable",
-            value_template: "{{ value_json.dischargeTimePeriod2Enable }}",
-            payload_off: '{"dischargeTimePeriod2Enable": "OFF"}',
-            payload_on: '{"dischargeTimePeriod2Enable": "ON"}',
+            value_template: "{{ value_json.discharge2Enable }}",
+            payload_off: '{"discharge2Enable": "OFF"}',
+            payload_on: '{"discharge2Enable": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
         },
         {
-            name: "Period 3 Start Hour",
+            name: "Discharge 3 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_start_hour",
-            value_template: "{{ value_json.dischargeTimePeriod3StartHour }}",
-            command_template: '{{ {"dischargeTimePeriod3StartHour": value} }}',
+            value_template: "{{ value_json.discharge3StartHour }}",
+            command_template: '{{ {"discharge3StartHour": value} }}',
             mode: "box",
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Start Minute",
+            name: "Discharge 3 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_start_minute",
-            value_template: "{{ value_json.dischargeTimePeriod3StartMinute }}",
-            command_template: '{{ {"dischargeTimePeriod3StartMinute": value} }}',
+            value_template: "{{ value_json.discharge3StartMinute }}",
+            command_template: '{{ {"discharge3StartMinute": value} }}',
             mode: "box",
             min: 0,
             max: 59,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Stop Hour",
+            name: "Discharge 3 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_stop_hour",
-            value_template: "{{ value_json.dischargeTimePeriod3StopHour }}",
-            command_template: '{{ {"dischargeTimePeriod3StopHour": value} }}',
+            value_template: "{{ value_json.discharge3StopHour }}",
+            command_template: '{{ {"discharge3StopHour": value} }}',
             mode: "box",
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Stop Minute",
+            name: "Discharge 3 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_stop_minute",
-            value_template: "{{ value_json.dischargeTimePeriod3StopMinute }}",
-            command_template: '{{ {"dischargeTimePeriod3StopMinute": value} }}',
+            value_template: "{{ value_json.discharge3StopMinute }}",
+            command_template: '{{ {"discharge3StopMinute": value} }}',
             mode: "box",
             min: 0,
             max: 59,
             icon: "mdi:clock-outline"
         },
         {
-            name: "Period 3 Enable",
+            name: "Discharge 3 Enable",
             type: "switch",
             unique_id: "solarpi_tou_discharge_3_enable",
-            value_template: "{{ value_json.dischargeTimePeriod3Enable }}",
-            payload_off: '{"dischargeTimePeriod3Enable": "OFF"}',
-            payload_on: '{"dischargeTimePeriod3Enable": "ON"}',
+            value_template: "{{ value_json.discharge3Enable }}",
+            payload_off: '{"discharge3Enable": "OFF"}',
+            payload_on: '{"discharge3Enable": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
