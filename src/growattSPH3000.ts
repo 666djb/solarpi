@@ -865,7 +865,7 @@ export class GrowattSPH3000 implements Inverter {
         ]
     }
 
-    public updateControl(controlMessage: string): ControlData[] {
+    public updateControl(subTopic: string, controlMessage: string): ControlData[] {
         console.log(`DEBUG got controlMessage:`, controlMessage)
 
         // let control: {
@@ -874,15 +874,12 @@ export class GrowattSPH3000 implements Inverter {
         // }
 
         try {
-            const control: {
-                subtopic: string,
-                [otherKeys: string]: string
-            } = JSON.parse(controlMessage.replace(/'/g, '"'))
+            const control = JSON.parse(controlMessage.replace(/'/g, '"'))
             const keys = Object.keys(control)
             keys.forEach((key, index) => {
-                if (control.subtopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
+                if (subTopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
                     this.touChargingValues[key] = controlMessage[key]
-                } else if (control.subtopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
+                } else if (subTopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
                     this.touDischargingValues[key] = controlMessage[key]
                 }
             })

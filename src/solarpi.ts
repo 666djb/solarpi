@@ -65,9 +65,9 @@ async function runSolarPi() {
                 await publisher.publishCommandResponse({ "error": true })
             }
         })
-        .on("control", async (controlMessage) => {
+        .on("control", async (subTopic, controlMessage) => {
             try {
-                const response = inverterClient.updateControl(controlMessage)
+                const response = inverterClient.updateControl(subTopic, controlMessage)
                 console.log(`${logDate()} Control values stored`)
                 console.log(`DEBUG ${logDate()} Control response:`,response)
                 await publisher.publishControlData(response)
