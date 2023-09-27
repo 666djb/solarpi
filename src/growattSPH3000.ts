@@ -865,19 +865,23 @@ export class GrowattSPH3000 implements Inverter {
         ]
     }
 
-    public updateControl(controlMessage: string): ControlData[] {
-        console.log(`DEBUG got controlMessage: ${controlMessage}`)
+    public updateControl(controlMessage: {}): ControlData[] {
+        console.log(`DEBUG got controlMessage:`, controlMessage)
 
-        const control = JSON.parse(controlMessage.replace(/'/g, '"'))
-        const keys = Object.keys(control)
+        //const control = JSON.parse(controlMessage.replace(/'/g, '"'))
 
-        keys.forEach((key, index) => {
-            if (typeof this.touChargingValues[key] !== 'undefined') {
-                this.touChargingValues[key] = control[key]
-            }
-        })
+        if ('subtopic' in controlMessage) {
+            const keys = Object.keys(controlMessage)
+            keys.forEach((key, index) => {
+                if (controlMessage.subtopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
+                    this.touChargingValues[key] = controlMessage[key]
+                } else if (controlMessage.subtopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
+                    this.touDischargingValues[key] = controlMessage[key]
+                }
+            })
+        }
 
-        // Return the control values (at this time this is only touValues, but could be expanded)
+        // Return all the control values (could be reduced to just the set that have been updated)
         return [
             {
                 subTopic: "touCharging",

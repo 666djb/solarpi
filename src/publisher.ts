@@ -73,11 +73,11 @@ export class Publisher extends events.EventEmitter {
 
             if (topic == `${config.baseTopic}/${commandEntities.subTopic}/set`) {
                 this.emit("command", message.toString())
-            } else if (topic.startsWith(`${config.baseTopic}/`)) { // Check if the first part of the topic is `${config.baseTopic}/`
+            } else if (topic.startsWith(`${config.baseTopic}/`)) {
                 //TODO could simplify this and not need the check on the line above
                 for (let controlEntityIndex in controlEntities) {
                     if (topic.substring(config.baseTopic.length + 1) == `${controlEntities[controlEntityIndex].subTopic}/set`) {
-                        this.emit("control", message.toString())
+                        this.emit("control", message /*message.toString()*/)
                     }
                 }
             } else {

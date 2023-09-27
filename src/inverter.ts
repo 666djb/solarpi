@@ -8,7 +8,7 @@ export abstract class Inverter {
     public abstract getControlEntities(): ControlEntities[]
     public abstract getSensorData(modbusClient: ModbusRTU): Promise<{}>
     public abstract sendCommand(modbusClient: ModbusRTU, command: string): Promise<ControlData[] | null>
-    public abstract updateControl(controlMessage: string): ControlData[]
+    public abstract updateControl(controlMessage: {}): ControlData[]
     public abstract getControlValues(modbusClient: ModbusRTU): Promise<ControlData[]>
 }
 
