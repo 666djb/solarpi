@@ -865,21 +865,41 @@ export class GrowattSPH3000 implements Inverter {
         ]
     }
 
-    public updateControl(controlMessage: {}): ControlData[] {
+    public updateControl(controlMessage: string): ControlData[] {
         console.log(`DEBUG got controlMessage:`, controlMessage)
 
-        //const control = JSON.parse(controlMessage.replace(/'/g, '"'))
+        // let control: {
+        //     subtopic: string,
+        //     [otherKeys: string]: string
+        // }
 
-        if ('subtopic' in controlMessage) {
-            const keys = Object.keys(controlMessage)
+        try {
+            const control: {
+                subtopic: string,
+                [otherKeys: string]: string
+            } = JSON.parse(controlMessage.replace(/'/g, '"'))
+            const keys = Object.keys(control)
             keys.forEach((key, index) => {
-                if (controlMessage.subtopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
+                if (control.subtopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
                     this.touChargingValues[key] = controlMessage[key]
-                } else if (controlMessage.subtopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
+                } else if (control.subtopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
                     this.touDischargingValues[key] = controlMessage[key]
                 }
             })
+        } catch (error) {
+            console.log(`${logDate()} Error parsing controlMessage in updateControl(). Continuing.`)
         }
+
+        // if ('subtopic' in control) {
+        //     const keys = Object.keys(control)
+        //     keys.forEach((key, index) => {
+        //         if (control.subtopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
+        //             this.touChargingValues[key] = controlMessage[key]
+        //         } else if (control.subtopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
+        //             this.touDischargingValues[key] = controlMessage[key]
+        //         }
+        //     })
+        // }
 
         // Return all the control values (could be reduced to just the set that have been updated)
         return [

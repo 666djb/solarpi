@@ -77,7 +77,7 @@ export class Publisher extends events.EventEmitter {
                 //TODO could simplify this and not need the check on the line above
                 for (let controlEntityIndex in controlEntities) {
                     if (topic.substring(config.baseTopic.length + 1) == `${controlEntities[controlEntityIndex].subTopic}/set`) {
-                        this.emit("control", message /*message.toString()*/)
+                        this.emit("control", message.toString())
                     }
                 }
             } else {

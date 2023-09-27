@@ -56,7 +56,7 @@ export class InverterClient {
         return await this.inverter.sendCommand(this.modbusClient, command)
     }
 
-    public updateControl(controlMessage: {}): ControlData[] {
+    public updateControl(controlMessage: string): ControlData[] {
         return this.inverter.updateControl(controlMessage)
     }
 
