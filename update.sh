@@ -1,7 +1,9 @@
 #!/bin/bash
 pwd=$(pwd)
 echo "Note updating to version 1.0.4 from an earlier version requires an additional line in the configuration file options.json to be added for the USB device path"
-echo "Updating solarpi installation"
+echo -n "Updating solarpi installation to version"
+cat version
+echo
 echo "Do you want to keep using existing configuration file?"
 select yn in "Yes" "No"; do
     case $yn in

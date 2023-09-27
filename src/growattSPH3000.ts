@@ -364,8 +364,10 @@ export class GrowattSPH3000 implements Inverter {
     ]
 
     //TODO (at next release) make breaking change in the following to simplify
-    // timePeriod1StartHour will become charge1StartHour etc.
-    // This will require dashboards and automations to be updated
+    // timePeriod1StartHour will become charge1StartHour OR startHour1
+    // and lose the "Charge" from the name and the "charge" from the JSON and valuetemplate
+    // but keep the more verbose uniqueid
+    // Will this will require dashboards and automations to be updated????
     private touChargingControlEntities: ControlEntity[] = [
         {
             name: "Charge Power",
@@ -866,37 +868,21 @@ export class GrowattSPH3000 implements Inverter {
     }
 
     public updateControl(subTopic: string, controlMessage: string): ControlData[] {
-        console.log(`DEBUG got controlMessage:`, controlMessage)
-
-        // let control: {
-        //     subtopic: string,
-        //     [otherKeys: string]: string
-        // }
+        //console.log(`DEBUG got controlMessage:`, controlMessage)
 
         try {
             const control = JSON.parse(controlMessage.replace(/'/g, '"'))
             const keys = Object.keys(control)
             keys.forEach((key, index) => {
                 if (subTopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
-                    this.touChargingValues[key] = controlMessage[key]
+                    this.touChargingValues[key] = control[key]
                 } else if (subTopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
-                    this.touDischargingValues[key] = controlMessage[key]
+                    this.touDischargingValues[key] = control[key]
                 }
             })
         } catch (error) {
             console.log(`${logDate()} Error parsing controlMessage in updateControl(). Continuing.`)
         }
-
-        // if ('subtopic' in control) {
-        //     const keys = Object.keys(control)
-        //     keys.forEach((key, index) => {
-        //         if (control.subtopic == 'touCharging' && typeof this.touChargingValues[key] !== 'undefined') {
-        //             this.touChargingValues[key] = controlMessage[key]
-        //         } else if (control.subtopic == 'touDischarging' && typeof this.touDischargingValues[key] !== 'undefined') {
-        //             this.touDischargingValues[key] = controlMessage[key]
-        //         }
-        //     })
-        // }
 
         // Return all the control values (could be reduced to just the set that have been updated)
         return [
@@ -999,7 +985,66 @@ export class GrowattSPH3000 implements Inverter {
 
     // TODO
     private async setTouDischarging(modbusClient: ModbusRTU): Promise<void> {
-        throw "Not implemented"
+        throw "Not yet tested"
+
+        // Validate the contents of touValues object
+        const ajv = new Ajv()
+        const touDischargingValuesSchema = {
+            type: "object",
+            properties: {
+                dischargePower: { type: "number", minimum: 0, maximum: 100 },
+                dischargeStopSOC: { type: "number", minimum: 0, maximum: 100 },
+                discharge1StartHour: { type: "number", minimum: 0, maximum: 23 },
+                dischargeStartMinute: { type: "number", minimum: 0, maximum: 59 },
+                dischargeStopHour: { type: "number", minimum: 0, maximum: 23 },
+                dischargeStopMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge1Enable: { type: "string", pattern: "ON|OFF" },
+                discharge2StartHour: { type: "number", minimum: 0, maximum: 23 },
+                discharge2StartMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge2StopHour: { type: "number", minimum: 0, maximum: 23 },
+                discharge2StopMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge2Enable: { type: "string", pattern: "ON|OFF" },
+                discharge3StartHour: { type: "number", minimum: 0, maximum: 23 },
+                discharge3StartMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge3StopHour: { type: "number", minimum: 0, maximum: 23 },
+                discharge3StopMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge3Enable: { type: "string", pattern: "ON|OFF" }
+            },
+            required: ["dischargePower", "dischargeStopSOC", "discharge1StartHour", "discharge1StartMinute",
+                "discharge1StopHour", "discharge1StopMinute", "discharge1Enable", "discharge2StartHour",
+                "discharge2StartMinute", "discharge2StopHour", "discharge2StopMinute", "discharge2Enable",
+                "discharge3StartHour", "discharge3StartMinute", "discharge3StopHour", "discharge3StopMinute",
+                "discharge3Enable"],
+            additionalProperties: false
+        }
+        const validate = ajv.compile(touDischargingValuesSchema)
+        if (!validate(this.touDischargingValues)) {
+            console.log("Validate errors:", validate.errors)
+            throw "Error validating setTouDischarging"
+        }
+
+        const writeRegisters1: Array<number> = [
+            this.touDischargingValues.dischargePower,
+            this.touDischargingValues.dischargeStopSOC
+        ]
+
+        const writeRegisters2: Array<number> = [
+            (this.touDischargingValues.discharge1StartHour << 8) | this.touDischargingValues.discharge1StartMinute,
+            (this.touDischargingValues.discharge1StopHour << 8) | this.touDischargingValues.discharge1StopMinute,
+            this.touDischargingValues.discharge1Enable === "ON" ? 1 : 0,
+            (this.touDischargingValues.discharge2StartHour << 8) | this.touDischargingValues.discharge2StartMinute,
+            (this.touDischargingValues.discharge2StopHour << 8) | this.touDischargingValues.discharge2StopMinute,
+            this.touDischargingValues.discharge2Enable === "ON" ? 1 : 0,
+            (this.touDischargingValues.discharge3StartHour << 8) | this.touDischargingValues.discharge3StartMinute,
+            (this.touDischargingValues.discharge3StopHour << 8) | this.touDischargingValues.discharge3StopMinute,
+            this.touDischargingValues.discharge3Enable === "ON" ? 1 : 0
+        ]
+
+        // Write writeRegisters1 to holding registers 1070-1071
+        await this.writeRegisters(modbusClient, 1070, writeRegisters1)
+
+        // Write writeRegisters2 to holding registers 1080-1088
+        await this.writeRegisters(modbusClient, 1080, writeRegisters2)
     }
 
     private async getTouCharging(modbusClient: ModbusRTU): Promise<TouChargingValues> {
@@ -1034,7 +1079,6 @@ export class GrowattSPH3000 implements Inverter {
         return this.touChargingValues
     }
 
-    // TODO
     private async getTouDischarging(modbusClient: ModbusRTU): Promise<TouDischargingValues> {
         const holdingRegisters1 = await this.readHoldingRegisters(modbusClient, 1070, 2)
         const holdingRegisters2 = await this.readHoldingRegisters(modbusClient, 1080, 9)
