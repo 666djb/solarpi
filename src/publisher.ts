@@ -181,8 +181,11 @@ export class Publisher extends events.EventEmitter {
     public async publishControlData(controlData: ControlData[]) {
         //TODO make this more robust by checking that the topic in the data is 
         // one of the topics in this.controlEntities[].subTopic
+        //console.log("DEBUG: publishControlData()")
 
         for(let controlDataIndex in controlData){
+            //console.log(`DEBUG: controlData[${controlDataIndex}.subTopic:`, controlData[controlDataIndex].subTopic)
+            //console.log(`DEBUG: controlData[${controlDataIndex}.values:`, controlData[controlDataIndex].values)
             await this.publishData(controlData[controlDataIndex].values, `${controlData[controlDataIndex].subTopic}/state`, true)
         }
         //return this.publishData(data, `${this.controlEntities.subTopic}/state`, true)

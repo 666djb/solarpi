@@ -108,6 +108,7 @@ async function getControlValues() {
     try {
         console.log(`${logDate()} Getting control values from inverter`)
         const response = await inverterClient.getControlValues()
+        //console.log("DEBUG control values:",response)
         await publisher.publishControlData(response)
     } catch (error) {
         console.log(`${logDate()} Error getting inverter control values: `, error)

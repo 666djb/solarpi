@@ -31,22 +31,22 @@ interface TouChargingValues {
 
 interface TouDischargingValues {
     dischargePower: number,
-    stopSOC: number,
-    timePeriod1StartHour: number,
-    timePeriod1StartMinute: number,
-    timePeriod1StopHour: number,
-    timePeriod1StopMinute: number,
-    timePeriod1Enable: string,
-    timePeriod2StartHour: number,
-    timePeriod2StartMinute: number,
-    timePeriod2StopHour: number,
-    timePeriod2StopMinute: number,
-    timePeriod2Enable: string,
-    timePeriod3StartHour: number,
-    timePeriod3StartMinute: number,
-    timePeriod3StopHour: number,
-    timePeriod3StopMinute: number,
-    timePeriod3Enable: string
+    dischargeStopSOC: number,
+    discharge1StartHour: number,
+    discharge1StartMinute: number,
+    discharge1StopHour: number,
+    discharge1StopMinute: number,
+    discharge1Enable: string,
+    discharge2StartHour: number,
+    discharge2StartMinute: number,
+    discharge2StopHour: number,
+    discharge2StopMinute: number,
+    discharge2Enable: string,
+    discharge3StartHour: number,
+    discharge3StartMinute: number,
+    discharge3StopHour: number,
+    discharge3StopMinute: number,
+    discharge3Enable: string
 }
 
 interface TimeValues {
@@ -784,22 +784,22 @@ export class GrowattSPH3000 implements Inverter {
     // or modified by MQTT messages
     private touDischargingValues: TouDischargingValues = {
         dischargePower: 100,
-        stopSOC: 10, //TODO check this makes sense as a default
-        timePeriod1StartHour: 0,
-        timePeriod1StartMinute: 0,
-        timePeriod1StopHour: 0,
-        timePeriod1StopMinute: 0,
-        timePeriod1Enable: "OFF",
-        timePeriod2StartHour: 0,
-        timePeriod2StartMinute: 0,
-        timePeriod2StopHour: 0,
-        timePeriod2StopMinute: 0,
-        timePeriod2Enable: "OFF",
-        timePeriod3StartHour: 0,
-        timePeriod3StartMinute: 0,
-        timePeriod3StopHour: 0,
-        timePeriod3StopMinute: 0,
-        timePeriod3Enable: "OFF"
+        dischargeStopSOC: 10, //TODO check this makes sense as a default
+        discharge1StartHour: 0,
+        discharge1StartMinute: 0,
+        discharge1StopHour: 0,
+        discharge1StopMinute: 0,
+        discharge1Enable: "OFF",
+        discharge2StartHour: 0,
+        discharge2StartMinute: 0,
+        discharge2StopHour: 0,
+        discharge2StopMinute: 0,
+        discharge2Enable: "OFF",
+        discharge3StartHour: 0,
+        discharge3StartMinute: 0,
+        discharge3StopHour: 0,
+        discharge3StopMinute: 0,
+        discharge3Enable: "OFF"
     }
 
     // Wrapper methods to allow use of mutex as it seems ModbusRTU allows
@@ -1024,22 +1024,22 @@ export class GrowattSPH3000 implements Inverter {
         // TODO review why this is saved to class scoped variable and returned from a private function
         this.touDischargingValues = {
             dischargePower: data1[0],
-            stopSOC: data1[1],
-            timePeriod1StartHour: data2[0] >> 8,
-            timePeriod1StartMinute: data2[0] & 0xFF,
-            timePeriod1StopHour: data2[1] >> 8,
-            timePeriod1StopMinute: data2[1] & 0xFF,
-            timePeriod1Enable: (data2[2] == 1) ? "ON" : "OFF",
-            timePeriod2StartHour: data2[3] >> 8,
-            timePeriod2StartMinute: data2[3] & 0xFF,
-            timePeriod2StopHour: data2[4] >> 8,
-            timePeriod2StopMinute: data2[4] & 0xFF,
-            timePeriod2Enable: (data2[5] == 1) ? "ON" : "OFF",
-            timePeriod3StartHour: data2[6] >> 8,
-            timePeriod3StartMinute: data2[6] & 0xFF,
-            timePeriod3StopHour: data2[7] >> 8,
-            timePeriod3StopMinute: data2[7] & 0xFF,
-            timePeriod3Enable: (data2[8] == 1) ? "ON" : "OFF"
+            dischargeStopSOC: data1[1],
+            discharge1StartHour: data2[0] >> 8,
+            discharge1StartMinute: data2[0] & 0xFF,
+            discharge1StopHour: data2[1] >> 8,
+            discharge1StopMinute: data2[1] & 0xFF,
+            discharge1Enable: (data2[2] == 1) ? "ON" : "OFF",
+            discharge2StartHour: data2[3] >> 8,
+            discharge2StartMinute: data2[3] & 0xFF,
+            discharge2StopHour: data2[4] >> 8,
+            discharge2StopMinute: data2[4] & 0xFF,
+            discharge2Enable: (data2[5] == 1) ? "ON" : "OFF",
+            discharge3StartHour: data2[6] >> 8,
+            discharge3StartMinute: data2[6] & 0xFF,
+            discharge3StopHour: data2[7] >> 8,
+            discharge3StopMinute: data2[7] & 0xFF,
+            discharge3Enable: (data2[8] == 1) ? "ON" : "OFF"
         }
 
         return this.touDischargingValues
