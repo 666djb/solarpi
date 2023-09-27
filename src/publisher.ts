@@ -33,13 +33,17 @@ export class Publisher extends events.EventEmitter {
         this.mqttClient = MQTT.connect(config.brokerUrl, options)
 
         this.mqttClient.on("connect", () => {
-            // Publish the control entities
+            // Publish all the entities for sensor values, controls values and commands
             this.publishOnline(sensorEntities, controlEntities, commandEntities)
 
-            // Subscribe to commands sent to us
+            // Subscribe to commands sent to us e.g. Get TOU Charge button
+            // via basetopic/command/set
+            // Commands cause us to do something
             this.subscribe(`${config.baseTopic}/${commandEntities.subTopic}/set`)
 
-            // Subscribe to control values sent to us
+            // Subscribe to control values sent to us e.g. touCharging and touDischarging values
+            // via basetopic/touCharging/set and basetopic/touDischarging/set
+            // Control values get held by us (and sent to the inverter if a command is received)
             for (let controlEntityIndex in controlEntities) {
                 this.subscribe(`${config.baseTopic}/${controlEntities[controlEntityIndex].subTopic}/set`)
             }
@@ -73,7 +77,7 @@ export class Publisher extends events.EventEmitter {
                 //TODO could simplify this and not need the check on the line above
                 for (let controlEntityIndex in controlEntities) {
                     if (topic.substring(config.baseTopic.length + 1) == `${controlEntities[controlEntityIndex].subTopic}/set`) {
-                        this.emit("command", message.toString())
+                        this.emit("control", message.toString())
                     }
                 }
             } else {
@@ -177,20 +181,6 @@ export class Publisher extends events.EventEmitter {
     public async publishControlData(controlData: ControlData[]) {
         //TODO make this more robust by checking that the topic in the data is 
         // one of the topics in this.controlEntities[].subTopic
-
-        
-
-        // Also check that data is structured:
-        /*
-            [
-                {    topic : touCharging,
-                    values: touChargingValues
-                },
-                {    topic : toudisCharging,
-                    values: toudisChargingValues
-                }
-            ]
-        */
 
         for(let controlDataIndex in controlData){
             await this.publishData(controlData[controlDataIndex].values, `${controlData[controlDataIndex].subTopic}/state`, true)

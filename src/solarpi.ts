@@ -68,6 +68,8 @@ async function runSolarPi() {
         .on("control", async (controlMessage) => {
             try {
                 const response = inverterClient.updateControl(controlMessage)
+                console.log(`${logDate()} Control values stored`)
+                console.log(`DEBUG ${logDate()} Control response:`,response)
                 await publisher.publishControlData(response)
             } catch (error) {
                 console.log(`${logDate()} Error updating inverter control: `, error)

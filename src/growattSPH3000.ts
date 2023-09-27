@@ -866,8 +866,7 @@ export class GrowattSPH3000 implements Inverter {
     }
 
     public updateControl(controlMessage: string): ControlData[] {
-        //TODO need to handle control messages other than touCharging
-        console.log(`Debug got controlMessage: ${controlMessage}`)
+        console.log(`DEBUG got controlMessage: ${controlMessage}`)
 
         const control = JSON.parse(controlMessage.replace(/'/g, '"'))
         const keys = Object.keys(control)
@@ -883,6 +882,10 @@ export class GrowattSPH3000 implements Inverter {
             {
                 subTopic: "touCharging",
                 values: this.touChargingValues
+            },
+            {
+                subTopic: "touDischarging",
+                values: this.touDischargingValues
             }
         ]
     }
