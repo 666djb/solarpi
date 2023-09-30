@@ -569,8 +569,8 @@ export class GrowattSPH3000 implements Inverter {
             value_template: "{{ '{} {}:{}+00:00'.format(now().date(), value_json.startHour1, value_json.startMinute1) | as_datetime | as_timestamp | timestamp_custom('%H:%M') }}",
             //command_template: '{{ {"startHour1": value} }}',
             mode: "box",
-            min: 0,
-            max: 23,
+            //min: 0,
+            //max: 23,
             icon: "mdi:clock-outline"
         }
     ]
