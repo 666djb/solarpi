@@ -572,7 +572,7 @@ export class GrowattSPH3000 implements Inverter {
             min: 0,
             max: 23,
             icon: "mdi:clock-outline"
-        },
+        }
     ]
 
     private touDischargingControlEntities: ControlEntity[] = [
