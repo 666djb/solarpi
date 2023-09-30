@@ -25,7 +25,7 @@ sudo -u solarpi cp package-lock.json package.json version /opt/solarpi
 sudo -u solarpi cp -r src /opt/solarpi
 echo "Stopping solarpi"
 sudo systemctl stop solarpi
-echo "Getting Node.JS modules and compiling solarpi"
+echo "Getting Node.js modules and compiling solarpi"
 cd /opt/solarpi
 sudo -u solarpi npm install
 echo "Starting solarpi"
