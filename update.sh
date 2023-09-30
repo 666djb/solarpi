@@ -5,8 +5,9 @@ echo "Note updating to version 1.0.4 from an earlier version requires an additio
 if test -f "/opt/solarpi/version"; then
     echo -n "Updating solarpi installation from Version "
     cat /opt/solarpi/version
-    echo " to Version "
+    echo -n " to Version "
     cat version
+    echo
 else
     echo -n "Updating solarpi installation to Version "
     cat version
