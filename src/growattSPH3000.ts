@@ -12,41 +12,41 @@ interface TouChargingValues {
     chargePower: number,
     stopSOC: number,
     ac: string,
-    timePeriod1StartHour: number,
-    timePeriod1StartMinute: number,
-    timePeriod1StopHour: number,
-    timePeriod1StopMinute: number,
-    timePeriod1Enable: string,
-    timePeriod2StartHour: number,
-    timePeriod2StartMinute: number,
-    timePeriod2StopHour: number,
-    timePeriod2StopMinute: number,
-    timePeriod2Enable: string,
-    timePeriod3StartHour: number,
-    timePeriod3StartMinute: number,
-    timePeriod3StopHour: number,
-    timePeriod3StopMinute: number,
-    timePeriod3Enable: string
+    startHour1: number,
+    startMinute1: number,
+    stopHour1: number,
+    stopMinute1: number,
+    enablePeriod1: string,
+    startHour2: number,
+    startMinute2: number,
+    stopHour2: number,
+    stopMinute2: number,
+    enablePeriod2: string,
+    startHour3: number,
+    startMinute3: number,
+    stopHour3: number,
+    stopMinute3: number,
+    enablePeriod3: string
 }
 
 interface TouDischargingValues {
     dischargePower: number,
     dischargeStopSOC: number,
-    discharge1StartHour: number,
-    discharge1StartMinute: number,
-    discharge1StopHour: number,
-    discharge1StopMinute: number,
-    discharge1Enable: string,
-    discharge2StartHour: number,
-    discharge2StartMinute: number,
-    discharge2StopHour: number,
-    discharge2StopMinute: number,
-    discharge2Enable: string,
-    discharge3StartHour: number,
-    discharge3StartMinute: number,
-    discharge3StopHour: number,
-    discharge3StopMinute: number,
-    discharge3Enable: string
+    startHour1: number,
+    startMinute1: number,
+    stopHour1: number,
+    stopMinute1: number,
+    enablePeriod1: string,
+    startHour2: number,
+    startMinute2: number,
+    stopHour2: number,
+    stopMinute2: number,
+    enablePeriod2: string,
+    startHour3: number,
+    startMinute3: number,
+    stopHour3: number,
+    stopMinute3: number,
+    enablePeriod3: string
 }
 
 interface TimeValues {
@@ -363,11 +363,6 @@ export class GrowattSPH3000 implements Inverter {
         }
     ]
 
-    //TODO (at next release) make breaking change in the following to simplify
-    // timePeriod1StartHour will become charge1StartHour OR startHour1
-    // and lose the "Charge" from the name and the "charge" from the JSON and valuetemplate
-    // but keep the more verbose uniqueid
-    // Will this will require dashboards and automations to be updated????
     private touChargingControlEntities: ControlEntity[] = [
         {
             name: "Charge Power",
@@ -410,8 +405,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 1 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_1_start_hour",
-            value_template: "{{ value_json.timePeriod1StartHour }}",
-            command_template: '{{ {"timePeriod1StartHour": value} }}',
+            value_template: "{{ value_json.startHour1 }}",
+            command_template: '{{ {"startHour1": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -421,8 +416,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 1 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_1_start_minute",
-            value_template: "{{ value_json.timePeriod1StartMinute }}",
-            command_template: '{{ {"timePeriod1StartMinute": value} }}',
+            value_template: "{{ value_json.startMinute1 }}",
+            command_template: '{{ {"startMinute1": value} }}',
             mode: "box",
             icon: "mdi:clock-outline"
         },
@@ -430,8 +425,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 1 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_1_stop_hour",
-            value_template: "{{ value_json.timePeriod1StopHour }}",
-            command_template: '{{ {"timePeriod1StopHour": value} }}',
+            value_template: "{{ value_json.stopHour1 }}",
+            command_template: '{{ {"stopHour1": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -441,8 +436,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 1 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_1_stop_minute",
-            value_template: "{{ value_json.timePeriod1StopMinute }}",
-            command_template: '{{ {"timePeriod1StopMinute": value} }}',
+            value_template: "{{ value_json.stopMinute1 }}",
+            command_template: '{{ {"stopMinute1": value} }}',
             mode: "box",
             icon: "mdi:clock-outline"
         },
@@ -450,9 +445,9 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 1 Enable",
             type: "switch",
             unique_id: "solarpi_tou_charge_1_enable",
-            value_template: "{{ value_json.timePeriod1Enable }}",
-            payload_off: '{"timePeriod1Enable": "OFF"}',
-            payload_on: '{"timePeriod1Enable": "ON"}',
+            value_template: "{{ value_json.enablePeriod1 }}",
+            payload_off: '{"enablePeriod1": "OFF"}',
+            payload_on: '{"enablePeriod1": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
@@ -461,8 +456,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 2 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_2_start_hour",
-            value_template: "{{ value_json.timePeriod2StartHour }}",
-            command_template: '{{ {"timePeriod2StartHour": value} }}',
+            value_template: "{{ value_json.startHour2 }}",
+            command_template: '{{ {"startHour2": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -472,8 +467,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 2 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_2_start_minute",
-            value_template: "{{ value_json.timePeriod2StartMinute }}",
-            command_template: '{{ {"timePeriod2StartMinute": value} }}',
+            value_template: "{{ value_json.startMinute2 }}",
+            command_template: '{{ {"startMinute2": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -483,8 +478,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 2 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_2_stop_hour",
-            value_template: "{{ value_json.timePeriod2StopHour }}",
-            command_template: '{{ {"timePeriod2StopHour": value} }}',
+            value_template: "{{ value_json.stopHour2 }}",
+            command_template: '{{ {"stopHour2": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -494,8 +489,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 2 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_2_stop_minute",
-            value_template: "{{ value_json.timePeriod2StopMinute }}",
-            command_template: '{{ {"timePeriod2StopMinute": value} }}',
+            value_template: "{{ value_json.stopMinute2 }}",
+            command_template: '{{ {"stopMinute2": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -505,9 +500,9 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 2 Enable",
             type: "switch",
             unique_id: "solarpi_tou_charge_2_enable",
-            value_template: "{{ value_json.timePeriod2Enable }}",
-            payload_off: '{"timePeriod2Enable": "OFF"}',
-            payload_on: '{"timePeriod2Enable": "ON"}',
+            value_template: "{{ value_json.enablePeriod2 }}",
+            payload_off: '{"enablePeriod2": "OFF"}',
+            payload_on: '{"enablePeriod2": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
@@ -516,8 +511,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 3 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_3_start_hour",
-            value_template: "{{ value_json.timePeriod3StartHour }}",
-            command_template: '{{ {"timePeriod3StartHour": value} }}',
+            value_template: "{{ value_json.startHour3 }}",
+            command_template: '{{ {"startHour3": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -527,8 +522,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 3 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_3_start_minute",
-            value_template: "{{ value_json.timePeriod3StartMinute }}",
-            command_template: '{{ {"timePeriod3StartMinute": value} }}',
+            value_template: "{{ value_json.startMinute3 }}",
+            command_template: '{{ {"startMinute3": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -538,8 +533,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 3 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_charge_3_stop_hour",
-            value_template: "{{ value_json.timePeriod3StopHour }}",
-            command_template: '{{ {"timePeriod3StopHour": value} }}',
+            value_template: "{{ value_json.stopHour3 }}",
+            command_template: '{{ {"stopHour3": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -549,8 +544,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 3 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_charge_3_stop_minute",
-            value_template: "{{ value_json.timePeriod3StopMinute }}",
-            command_template: '{{ {"timePeriod3StopMinute": value} }}',
+            value_template: "{{ value_json.stopMinute3 }}",
+            command_template: '{{ {"stopMinute3": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -560,9 +555,9 @@ export class GrowattSPH3000 implements Inverter {
             name: "Charge 3 Enable",
             type: "switch",
             unique_id: "solarpi_tou_charge_3_enable",
-            value_template: "{{ value_json.timePeriod3Enable }}",
-            payload_off: '{"timePeriod3Enable": "OFF"}',
-            payload_on: '{"timePeriod3Enable": "ON"}',
+            value_template: "{{ value_json.enablePeriod3 }}",
+            payload_off: '{"enablePeriod3": "OFF"}',
+            payload_on: '{"enablePeriod3": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
@@ -600,8 +595,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 1 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_start_hour",
-            value_template: "{{ value_json.discharge1StartHour }}",
-            command_template: '{{ {"discharge1StartHour": value} }}',
+            value_template: "{{ value_json.startHour1 }}",
+            command_template: '{{ {"startHour1": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -611,8 +606,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 1 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_start_minute",
-            value_template: "{{ value_json.discharge1StartMinute }}",
-            command_template: '{{ {"discharge1StartMinute": value} }}',
+            value_template: "{{ value_json.startMinute1 }}",
+            command_template: '{{ {"startMinute1": value} }}',
             mode: "box",
             icon: "mdi:clock-outline"
         },
@@ -620,8 +615,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 1 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_stop_hour",
-            value_template: "{{ value_json.discharge1StopHour }}",
-            command_template: '{{ {"discharge1StopHour": value} }}',
+            value_template: "{{ value_json.stopHour1 }}",
+            command_template: '{{ {"stopHour1": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -631,8 +626,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 1 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_1_stop_minute",
-            value_template: "{{ value_json.discharge1StopMinute }}",
-            command_template: '{{ {"discharge1StopMinute": value} }}',
+            value_template: "{{ value_json.stopMinute1 }}",
+            command_template: '{{ {"stopMinute1": value} }}',
             mode: "box",
             icon: "mdi:clock-outline"
         },
@@ -640,9 +635,9 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 1 Enable",
             type: "switch",
             unique_id: "solarpi_tou_discharge_1_enable",
-            value_template: "{{ value_json.discharge1Enable }}",
-            payload_off: '{"discharge1Enable": "OFF"}',
-            payload_on: '{"discharge1Enable": "ON"}',
+            value_template: "{{ value_json.enablePeriod1 }}",
+            payload_off: '{"enablePeriod1": "OFF"}',
+            payload_on: '{"enablePeriod1": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
@@ -651,8 +646,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 2 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_start_hour",
-            value_template: "{{ value_json.discharge2StartHour }}",
-            command_template: '{{ {"discharge2StartHour": value} }}',
+            value_template: "{{ value_json.startHour2 }}",
+            command_template: '{{ {"startHour1": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -662,8 +657,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 2 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_start_minute",
-            value_template: "{{ value_json.discharge2StartMinute }}",
-            command_template: '{{ {"discharge2StartMinute": value} }}',
+            value_template: "{{ value_json.startMinute2 }}",
+            command_template: '{{ {"startMinute1": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -673,8 +668,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 2 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_stop_hour",
-            value_template: "{{ value_json.discharge2StopHour }}",
-            command_template: '{{ {"discharge2StopHour": value} }}',
+            value_template: "{{ value_json.stopHour2 }}",
+            command_template: '{{ {"stopHour2": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -684,8 +679,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 2 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_2_stop_minute",
-            value_template: "{{ value_json.discharge2StopMinute }}",
-            command_template: '{{ {"discharge2StopMinute": value} }}',
+            value_template: "{{ value_json.stopMinute2 }}",
+            command_template: '{{ {"stopMinute2": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -695,9 +690,9 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 2 Enable",
             type: "switch",
             unique_id: "solarpi_tou_discharge_2_enable",
-            value_template: "{{ value_json.discharge2Enable }}",
-            payload_off: '{"discharge2Enable": "OFF"}',
-            payload_on: '{"discharge2Enable": "ON"}',
+            value_template: "{{ value_json.enablePeriod2 }}",
+            payload_off: '{"enablePeriod2": "OFF"}',
+            payload_on: '{"enablePeriod2": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
@@ -706,8 +701,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 3 Start Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_start_hour",
-            value_template: "{{ value_json.discharge3StartHour }}",
-            command_template: '{{ {"discharge3StartHour": value} }}',
+            value_template: "{{ value_json.startHour3 }}",
+            command_template: '{{ {"startHour3": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -717,8 +712,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 3 Start Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_start_minute",
-            value_template: "{{ value_json.discharge3StartMinute }}",
-            command_template: '{{ {"discharge3StartMinute": value} }}',
+            value_template: "{{ value_json.startMinute3 }}",
+            command_template: '{{ {"startMinute3": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -728,8 +723,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 3 Stop Hour",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_stop_hour",
-            value_template: "{{ value_json.discharge3StopHour }}",
-            command_template: '{{ {"discharge3StopHour": value} }}',
+            value_template: "{{ value_json.stopHour3 }}",
+            command_template: '{{ {"stopHour3": value} }}',
             mode: "box",
             min: 0,
             max: 23,
@@ -739,8 +734,8 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 3 Stop Minute",
             type: "number",
             unique_id: "solarpi_tou_discharge_3_stop_minute",
-            value_template: "{{ value_json.discharge3StopMinute }}",
-            command_template: '{{ {"discharge3StopMinute": value} }}',
+            value_template: "{{ value_json.stopMinute3 }}",
+            command_template: '{{ {"stopMinute3": value} }}',
             mode: "box",
             min: 0,
             max: 59,
@@ -750,9 +745,9 @@ export class GrowattSPH3000 implements Inverter {
             name: "Discharge 3 Enable",
             type: "switch",
             unique_id: "solarpi_tou_discharge_3_enable",
-            value_template: "{{ value_json.discharge3Enable }}",
-            payload_off: '{"discharge3Enable": "OFF"}',
-            payload_on: '{"discharge3Enable": "ON"}',
+            value_template: "{{ value_json.enablePeriod3 }}",
+            payload_off: '{"enablePeriod3": "OFF"}',
+            payload_on: '{"enablePeriod3": "ON"}',
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
@@ -765,43 +760,43 @@ export class GrowattSPH3000 implements Inverter {
         chargePower: 100,
         stopSOC: 100,
         ac: "OFF",
-        timePeriod1StartHour: 0,
-        timePeriod1StartMinute: 0,
-        timePeriod1StopHour: 0,
-        timePeriod1StopMinute: 0,
-        timePeriod1Enable: "OFF",
-        timePeriod2StartHour: 0,
-        timePeriod2StartMinute: 0,
-        timePeriod2StopHour: 0,
-        timePeriod2StopMinute: 0,
-        timePeriod2Enable: "OFF",
-        timePeriod3StartHour: 0,
-        timePeriod3StartMinute: 0,
-        timePeriod3StopHour: 0,
-        timePeriod3StopMinute: 0,
-        timePeriod3Enable: "OFF"
+        startHour1: 0,
+        startMinute1: 0,
+        stopHour1: 0,
+        stopMinute1: 0,
+        enablePeriod1: "OFF",
+        startHour2: 0,
+        startMinute2: 0,
+        stopHour2: 0,
+        stopMinute2: 0,
+        enablePeriod2: "OFF",
+        startHour3: 0,
+        startMinute3: 0,
+        stopHour3: 0,
+        stopMinute3: 0,
+        enablePeriod3: "OFF"
     }
 
     // Object to retain TOU charging values which have been read from the inverter
     // or modified by MQTT messages
     private touDischargingValues: TouDischargingValues = {
         dischargePower: 100,
-        dischargeStopSOC: 10, //TODO check this makes sense as a default
-        discharge1StartHour: 0,
-        discharge1StartMinute: 0,
-        discharge1StopHour: 0,
-        discharge1StopMinute: 0,
-        discharge1Enable: "OFF",
-        discharge2StartHour: 0,
-        discharge2StartMinute: 0,
-        discharge2StopHour: 0,
-        discharge2StopMinute: 0,
-        discharge2Enable: "OFF",
-        discharge3StartHour: 0,
-        discharge3StartMinute: 0,
-        discharge3StopHour: 0,
-        discharge3StopMinute: 0,
-        discharge3Enable: "OFF"
+        dischargeStopSOC: 5,
+        startHour1: 0,
+        startMinute1: 0,
+        stopHour1: 0,
+        stopMinute1: 0,
+        enablePeriod1: "OFF",
+        startHour2: 0,
+        startMinute2: 0,
+        stopHour2: 0,
+        stopMinute2: 0,
+        enablePeriod2: "OFF",
+        startHour3: 0,
+        startMinute3: 0,
+        stopHour3: 0,
+        stopMinute3: 0,
+        enablePeriod3: "OFF"
     }
 
     // Wrapper methods to allow use of mutex as it seems ModbusRTU allows
@@ -868,8 +863,6 @@ export class GrowattSPH3000 implements Inverter {
     }
 
     public updateControl(subTopic: string, controlMessage: string): ControlData[] {
-        //console.log(`DEBUG got controlMessage:`, controlMessage)
-
         try {
             const control = JSON.parse(controlMessage.replace(/'/g, '"'))
             const keys = Object.keys(control)
@@ -921,38 +914,38 @@ export class GrowattSPH3000 implements Inverter {
     }
 
     private async setTouCharging(modbusClient: ModbusRTU): Promise<void> {
-        // Validate the contents of touValues object
+        // Validate the contents of touChargingValues object
         const ajv = new Ajv()
-        const touValuesSchema = {
+        const schema = {
             type: "object",
             properties: {
                 chargePower: { type: "number", minimum: 0, maximum: 100 },
                 stopSOC: { type: "number", minimum: 0, maximum: 100 },
                 ac: { type: "string", pattern: "ON|OFF" },
-                timePeriod1StartHour: { type: "number", minimum: 0, maximum: 23 },
-                timePeriod1StartMinute: { type: "number", minimum: 0, maximum: 59 },
-                timePeriod1StopHour: { type: "number", minimum: 0, maximum: 23 },
-                timePeriod1StopMinute: { type: "number", minimum: 0, maximum: 59 },
-                timePeriod1Enable: { type: "string", pattern: "ON|OFF" },
-                timePeriod2StartHour: { type: "number", minimum: 0, maximum: 23 },
-                timePeriod2StartMinute: { type: "number", minimum: 0, maximum: 59 },
-                timePeriod2StopHour: { type: "number", minimum: 0, maximum: 23 },
-                timePeriod2StopMinute: { type: "number", minimum: 0, maximum: 59 },
-                timePeriod2Enable: { type: "string", pattern: "ON|OFF" },
-                timePeriod3StartHour: { type: "number", minimum: 0, maximum: 23 },
-                timePeriod3StartMinute: { type: "number", minimum: 0, maximum: 59 },
-                timePeriod3StopHour: { type: "number", minimum: 0, maximum: 23 },
-                timePeriod3StopMinute: { type: "number", minimum: 0, maximum: 59 },
-                timePeriod3Enable: { type: "string", pattern: "ON|OFF" }
+                startHour1: { type: "number", minimum: 0, maximum: 23 },
+                startMinute1: { type: "number", minimum: 0, maximum: 59 },
+                stopHour1: { type: "number", minimum: 0, maximum: 23 },
+                stopMinute1: { type: "number", minimum: 0, maximum: 59 },
+                enablePeriod1: { type: "string", pattern: "ON|OFF" },
+                startHour2: { type: "number", minimum: 0, maximum: 23 },
+                startMinute2: { type: "number", minimum: 0, maximum: 59 },
+                stopHour2: { type: "number", minimum: 0, maximum: 23 },
+                stopMinute2: { type: "number", minimum: 0, maximum: 59 },
+                enablePeriod2: { type: "string", pattern: "ON|OFF" },
+                startHour3: { type: "number", minimum: 0, maximum: 23 },
+                startMinute3: { type: "number", minimum: 0, maximum: 59 },
+                stopHour3: { type: "number", minimum: 0, maximum: 23 },
+                stopMinute3: { type: "number", minimum: 0, maximum: 59 },
+                enablePeriod3: { type: "string", pattern: "ON|OFF" }
             },
-            required: ["chargePower", "stopSOC", "ac", "timePeriod1StartHour", "timePeriod1StartMinute",
-                "timePeriod1StopHour", "timePeriod1StopMinute", "timePeriod1Enable", "timePeriod2StartHour",
-                "timePeriod2StartMinute", "timePeriod2StopHour", "timePeriod2StopMinute", "timePeriod2Enable",
-                "timePeriod3StartHour", "timePeriod3StartMinute", "timePeriod3StopHour", "timePeriod3StopMinute",
-                "timePeriod3Enable"],
+            required: ["chargePower", "stopSOC", "ac", "startHour1", "startMinute1",
+                "stopHour1", "stopMinute1", "enablePeriod1", "startHour2",
+                "startMinute2", "stopHour2", "stopMinute2", "enablePeriod2",
+                "startHour3", "startMinute3", "stopHour3", "stopMinute3",
+                "enablePeriod3"],
             additionalProperties: false
         }
-        const validate = ajv.compile(touValuesSchema)
+        const validate = ajv.compile(schema)
         if (!validate(this.touChargingValues)) {
             console.log("Validate errors:", validate.errors)
             throw "Error validating setTouCharging"
@@ -965,15 +958,15 @@ export class GrowattSPH3000 implements Inverter {
         ]
 
         const writeRegisters2: Array<number> = [
-            (this.touChargingValues.timePeriod1StartHour << 8) | this.touChargingValues.timePeriod1StartMinute,
-            (this.touChargingValues.timePeriod1StopHour << 8) | this.touChargingValues.timePeriod1StopMinute,
-            this.touChargingValues.timePeriod1Enable === "ON" ? 1 : 0,
-            (this.touChargingValues.timePeriod2StartHour << 8) | this.touChargingValues.timePeriod2StartMinute,
-            (this.touChargingValues.timePeriod2StopHour << 8) | this.touChargingValues.timePeriod2StopMinute,
-            this.touChargingValues.timePeriod2Enable === "ON" ? 1 : 0,
-            (this.touChargingValues.timePeriod3StartHour << 8) | this.touChargingValues.timePeriod3StartMinute,
-            (this.touChargingValues.timePeriod3StopHour << 8) | this.touChargingValues.timePeriod3StopMinute,
-            this.touChargingValues.timePeriod3Enable === "ON" ? 1 : 0
+            (this.touChargingValues.startHour1 << 8) | this.touChargingValues.startMinute1,
+            (this.touChargingValues.stopHour1 << 8) | this.touChargingValues.stopMinute1,
+            this.touChargingValues.enablePeriod1 === "ON" ? 1 : 0,
+            (this.touChargingValues.startHour2 << 8) | this.touChargingValues.startMinute2,
+            (this.touChargingValues.stopHour2 << 8) | this.touChargingValues.stopMinute2,
+            this.touChargingValues.enablePeriod2 === "ON" ? 1 : 0,
+            (this.touChargingValues.startHour3 << 8) | this.touChargingValues.startMinute3,
+            (this.touChargingValues.stopHour3 << 8) | this.touChargingValues.stopMinute3,
+            this.touChargingValues.enablePeriod3 === "ON" ? 1 : 0
         ]
 
         // Write writeRegisters1 to holding registers 1090-1092
@@ -984,37 +977,37 @@ export class GrowattSPH3000 implements Inverter {
     }
 
     private async setTouDischarging(modbusClient: ModbusRTU): Promise<void> {
-        // Validate the contents of touValues object
+        // Validate the contents of touDischargingValues object
         const ajv = new Ajv()
-        const touDischargingValuesSchema = {
+        const schema = {
             type: "object",
             properties: {
                 dischargePower: { type: "number", minimum: 0, maximum: 100 },
                 dischargeStopSOC: { type: "number", minimum: 0, maximum: 100 },
-                discharge1StartHour: { type: "number", minimum: 0, maximum: 23 },
-                discharge1StartMinute: { type: "number", minimum: 0, maximum: 59 },
-                discharge1StopHour: { type: "number", minimum: 0, maximum: 23 },
-                discharge1StopMinute: { type: "number", minimum: 0, maximum: 59 },
-                discharge1Enable: { type: "string", pattern: "ON|OFF" },
-                discharge2StartHour: { type: "number", minimum: 0, maximum: 23 },
-                discharge2StartMinute: { type: "number", minimum: 0, maximum: 59 },
-                discharge2StopHour: { type: "number", minimum: 0, maximum: 23 },
-                discharge2StopMinute: { type: "number", minimum: 0, maximum: 59 },
-                discharge2Enable: { type: "string", pattern: "ON|OFF" },
-                discharge3StartHour: { type: "number", minimum: 0, maximum: 23 },
-                discharge3StartMinute: { type: "number", minimum: 0, maximum: 59 },
-                discharge3StopHour: { type: "number", minimum: 0, maximum: 23 },
-                discharge3StopMinute: { type: "number", minimum: 0, maximum: 59 },
-                discharge3Enable: { type: "string", pattern: "ON|OFF" }
+                startHour1: { type: "number", minimum: 0, maximum: 23 },
+                startMinute1: { type: "number", minimum: 0, maximum: 59 },
+                stopHour1: { type: "number", minimum: 0, maximum: 23 },
+                stopMinute1: { type: "number", minimum: 0, maximum: 59 },
+                enablePeriod1: { type: "string", pattern: "ON|OFF" },
+                startHour2: { type: "number", minimum: 0, maximum: 23 },
+                startMinute2: { type: "number", minimum: 0, maximum: 59 },
+                stopHour2: { type: "number", minimum: 0, maximum: 23 },
+                stopMinute2: { type: "number", minimum: 0, maximum: 59 },
+                enablePeriod2: { type: "string", pattern: "ON|OFF" },
+                startHour3: { type: "number", minimum: 0, maximum: 23 },
+                startMinute3: { type: "number", minimum: 0, maximum: 59 },
+                stopHour3: { type: "number", minimum: 0, maximum: 23 },
+                stopMinute3: { type: "number", minimum: 0, maximum: 59 },
+                enablePeriod3: { type: "string", pattern: "ON|OFF" }
             },
-            required: ["dischargePower", "dischargeStopSOC", "discharge1StartHour", "discharge1StartMinute",
-                "discharge1StopHour", "discharge1StopMinute", "discharge1Enable", "discharge2StartHour",
-                "discharge2StartMinute", "discharge2StopHour", "discharge2StopMinute", "discharge2Enable",
-                "discharge3StartHour", "discharge3StartMinute", "discharge3StopHour", "discharge3StopMinute",
-                "discharge3Enable"],
+            required: ["dischargePower", "dischargeStopSOC", "startHour1", "startMinute1",
+                "stopHour1", "stopMinute1", "enablePeriod1", "startHour2",
+                "startMinute2", "stopHour2", "stopMinute2", "enablePeriod2",
+                "startHour3", "startMinute3", "stopHour3", "stopMinute3",
+                "enablePeriod3"],
             additionalProperties: false
         }
-        const validate = ajv.compile(touDischargingValuesSchema)
+        const validate = ajv.compile(schema)
         if (!validate(this.touDischargingValues)) {
             console.log("Validate errors:", validate.errors)
             throw "Error validating setTouDischarging"
@@ -1026,15 +1019,15 @@ export class GrowattSPH3000 implements Inverter {
         ]
 
         const writeRegisters2: Array<number> = [
-            (this.touDischargingValues.discharge1StartHour << 8) | this.touDischargingValues.discharge1StartMinute,
-            (this.touDischargingValues.discharge1StopHour << 8) | this.touDischargingValues.discharge1StopMinute,
-            this.touDischargingValues.discharge1Enable === "ON" ? 1 : 0,
-            (this.touDischargingValues.discharge2StartHour << 8) | this.touDischargingValues.discharge2StartMinute,
-            (this.touDischargingValues.discharge2StopHour << 8) | this.touDischargingValues.discharge2StopMinute,
-            this.touDischargingValues.discharge2Enable === "ON" ? 1 : 0,
-            (this.touDischargingValues.discharge3StartHour << 8) | this.touDischargingValues.discharge3StartMinute,
-            (this.touDischargingValues.discharge3StopHour << 8) | this.touDischargingValues.discharge3StopMinute,
-            this.touDischargingValues.discharge3Enable === "ON" ? 1 : 0
+            (this.touDischargingValues.startHour1 << 8) | this.touDischargingValues.startMinute1,
+            (this.touDischargingValues.stopHour1 << 8) | this.touDischargingValues.stopMinute1,
+            this.touDischargingValues.enablePeriod1 === "ON" ? 1 : 0,
+            (this.touDischargingValues.startHour2 << 8) | this.touDischargingValues.startMinute2,
+            (this.touDischargingValues.stopHour2 << 8) | this.touDischargingValues.stopMinute2,
+            this.touDischargingValues.enablePeriod2 === "ON" ? 1 : 0,
+            (this.touDischargingValues.startHour3 << 8) | this.touDischargingValues.startMinute3,
+            (this.touDischargingValues.stopHour3 << 8) | this.touDischargingValues.stopMinute3,
+            this.touDischargingValues.enablePeriod3 === "ON" ? 1 : 0
         ]
 
         // Write writeRegisters1 to holding registers 1070-1071
@@ -1056,21 +1049,21 @@ export class GrowattSPH3000 implements Inverter {
             chargePower: data1[0],
             stopSOC: data1[1],
             ac: (data1[2] == 1) ? "ON" : "OFF",
-            timePeriod1StartHour: data2[0] >> 8,
-            timePeriod1StartMinute: data2[0] & 0xFF,
-            timePeriod1StopHour: data2[1] >> 8,
-            timePeriod1StopMinute: data2[1] & 0xFF,
-            timePeriod1Enable: (data2[2] == 1) ? "ON" : "OFF",
-            timePeriod2StartHour: data2[3] >> 8,
-            timePeriod2StartMinute: data2[3] & 0xFF,
-            timePeriod2StopHour: data2[4] >> 8,
-            timePeriod2StopMinute: data2[4] & 0xFF,
-            timePeriod2Enable: (data2[5] == 1) ? "ON" : "OFF",
-            timePeriod3StartHour: data2[6] >> 8,
-            timePeriod3StartMinute: data2[6] & 0xFF,
-            timePeriod3StopHour: data2[7] >> 8,
-            timePeriod3StopMinute: data2[7] & 0xFF,
-            timePeriod3Enable: (data2[8] == 1) ? "ON" : "OFF"
+            startHour1: data2[0] >> 8,
+            startMinute1: data2[0] & 0xFF,
+            stopHour1: data2[1] >> 8,
+            stopMinute1: data2[1] & 0xFF,
+            enablePeriod1: (data2[2] == 1) ? "ON" : "OFF",
+            startHour2: data2[3] >> 8,
+            startMinute2: data2[3] & 0xFF,
+            stopHour2: data2[4] >> 8,
+            stopMinute2: data2[4] & 0xFF,
+            enablePeriod2: (data2[5] == 1) ? "ON" : "OFF",
+            startHour3: data2[6] >> 8,
+            startMinute3: data2[6] & 0xFF,
+            stopHour3: data2[7] >> 8,
+            stopMinute3: data2[7] & 0xFF,
+            enablePeriod3: (data2[8] == 1) ? "ON" : "OFF"
         }
 
         return this.touChargingValues
@@ -1087,21 +1080,21 @@ export class GrowattSPH3000 implements Inverter {
         this.touDischargingValues = {
             dischargePower: data1[0],
             dischargeStopSOC: data1[1],
-            discharge1StartHour: data2[0] >> 8,
-            discharge1StartMinute: data2[0] & 0xFF,
-            discharge1StopHour: data2[1] >> 8,
-            discharge1StopMinute: data2[1] & 0xFF,
-            discharge1Enable: (data2[2] == 1) ? "ON" : "OFF",
-            discharge2StartHour: data2[3] >> 8,
-            discharge2StartMinute: data2[3] & 0xFF,
-            discharge2StopHour: data2[4] >> 8,
-            discharge2StopMinute: data2[4] & 0xFF,
-            discharge2Enable: (data2[5] == 1) ? "ON" : "OFF",
-            discharge3StartHour: data2[6] >> 8,
-            discharge3StartMinute: data2[6] & 0xFF,
-            discharge3StopHour: data2[7] >> 8,
-            discharge3StopMinute: data2[7] & 0xFF,
-            discharge3Enable: (data2[8] == 1) ? "ON" : "OFF"
+            startHour1: data2[0] >> 8,
+            startMinute1: data2[0] & 0xFF,
+            stopHour1: data2[1] >> 8,
+            stopMinute1: data2[1] & 0xFF,
+            enablePeriod1: (data2[2] == 1) ? "ON" : "OFF",
+            startHour2: data2[3] >> 8,
+            startMinute2: data2[3] & 0xFF,
+            stopHour2: data2[4] >> 8,
+            stopMinute2: data2[4] & 0xFF,
+            enablePeriod2: (data2[5] == 1) ? "ON" : "OFF",
+            startHour3: data2[6] >> 8,
+            startMinute3: data2[6] & 0xFF,
+            stopHour3: data2[7] >> 8,
+            stopMinute3: data2[7] & 0xFF,
+            enablePeriod3: (data2[8] == 1) ? "ON" : "OFF"
         }
 
         return this.touDischargingValues
@@ -1123,10 +1116,8 @@ export class GrowattSPH3000 implements Inverter {
     }
 
     public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData[] | null> {
-        // First find out what type of command this is
         const command: Command = JSON.parse(commandString)
 
-        // Pass command string to relevant function for parsing and sending to inverter
         switch (command.command) {
             case "setTouCharging":
                 console.log(`${logDate()} Received Set TOU Charging command`)

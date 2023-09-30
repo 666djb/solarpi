@@ -20,7 +20,7 @@ select yn in "Yes" "No"; do
         No ) echo "Backing up current config to options.json.backup"; sudo -u solarpi cp /opt/solarpi/options.json /opt/solarpi/options.json.backup; sudo -u solarpi cp options.json /opt/solarpi; break;;
     esac
 done
-sudo -u solarpi cp package-lock.json package.json /opt/solarpi
+sudo -u solarpi cp package-lock.json package.json version /opt/solarpi
 sudo -u solarpi cp -r src /opt/solarpi
 echo "Stopping solarpi"
 sudo systemctl stop solarpi

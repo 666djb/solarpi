@@ -60,17 +60,6 @@ export class Publisher extends events.EventEmitter {
         })
 
         this.mqttClient.on("message", (topic, message) => {
-            // switch (topic) {
-            //     case `${config.baseTopic}/${commandEntities.subTopic}/set`:
-            //         this.emit("command", message.toString())
-            //         break
-            //     case `${config.baseTopic}/${controlEntities.subTopic}/set`:
-            //         this.emit("control", message.toString())
-            //         break
-            //     default:
-            //         this.emit("unknown", "")
-            // }
-
             if (topic == `${config.baseTopic}/${commandEntities.subTopic}/set`) {
                 this.emit("command", message.toString())
             } else if (topic.startsWith(`${config.baseTopic}/`)) {
@@ -181,14 +170,10 @@ export class Publisher extends events.EventEmitter {
     public async publishControlData(controlData: ControlData[]) {
         //TODO make this more robust by checking that the topic in the data is 
         // one of the topics in this.controlEntities[].subTopic
-        //console.log("DEBUG: publishControlData()")
 
         for(let controlDataIndex in controlData){
-            //console.log(`DEBUG: controlData[${controlDataIndex}.subTopic:`, controlData[controlDataIndex].subTopic)
-            //console.log(`DEBUG: controlData[${controlDataIndex}.values:`, controlData[controlDataIndex].values)
             await this.publishData(controlData[controlDataIndex].values, `${controlData[controlDataIndex].subTopic}/state`, true)
         }
-        //return this.publishData(data, `${this.controlEntities.subTopic}/state`, true)
     }
 
     public async publishSensorData(data: object) {
