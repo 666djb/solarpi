@@ -983,10 +983,7 @@ export class GrowattSPH3000 implements Inverter {
         await this.writeRegisters(modbusClient, 1100, writeRegisters2)
     }
 
-    // TODO
     private async setTouDischarging(modbusClient: ModbusRTU): Promise<void> {
-        throw "Not yet tested"
-
         // Validate the contents of touValues object
         const ajv = new Ajv()
         const touDischargingValuesSchema = {
@@ -995,9 +992,9 @@ export class GrowattSPH3000 implements Inverter {
                 dischargePower: { type: "number", minimum: 0, maximum: 100 },
                 dischargeStopSOC: { type: "number", minimum: 0, maximum: 100 },
                 discharge1StartHour: { type: "number", minimum: 0, maximum: 23 },
-                dischargeStartMinute: { type: "number", minimum: 0, maximum: 59 },
-                dischargeStopHour: { type: "number", minimum: 0, maximum: 23 },
-                dischargeStopMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge1StartMinute: { type: "number", minimum: 0, maximum: 59 },
+                discharge1StopHour: { type: "number", minimum: 0, maximum: 23 },
+                discharge1StopMinute: { type: "number", minimum: 0, maximum: 59 },
                 discharge1Enable: { type: "string", pattern: "ON|OFF" },
                 discharge2StartHour: { type: "number", minimum: 0, maximum: 23 },
                 discharge2StartMinute: { type: "number", minimum: 0, maximum: 59 },
