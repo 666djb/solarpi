@@ -561,18 +561,7 @@ export class GrowattSPH3000 implements Inverter {
             state_off: "OFF",
             state_on: "ON",
             icon: "mdi:lightning-bolt"
-        }//,
-        /* {
-            name: "Charge 1 Start Time",
-            type: "number",
-            unique_id: "solarpi_tou_charge_1_start_time",
-            value_template: "{{ '{} {}:{}+00:00'.format(now().date(), value_json.startHour1, value_json.startMinute1) | as_datetime | as_timestamp | timestamp_custom('%H:%M') }}",
-            //command_template: '{{ {"startHour1": value} }}',
-            mode: "box",
-            //min: 0,
-            //max: 23,
-            icon: "mdi:clock-outline"
-        } */
+        }
     ]
 
     private touDischargingControlEntities: ControlEntity[] = [
