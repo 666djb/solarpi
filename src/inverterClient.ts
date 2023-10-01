@@ -1,5 +1,5 @@
 import ModbusRTU from "modbus-serial"
-import { Inverter, SensorEntities, ControlEntities, CommandEntities } from "./inverter.js"
+import { Inverter, SensorEntities, ControlEntities, CommandEntities, ControlData } from "./inverter.js"
 
 export class InverterClient {
     device: string
@@ -40,7 +40,7 @@ export class InverterClient {
         return this.inverter.getCommandEntities()
     }
 
-    public getControlEntities(): ControlEntities {
+    public getControlEntities(): ControlEntities[] {
         return this.inverter.getControlEntities()
     }
 
@@ -50,17 +50,17 @@ export class InverterClient {
         return await this.inverter.getSensorData(this.modbusClient)
     }
 
-    public async sendCommand(command: string): Promise<{}> {
+    public async sendCommand(command: string): Promise<ControlData[] | null> {
         // Pass initialised instance of ModbusRTU class so inverter class can use e.g. writeRegisters method
         // as many times as needed depending on the inverter type and the command.
         return await this.inverter.sendCommand(this.modbusClient, command)
     }
 
-    public updateControl(controlMessage: string): {} {
-        return this.inverter.updateControl(controlMessage)
+    public updateControl(subTopic: string, controlMessage: string): ControlData[] {
+        return this.inverter.updateControl(subTopic, controlMessage)
     }
 
-    public async getControlValues(): Promise <{}> {
+    public async getControlValues(): Promise <ControlData[]> {
         return this.inverter.getControlValues(this.modbusClient)
     }
 }

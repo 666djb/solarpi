@@ -56,7 +56,7 @@ async function runSolarPi() {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
                 await publisher.publishCommandResponse({ "error": false })
-                if (Object.keys(response).length != 0) { // Checks for empty object
+                if (response!=null) {
                     await publisher.publishControlData(response)
                 }
             } catch (error) {
@@ -64,9 +64,10 @@ async function runSolarPi() {
                 await publisher.publishCommandResponse({ "error": true })
             }
         })
-        .on("control", async (controlMessage) => {
+        .on("control", async (subTopic, controlMessage) => {
             try {
-                const response = inverterClient.updateControl(controlMessage)
+                const response = inverterClient.updateControl(subTopic, controlMessage)
+                console.log(`${logDate()} Control values stored`)
                 await publisher.publishControlData(response)
             } catch (error) {
                 console.log(`${logDate()} Error updating inverter control: `, error)

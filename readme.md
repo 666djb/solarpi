@@ -1,4 +1,4 @@
-# SolarPi v1.0.6
+# SolarPi v1.0.7
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -18,21 +18,33 @@ SolarPi reads the following values from the inverter:
 * Battery Charge/Discharge Energy (today and total)
 * Grid Voltage
 
-SolarPi reads and write the following Time of Use charging values:
-* Charging Power %
-* Stop Charging SOC %
-* AC Charging on/off
-* Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
+SolarPi reads and writes the following Time of Use (TOU) values:
+* TOU Charging:
+    - Charging Power %
+    - Stop Charging SOC %
+    - AC Charging on/off
+    - Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
+* TOU Discharging:
+    - Discharging Power %
+    - Stop Discharging SOC %
+    - Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
+
+SolarPi creates and updates the following Device (SOLARPI Bridge), Control Entities and Sensor Entities automatically in Home Assistant:
+
+![Control Entitites 1](<SolarPi Controls 1.png>)
+![Control Entitites 2](<SolarPi Controls 2.png>)
+![Control Entitites 3](<SolarPi Controls 3.png>)
+![Control Entities 4](<SolarPi Controls 4.png>)
+
+From these, Lovelace Dashboards such as the following can be created.
+
+Status dashboard:
+![Status Dashboard](SolarPi%20Home%20Assistant%20Dashboard.png)
+
+Control dashboard:
+![Control Dashboard](<SolarPi Control Dashboard.png>)
 
 Home Assistant automations can be simply written to control when the battery is charged and how much it is charged - e.g. if the forecast for the next day is good, then only charge the battery 50% over night. I use an automation in Home Assistant to set the "Stop Charging SOC %" based on the next day' Solar Forecast.
-
-This creates and updates the following Device (SOLARPI Bridge), Control Entities and Sensor Entities in Home Assistant:
-![Device and Entities](SolarPi%20Home%20Assistant%20Entities%201.png)
-![Device and Entities](SolarPi%20Home%20Assistant%20Entities%202.png)
-
-From these, Lovelace Dashboards such as the following can be created:
-![Dashboard](SolarPi%20Home%20Assistant%20Dashboard.png)
-![Dashboard](SolarPi%20Home%20Assistant%20TOU%20Dashboard.png)
 
 I have built SolarPi to interface my Growatt SPH3000 with Home Assistant without relying on the Growatt web API or interferring with the Growatt Datalogger/WiFi dongle. That is to say the Growatt web dashboard and the Growatt ShinePhone app still work (as well as they ever did). My approach uses a standard serial port interface on the inverter in accordance with the Growatt Modbus Inverter RTU Protocol document v.1.20.
 
@@ -41,9 +53,6 @@ I have built SolarPi to interface my Growatt SPH3000 with Home Assistant without
 I am running this code on a Raspberry Pi Zero W with an RS485-USB adapter (specifically this: https://amzn.eu/d/foIEFqZ, but others should work), I have the USB adapter plugged into the Pi using a micro-USB (male) to USB A (female) OTG adapter cable.
 
 I have designed SolarPi so that the code is extensible to integrate other Growatt inverters and potentially other brands of inverter.
-
-## Status
-I have had this running continuously for several months with a 60 second update of values.
 
 ## Changes
 ### 1.0.1
@@ -61,6 +70,8 @@ I have had this running continuously for several months with a 60 second update 
 * Fixed PV2 voltage incorrectly reading PV2 power
 ### 1.0.6
 * Added grid voltage sensor entity
+### 1.0.7
+* Added TOU dishcharge entities to allow forced discharge to the grid to be set
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
@@ -162,7 +173,6 @@ If you have used the install script or followed the complete set of manual steps
 * sudo rm -rf /home/solarpi
 
 ## Development
-So far, this has only been tested by me and does what I want it to reliably.
 If you make improvements, find bugs (in the code or this doc), let me know and, time permitting, I'll try to fix.
 
 ### To do
