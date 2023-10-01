@@ -54,9 +54,6 @@ I am running this code on a Raspberry Pi Zero W with an RS485-USB adapter (speci
 
 I have designed SolarPi so that the code is extensible to integrate other Growatt inverters and potentially other brands of inverter.
 
-## Status
-I have had this running continuously for several months with a 60 second update of values.
-
 ## Changes
 ### 1.0.1
 * First release
@@ -176,7 +173,6 @@ If you have used the install script or followed the complete set of manual steps
 * sudo rm -rf /home/solarpi
 
 ## Development
-So far, this has only been tested by me and does what I want it to reliably.
 If you make improvements, find bugs (in the code or this doc), let me know and, time permitting, I'll try to fix.
 
 ### To do
