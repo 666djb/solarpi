@@ -41,9 +41,13 @@ runSolarPi()
 
 async function runSolarPi() {
     publisher
-        .on("Connect", () => {
+        .on("Connect", async () => {
             console.log(`${logDate()} Connected to MQTT broker`)
-            getControlValues()
+            try {
+                await getControlValues()
+            } catch (error) {
+                console.log(`${logDate()} Error getting control values from inverter:`, error)
+            }
         })
         .on("Reconnect", () => {
             console.log(`${logDate()} Reconnecting to MQTT broker`)
@@ -56,12 +60,23 @@ async function runSolarPi() {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
                 await publisher.publishCommandResponse({ "error": false })
-                if (response!=null) {
+                if (response != null) {
                     await publisher.publishControlData(response)
                 }
             } catch (error) {
                 console.log(`${logDate()} Error sending command to inverter: `, error)
+                console.log("Error was:", error)
                 await publisher.publishCommandResponse({ "error": true })
+                // Get control values from inverter as we may be out of sync with them if this command
+                // was not accepted.
+                // TODO catch error from inverterClient.sendCommand earlier and if this relates
+                // to modbuscode 7, then that means we are trying to do something not allowed
+                // report this back somehow rather than ending up here.
+                try {
+                    await getControlValues()
+                } catch (error) {
+                    console.log(`${logDate()} Error getting control values from inverter:`, error)
+                }
             }
         })
         .on("control", async (subTopic, controlMessage) => {
