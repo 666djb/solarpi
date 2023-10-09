@@ -837,7 +837,7 @@ export class GrowattSPH3000 implements Inverter {
 
     public getSensorEntities(): SensorEntities {
         return {
-            subTopic: "inverter",
+            subTopic: "inverter", //TODO think about removing this and handling subTopic elsewhere
             entities: this.sensorEntities
         }
     }

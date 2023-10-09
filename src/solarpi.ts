@@ -44,6 +44,7 @@ async function runSolarPi() {
         .on("Connect", async () => {
             console.log(`${logDate()} Connected to MQTT broker`)
             try {
+                console.log(`${logDate()} Getting control values from inverter`)
                 const response = await inverterClient.getControlValues()
                 await publisher.publishControlData(response)
             } catch (error) {
@@ -66,7 +67,9 @@ async function runSolarPi() {
                 }
             } catch (error) {
                 console.log(`${logDate()} Error sending command to inverter: `, error)
-                console.log("Error was type:", typeof(error))
+                if (error instanceof Error) {
+                    console.log("Error message:",error.message)
+                }
                 await publisher.publishCommandResponse({ "error": true })
                 // Get control values from inverter as we may be out of sync with them if this command
                 // was not accepted.
@@ -74,6 +77,7 @@ async function runSolarPi() {
                 // to modbuscode 7, then that means we are trying to do something not allowed
                 // report this back somehow rather than ending up here.
                 try {
+                    console.log(`${logDate()} Getting control values from inverter`)
                     const response = await inverterClient.getControlValues()
                     await publisher.publishControlData(response)
                 } catch (error) {
