@@ -66,11 +66,14 @@ async function runSolarPi() {
                     await publisher.publishControlData(response)
                 }
             } catch (error) {
-                console.log(`${logDate()} Error sending command to inverter: `, error)
                 if (error instanceof Error) {
-                    console.log("Error message:",error.message)
+                    console.log(`${logDate()} Error sending command to inverter: `, error.message)
+                } else {
+                    console.log(`${logDate()} Error sending command to inverter: unknown error`)
                 }
+
                 await publisher.publishCommandResponse({ "error": true })
+
                 // Get control values from inverter as we may be out of sync with them if this command
                 // was not accepted.
                 // TODO catch error from inverterClient.sendCommand earlier and if this relates
