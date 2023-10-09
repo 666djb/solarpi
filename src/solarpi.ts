@@ -44,7 +44,8 @@ async function runSolarPi() {
         .on("Connect", async () => {
             console.log(`${logDate()} Connected to MQTT broker`)
             try {
-                await getControlValues()
+                const response = await inverterClient.getControlValues()
+                await publisher.publishControlData(response)
             } catch (error) {
                 console.log(`${logDate()} Error getting control values from inverter:`, error)
             }
@@ -65,7 +66,7 @@ async function runSolarPi() {
                 }
             } catch (error) {
                 console.log(`${logDate()} Error sending command to inverter: `, error)
-                console.log("Error was:", error)
+                console.log("Error was type:", typeof(error))
                 await publisher.publishCommandResponse({ "error": true })
                 // Get control values from inverter as we may be out of sync with them if this command
                 // was not accepted.
@@ -73,7 +74,8 @@ async function runSolarPi() {
                 // to modbuscode 7, then that means we are trying to do something not allowed
                 // report this back somehow rather than ending up here.
                 try {
-                    await getControlValues()
+                    const response = await inverterClient.getControlValues()
+                    await publisher.publishControlData(response)
                 } catch (error) {
                     console.log(`${logDate()} Error getting control values from inverter:`, error)
                 }
@@ -116,13 +118,13 @@ async function runSolarPi() {
     }, config.inverter.interval * 1000)
 }
 
-async function getControlValues() {
-    // Get stored values from inverter to update MQTT
-    try {
-        console.log(`${logDate()} Getting control values from inverter`)
-        const response = await inverterClient.getControlValues()
-        await publisher.publishControlData(response)
-    } catch (error) {
-        console.log(`${logDate()} Error getting inverter control values: `, error)
-    }
-}
+// async function getControlValues() {
+//     // Get stored values from inverter to update MQTT
+//     try {
+//         console.log(`${logDate()} Getting control values from inverter`)
+//         const response = await inverterClient.getControlValues()
+//         await publisher.publishControlData(response)
+//     } catch (error) {
+//         console.log(`${logDate()} Error getting inverter control values: `, error)
+//     }
+// }

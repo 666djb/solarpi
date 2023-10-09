@@ -913,7 +913,7 @@ export class GrowattSPH3000 implements Inverter {
         return { ...this.parseInputRegisters1(inputRegisters1), ...this.parseInputRegisters2(inputRegisters2) }
     }
 
-    private async setTouCharging(modbusClient: ModbusRTU): Promise<void> {
+    private async setTouCharging(modbusClient: ModbusRTU): Promise<number | void> {
         // Validate the contents of touChargingValues object
         const ajv = new Ajv()
         const schema = {
