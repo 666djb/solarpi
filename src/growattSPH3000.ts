@@ -317,6 +317,12 @@ export class GrowattSPH3000 implements Inverter {
             unique_id: "solarpi_energy_to_load_total",
             value_template: "{{ value_json.eLoadTotal }}",
             icon: "mdi:lightning-bolt"
+        },
+        {
+            name: "Command Status",
+            type: "text",
+            unique_id: "solarpi_command_status",
+            value_template: "{{ value_json.message }}"
         }
     ]
 

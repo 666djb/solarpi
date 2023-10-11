@@ -61,19 +61,24 @@ async function runSolarPi() {
             try {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
-                //TODO check this next line as it doesn't seem to do anything
-                await publisher.publishCommandResponse({ "error": false })
+                await publisher.publishCommandResponse(
+                    {
+                        "error": false,
+                        "message": "Command OK"
+                    }
+                )
                 if (response != null) {
                     await publisher.publishControlData(response)
                 }
             } catch (error) {
-                if (error instanceof Error) {
-                    console.log(`${logDate()} Error sending command to inverter: `, error.message)
-                } else {
-                    console.log(`${logDate()} Error sending command to inverter: unknown error`)
-                }
-
-                await publisher.publishCommandResponse({ "error": true })
+                let message = error instanceof Error ? error.message : "Unknown Inverter Error"
+                console.log(`${logDate()} Error sending command to inverter: ${message}`)
+                await publisher.publishCommandResponse(
+                    {
+                        "error": true,
+                        "message": message
+                    }                    
+                )
 
                 // Get control values from inverter as we may be out of sync with them if this command
                 // was not accepted.
@@ -125,14 +130,3 @@ async function runSolarPi() {
         }
     }, config.inverter.interval * 1000)
 }
-
-// async function getControlValues() {
-//     // Get stored values from inverter to update MQTT
-//     try {
-//         console.log(`${logDate()} Getting control values from inverter`)
-//         const response = await inverterClient.getControlValues()
-//         await publisher.publishControlData(response)
-//     } catch (error) {
-//         console.log(`${logDate()} Error getting inverter control values: `, error)
-//     }
-// }
