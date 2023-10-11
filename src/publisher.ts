@@ -189,6 +189,7 @@ export class Publisher extends events.EventEmitter {
             if (!this.mqttClient.connected) {
                 throw "Not connected"
             }
+            console.log(`Debug: publishing to: ${this.config.baseTopic}/${subTopic} data: ${JSON.stringify(data)}`)
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
         } catch (error) {
