@@ -148,7 +148,8 @@ export class Publisher extends events.EventEmitter {
                 name: "Command Status",
                 type: "sensor",
                 unique_id: "solarpi_command_status",
-                value_template: "{{ value_json.message }}"
+                value_template: "{{ value_json.message }}",
+                force_update: true
             }
             await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
 
