@@ -146,7 +146,7 @@ export class Publisher extends events.EventEmitter {
                 state_topic: `${this.config.baseTopic}/status/state`,
                 object_id: "solarpi_status",
                 name: "Command Status",
-                type: "text",
+                type: "sensor",
                 unique_id: "solarpi_command_status",
                 value_template: "{{ value_json.message }}"
             }
@@ -171,7 +171,7 @@ export class Publisher extends events.EventEmitter {
     private async publish(data: string, subTopic: string, retain?: boolean) {
         try {
             if (!this.mqttClient.connected) {
-                throw "Not connected"
+                throw "Not connected to broker"
             }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, data,
                 { retain: retain || false } as IClientPublishOptions)

@@ -42,7 +42,7 @@ runSolarPi()
 async function runSolarPi() {
     publisher
         .on("Connect", async () => {
-            console.log(`${logDate()} Connected to MQTT broker`)
+            console.log(`${logDate()} Connected to broker`)
             try {
                 console.log(`${logDate()} Getting control values from inverter`)
                 const response = await inverterClient.getControlValues()
@@ -52,10 +52,10 @@ async function runSolarPi() {
             }
         })
         .on("Reconnect", () => {
-            console.log(`${logDate()} Reconnecting to MQTT broker`)
+            console.log(`${logDate()} Reconnecting to broker`)
         })
         .on("Disconnect", () => {
-            console.log(`${logDate()} Disconnected from MQTT broker`)
+            console.log(`${logDate()} Disconnected from broker`)
         })
         .on("command", async (commandMessage) => {
             try {
@@ -111,7 +111,7 @@ async function runSolarPi() {
         await inverterClient.init()
         console.log(`${logDate()} Connected to inverter`)
     } catch (error) {
-        console.error(`${logDate()} Error initialising connection to Growatt`, error)
+        console.error(`${logDate()} Error initialising connection to inveter:`, error)
     }
 
     setInterval(async () => {
@@ -119,14 +119,14 @@ async function runSolarPi() {
         try {
             data = await inverterClient.getData()
         } catch (error) {
-            console.error(`${logDate()} Error reading Growatt data:`, error)
+            console.error(`${logDate()} Error reading inverter data:`, error)
         }
 
         try {
             console.log(`${logDate()} Publishing data`)
             await publisher.publishSensorData(data)
         } catch (error) {
-            console.error(`${logDate()} Error publishing data to MQTT:`, error)
+            console.error(`${logDate()} Error publishing data:`, error)
         }
     }, config.inverter.interval * 1000)
 }
