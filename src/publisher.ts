@@ -181,19 +181,19 @@ export class Publisher extends events.EventEmitter {
     }
 
     public async publishCommandResponse(data: object) {
-        return this.publishData(data, "command/state")
+        return this.publishData(data, "inverter/state")
     }
 
     private async publishData(data: object, subTopic: string, retain?: boolean) {
-        try {
+        //try {
             if (!this.mqttClient.connected) {
                 throw "Not connected"
             }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)
-        } catch (error) {
-            throw `publishJSON() error ${error}`
-        }
+        //} catch (error) {
+        //    throw `publishJSON() error ${error}`
+        //}
     }
 
     private async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
