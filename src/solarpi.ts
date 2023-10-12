@@ -61,15 +61,15 @@ async function runSolarPi() {
             try {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
-                await publisher.publishCommandResponse(
-                    {
-                        "error": false,
-                        "message": "Command OK"
-                    }
-                )
-                if (response != null) {
+                // await publisher.publishCommandResponse(
+                //     {
+                //         "error": false,
+                //         "message": "Command OK"
+                //     }
+                // )
+                //if (response != null) {
                     await publisher.publishControlData(response)
-                }
+                //}
             } catch (error) {
                 let message = error instanceof Error ? error.message : "Unknown Inverter Error"
                 console.log(`${logDate()} Error sending command to inverter: ${message}`)

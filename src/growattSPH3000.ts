@@ -317,12 +317,6 @@ export class GrowattSPH3000 implements Inverter {
             unique_id: "solarpi_energy_to_load_total",
             value_template: "{{ value_json.eLoadTotal }}",
             icon: "mdi:lightning-bolt"
-        },
-        {
-            name: "Command Status",
-            type: "text",
-            unique_id: "solarpi_command_status",
-            value_template: "{{ value_json.message }}"
         }
     ]
 
@@ -1121,14 +1115,33 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
-    public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData[] | null> {
+    public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData[] /*| null*/> {
         const command: Command = JSON.parse(commandString)
+        let status: { error: boolean; message: string; errorMessage?: unknown }
 
         switch (command.command) {
             case "setTouCharging":
                 console.log(`${logDate()} Received Set TOU Charging command`)
-                await this.setTouCharging(modbusClient)
-                return null
+                try {
+                    await this.setTouCharging(modbusClient)
+                    status = {
+                        error: false,
+                        message: "Command OK"
+                    }
+                } catch (error) {
+                    status = {
+                        error: true,
+                        message: "Command not OK",
+                        errorMessage: error
+                    }
+                }
+                //return null
+                return [
+                    {
+                        subTopic: "status",
+                        values: status
+                    }
+                ]
             case "getTouCharging":
                 console.log(`${logDate()} Received Get TOU Charging command`)
                 return [
@@ -1139,8 +1152,26 @@ export class GrowattSPH3000 implements Inverter {
                 ]
             case "setTouDischarging":
                 console.log(`${logDate()} Received Set TOU Discharging command`)
-                await this.setTouDischarging(modbusClient)
-                return null
+                try {
+                    await this.setTouDischarging(modbusClient)
+                    status = {
+                        error: false,
+                        message: "Command OK"
+                    }
+                } catch (error) {
+                    status = {
+                        error: true,
+                        message: "Command not OK",
+                        errorMessage: error
+                    }
+                }
+                //return null
+                return [
+                    {
+                        subTopic: "status",
+                        values: status
+                    }
+                ]
             case "getTouDischarging":
                 console.log(`${logDate()} Received Get TOU Discharging command`)
                 return [

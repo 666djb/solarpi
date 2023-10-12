@@ -139,6 +139,19 @@ export class Publisher extends events.EventEmitter {
                 }
             }
 
+            // Advertise the SolarPi status entity
+            const thisEntity = {
+                availability: availability,
+                device: device,
+                state_topic: `${this.config.baseTopic}/status/state`,
+                object_id: "solarpi_status",
+                name: "Command Status",
+                type: "text",
+                unique_id: "solarpi_command_status",
+                value_template: "{{ value_json.message }}"
+            }
+            await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
+
         } catch (ex) {
             console.log(`${logDate()} publishOnline() error: ${ex}`)
         }
@@ -171,7 +184,7 @@ export class Publisher extends events.EventEmitter {
         //TODO make this more robust by checking that the topic in the data is 
         // one of the topics in this.controlEntities[].subTopic
 
-        for(let controlDataIndex in controlData){
+        for (let controlDataIndex in controlData) {
             await this.publishData(controlData[controlDataIndex].values, `${controlData[controlDataIndex].subTopic}/state`, true)
         }
     }
@@ -186,11 +199,11 @@ export class Publisher extends events.EventEmitter {
 
     private async publishData(data: object, subTopic: string, retain?: boolean) {
         //try {
-            if (!this.mqttClient.connected) {
-                throw "Not connected"
-            }
-            await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
-                { retain: retain || false } as IClientPublishOptions)
+        if (!this.mqttClient.connected) {
+            throw "Not connected"
+        }
+        await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
+            { retain: retain || false } as IClientPublishOptions)
         //} catch (error) {
         //    throw `publishJSON() error ${error}`
         //}
