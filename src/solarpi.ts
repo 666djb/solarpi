@@ -58,53 +58,15 @@ async function runSolarPi() {
             console.log(`${logDate()} Disconnected from broker`)
         })
         .on("command", async (commandMessage) => {
-            // TODO need to look at catching when command is not ok so we can republish inverter values
-            // 
             try {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
                 let responseToPublish = response ? [response, commandSuccess(true)] : [commandSuccess(true)]
                 await publisher.publishControlData(responseToPublish)
-                /*
-                    {
-                        subTopic: "status",
-                        values: status
-                    }
-
-                    status = {
-                        error: true,
-                        message: "Command not OK",
-                        errorMessage: error
-                    }
-
-                */
-
-
-                // await publisher.publishCommandResponse(
-                //     {
-                //         "error": false,
-                //         "message": "Command OK"
-                //     }
-                // )
-                // if (response) {
-                //     await publisher.publishControlData(response)
-                // }
             } catch (error) {
                 let message = error instanceof Error ? error.message : "Unknown Inverter Error"
                 console.log(`${logDate()} Error sending command to inverter: ${message}`)
                 await publisher.publishControlData([commandSuccess(false)])
-                // await publisher.publishCommandResponse(
-                //     {
-                //         "error": true,
-                //         "message": message
-                //     }
-                // )
-
-                // Get control values from inverter as we may be out of sync with them if this command
-                // was not accepted.
-                // TODO catch error from inverterClient.sendCommand earlier and if this relates
-                // to modbuscode 7, then that means we are trying to do something not allowed
-                // report this back somehow rather than ending up here.
                 try {
                     console.log(`${logDate()} Getting control values from inverter`)
                     const response = await inverterClient.getControlValues()
