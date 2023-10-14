@@ -156,7 +156,7 @@ function commandSuccess(successful: boolean): ControlData {
         subTopic: "status",
         values: {
             error: !successful,
-            message: !successful ? "Command OK" : "Command not OK"
+            message: successful ? "Command OK" : "Command not OK"
         }
     }
 }
