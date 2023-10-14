@@ -50,7 +50,7 @@ export class InverterClient {
         return await this.inverter.getSensorData(this.modbusClient)
     }
 
-    public async sendCommand(command: string): Promise<ControlData[] /*| null*/> {
+    public async sendCommand(command: string): Promise<ControlData | void> {
         // Pass initialised instance of ModbusRTU class so inverter class can use e.g. writeRegisters method
         // as many times as needed depending on the inverter type and the command.
         return await this.inverter.sendCommand(this.modbusClient, command)

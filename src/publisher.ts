@@ -199,21 +199,17 @@ export class Publisher extends events.EventEmitter {
     }
 
     private async publishData(data: object, subTopic: string, retain?: boolean) {
-        //try {
         if (!this.mqttClient.connected) {
-            throw "Not connected"
+            throw "Not connected to broker"
         }
         await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
             { retain: retain || false } as IClientPublishOptions)
-        //} catch (error) {
-        //    throw `publishJSON() error ${error}`
-        //}
     }
 
     private async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
         try {
             if (!this.mqttClient.connected) {
-                throw "Not connected"
+                throw "Not connected to broker"
             }
             await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)

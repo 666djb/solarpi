@@ -5,7 +5,7 @@ import { getConfig, models } from "./config.js"
 import { InverterClient } from "./inverterClient.js"
 import { logDate } from "./logDate.js"
 import { GrowattSPH3000 } from "./growattSPH3000.js"
-import { Inverter } from "./inverter.js"
+import { ControlData, Inverter } from "./inverter.js"
 
 console.log(`${logDate()} Starting SolarPi`)
 
@@ -58,27 +58,47 @@ async function runSolarPi() {
             console.log(`${logDate()} Disconnected from broker`)
         })
         .on("command", async (commandMessage) => {
+            // TODO need to look at catching when command is not ok so we can republish inverter values
+            // 
             try {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
+                let responseToPublish = response ? [response, commandSuccess(true)] : [commandSuccess(false)]
+                await publisher.publishControlData(responseToPublish)
+                /*
+                    {
+                        subTopic: "status",
+                        values: status
+                    }
+
+                    status = {
+                        error: true,
+                        message: "Command not OK",
+                        errorMessage: error
+                    }
+
+                */
+
+
                 // await publisher.publishCommandResponse(
                 //     {
                 //         "error": false,
                 //         "message": "Command OK"
                 //     }
                 // )
-                //if (response != null) {
-                    await publisher.publishControlData(response)
-                //}
+                // if (response) {
+                //     await publisher.publishControlData(response)
+                // }
             } catch (error) {
                 let message = error instanceof Error ? error.message : "Unknown Inverter Error"
                 console.log(`${logDate()} Error sending command to inverter: ${message}`)
-                await publisher.publishCommandResponse(
-                    {
-                        "error": true,
-                        "message": message
-                    }                    
-                )
+                await publisher.publishControlData([commandSuccess(false)])
+                // await publisher.publishCommandResponse(
+                //     {
+                //         "error": true,
+                //         "message": message
+                //     }
+                // )
 
                 // Get control values from inverter as we may be out of sync with them if this command
                 // was not accepted.
@@ -129,4 +149,14 @@ async function runSolarPi() {
             console.error(`${logDate()} Error publishing data:`, error)
         }
     }, config.inverter.interval * 1000)
+}
+
+function commandSuccess(successful: boolean): ControlData {
+    return {
+        subTopic: "status",
+        values: {
+            error: successful,
+            message: successful ? "Command OK" : "Command not OK"
+        }
+    }
 }
