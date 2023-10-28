@@ -78,6 +78,7 @@ I have designed SolarPi so that the code is extensible to integrate other Growat
 This sensor entity is automatically discovered by Home Assistant and will show text such as "Command OK", the actual message sent via MQTT
 from SolarPi is a JSON object that contains text and a boolean error representation that could be used in automations. Having this Command Status
 entity is useful to detect when TOU Charge/Discharge periods overlap in a way the inverter rejects (you can't charge and discharge at the same time!).
+Also, if a command is not ok, then the actual values being used by the inverter are updated in Home Assistant.
 Also tidied up code including shortening of entity variables and MQTT value templates.
 
 ## Installation
