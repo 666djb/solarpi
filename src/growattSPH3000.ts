@@ -969,14 +969,10 @@ export class GrowattSPH3000 implements Inverter {
             this.touChargingValues.enablePeriod3 === "ON" ? 1 : 0
         ]
 
-        try {
-            // Write writeRegisters1 to holding registers 1090-1092
-            await this.writeRegisters(modbusClient, 1090, writeRegisters1)
-            // Write writeRegisters2 to holding registers 1100-1108
-            await this.writeRegisters(modbusClient, 1100, writeRegisters2)
-        } catch (error) {
-            throw "Error writing TOU charging values"
-        }
+        // Write writeRegisters1 to holding registers 1090-1092
+        await this.writeRegisters(modbusClient, 1090, writeRegisters1)
+        // Write writeRegisters2 to holding registers 1100-1108
+        await this.writeRegisters(modbusClient, 1100, writeRegisters2)
     }
 
     private async setTouDischarging(modbusClient: ModbusRTU): Promise<void> {
@@ -1033,14 +1029,10 @@ export class GrowattSPH3000 implements Inverter {
             this.touDischargingValues.enablePeriod3 === "ON" ? 1 : 0
         ]
 
-        try {
-            // Write writeRegisters1 to holding registers 1070-1071
-            await this.writeRegisters(modbusClient, 1070, writeRegisters1)
-            // Write writeRegisters2 to holding registers 1080-1088
-            await this.writeRegisters(modbusClient, 1080, writeRegisters2)
-        } catch (error) {
-            throw "Error writing TOU discharging values"
-        }
+        // Write writeRegisters1 to holding registers 1070-1071
+        await this.writeRegisters(modbusClient, 1070, writeRegisters1)
+        // Write writeRegisters2 to holding registers 1080-1088
+        await this.writeRegisters(modbusClient, 1080, writeRegisters2)
     }
 
     private async getTouCharging(modbusClient: ModbusRTU): Promise<TouChargingValues> {
