@@ -5,7 +5,7 @@ import { getConfig, models } from "./config.js"
 import { InverterClient } from "./inverterClient.js"
 import { logDate } from "./logDate.js"
 import { GrowattSPH3000 } from "./growattSPH3000.js"
-import { Inverter } from "./inverter.js"
+import { ControlData, Inverter } from "./inverter.js"
 
 console.log(`${logDate()} Starting SolarPi`)
 
@@ -41,27 +41,39 @@ runSolarPi()
 
 async function runSolarPi() {
     publisher
-        .on("Connect", () => {
-            console.log(`${logDate()} Connected to MQTT broker`)
-            getControlValues()
+        .on("Connect", async () => {
+            console.log(`${logDate()} Connected to broker`)
+            try {
+                console.log(`${logDate()} Getting control values from inverter`)
+                const response = await inverterClient.getControlValues()
+                await publisher.publishControlData(response)
+            } catch (error) {
+                console.log(`${logDate()} Error getting control values from inverter:`, error)
+            }
         })
         .on("Reconnect", () => {
-            console.log(`${logDate()} Reconnecting to MQTT broker`)
+            console.log(`${logDate()} Reconnecting to broker`)
         })
         .on("Disconnect", () => {
-            console.log(`${logDate()} Disconnected from MQTT broker`)
+            console.log(`${logDate()} Disconnected from broker`)
         })
         .on("command", async (commandMessage) => {
             try {
                 const response = await inverterClient.sendCommand(commandMessage)
                 console.log(`${logDate()} Command sent to inverter`)
-                await publisher.publishCommandResponse({ "error": false })
-                if (response!=null) {
-                    await publisher.publishControlData(response)
-                }
+                let responseToPublish = response ? [response, commandSuccess(true)] : [commandSuccess(true)]
+                await publisher.publishControlData(responseToPublish)
             } catch (error) {
-                console.log(`${logDate()} Error sending command to inverter: `, error)
-                await publisher.publishCommandResponse({ "error": true })
+                let message = error instanceof Error ? error.message : "Unknown Inverter Error"
+                console.log(`${logDate()} Error sending command to inverter: ${message}`)
+                await publisher.publishControlData([commandSuccess(false)])
+                try {
+                    console.log(`${logDate()} Getting control values from inverter`)
+                    const response = await inverterClient.getControlValues()
+                    await publisher.publishControlData(response)
+                } catch (error) {
+                    console.log(`${logDate()} Error getting control values from inverter:`, error)
+                }
             }
         })
         .on("control", async (subTopic, controlMessage) => {
@@ -81,7 +93,7 @@ async function runSolarPi() {
         await inverterClient.init()
         console.log(`${logDate()} Connected to inverter`)
     } catch (error) {
-        console.error(`${logDate()} Error initialising connection to Growatt`, error)
+        console.error(`${logDate()} Error initialising connection to inveter:`, error)
     }
 
     setInterval(async () => {
@@ -89,25 +101,24 @@ async function runSolarPi() {
         try {
             data = await inverterClient.getData()
         } catch (error) {
-            console.error(`${logDate()} Error reading Growatt data:`, error)
+            console.error(`${logDate()} Error reading inverter data:`, error)
         }
 
         try {
             console.log(`${logDate()} Publishing data`)
             await publisher.publishSensorData(data)
         } catch (error) {
-            console.error(`${logDate()} Error publishing data to MQTT:`, error)
+            console.error(`${logDate()} Error publishing data:`, error)
         }
     }, config.inverter.interval * 1000)
 }
 
-async function getControlValues() {
-    // Get stored values from inverter to update MQTT
-    try {
-        console.log(`${logDate()} Getting control values from inverter`)
-        const response = await inverterClient.getControlValues()
-        await publisher.publishControlData(response)
-    } catch (error) {
-        console.log(`${logDate()} Error getting inverter control values: `, error)
+function commandSuccess(successful: boolean): ControlData {
+    return {
+        subTopic: "status",
+        values: {
+            error: !successful,
+            message: successful ? "Command OK" : "Command not OK"
+        }
     }
 }

@@ -1,4 +1,4 @@
-# SolarPi v1.0.7
+# SolarPi v1.0.8
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -17,6 +17,7 @@ SolarPi reads the following values from the inverter:
 * Load Energy (today and total)
 * Battery Charge/Discharge Energy (today and total)
 * Grid Voltage
+* Command Status (indicating whether a command was accepted or not)
 
 SolarPi reads and writes the following Time of Use (TOU) values:
 * TOU Charging:
@@ -72,6 +73,13 @@ I have designed SolarPi so that the code is extensible to integrate other Growat
 * Added grid voltage sensor entity
 ### 1.0.7
 * Added TOU dishcharge entities to allow forced discharge to the grid to be set
+### 1.0.8
+* Added Command Status entity that can be used to show whether the last command sent to the inverter was successful or not.
+This sensor entity is automatically discovered by Home Assistant and will show text such as "Command OK", the actual message sent via MQTT
+from SolarPi is a JSON object that contains text and a boolean error representation that could be used in automations. Having this Command Status
+entity is useful to detect when TOU Charge/Discharge periods overlap in a way the inverter rejects (you can't charge and discharge at the same time!).
+Also, if a command is not ok, then the actual values being used by the inverter are updated in Home Assistant.
+Also tidied up code including shortening of entity variables and MQTT value templates.
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
@@ -182,6 +190,7 @@ If you make improvements, find bugs (in the code or this doc), let me know and, 
 * Local CSV logging of energy values
 * Implement Inverter Time MQTT entities for reading (as sensors)
 * Implement automatic time setting and configuration file item to enable (e.g. use localtime on Raspberry Pi to update inverter time)
+* Test with newer versions of Node.js
 
 Feel free to use this code for your own purposes. If you test this with a Growatt SPH inverter, please let me know, also if you add support for other inverters, I will look to merging changes in. I can't promise to provide tonnes of support, but will try to help.
 

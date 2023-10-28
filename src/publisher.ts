@@ -139,6 +139,20 @@ export class Publisher extends events.EventEmitter {
                 }
             }
 
+            // Advertise the SolarPi status entity
+            const thisEntity = {
+                availability: availability,
+                device: device,
+                state_topic: `${this.config.baseTopic}/status/state`,
+                object_id: "solarpi_status",
+                name: "Command Status",
+                type: "sensor",
+                unique_id: "solarpi_command_status",
+                value_template: "{{ value_json.message }}",
+                force_update: true
+            }
+            await this.publishJSONdiscovery(`${this.config.discoveryTopic}/${thisEntity.type}/${thisEntity.unique_id}/config`, thisEntity, true)
+
         } catch (ex) {
             console.log(`${logDate()} publishOnline() error: ${ex}`)
         }
@@ -158,7 +172,7 @@ export class Publisher extends events.EventEmitter {
     private async publish(data: string, subTopic: string, retain?: boolean) {
         try {
             if (!this.mqttClient.connected) {
-                throw "Not connected"
+                throw "Not connected to broker"
             }
             await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, data,
                 { retain: retain || false } as IClientPublishOptions)
@@ -171,7 +185,7 @@ export class Publisher extends events.EventEmitter {
         //TODO make this more robust by checking that the topic in the data is 
         // one of the topics in this.controlEntities[].subTopic
 
-        for(let controlDataIndex in controlData){
+        for (let controlDataIndex in controlData) {
             await this.publishData(controlData[controlDataIndex].values, `${controlData[controlDataIndex].subTopic}/state`, true)
         }
     }
@@ -181,25 +195,21 @@ export class Publisher extends events.EventEmitter {
     }
 
     public async publishCommandResponse(data: object) {
-        return this.publishData(data, "command/state")
+        return this.publishData(data, "inverter/state")
     }
 
     private async publishData(data: object, subTopic: string, retain?: boolean) {
-        try {
-            if (!this.mqttClient.connected) {
-                throw "Not connected"
-            }
-            await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
-                { retain: retain || false } as IClientPublishOptions)
-        } catch (error) {
-            throw `publishJSON() error ${error}`
+        if (!this.mqttClient.connected) {
+            throw "Not connected to broker"
         }
+        await this.mqttClient.publish(`${this.config.baseTopic}/${subTopic}`, JSON.stringify(data),
+            { retain: retain || false } as IClientPublishOptions)
     }
 
     private async publishJSONdiscovery(discoveryTopic: string, data: object, retain?: boolean) {
         try {
             if (!this.mqttClient.connected) {
-                throw "Not connected"
+                throw "Not connected to broker"
             }
             await this.mqttClient.publish(`${discoveryTopic}`, JSON.stringify(data),
                 { retain: retain || false } as IClientPublishOptions)

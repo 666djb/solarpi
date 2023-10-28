@@ -837,7 +837,7 @@ export class GrowattSPH3000 implements Inverter {
 
     public getSensorEntities(): SensorEntities {
         return {
-            subTopic: "inverter",
+            subTopic: "inverter", //TODO think about removing this and handling subTopic elsewhere
             entities: this.sensorEntities
         }
     }
@@ -969,11 +969,14 @@ export class GrowattSPH3000 implements Inverter {
             this.touChargingValues.enablePeriod3 === "ON" ? 1 : 0
         ]
 
-        // Write writeRegisters1 to holding registers 1090-1092
-        await this.writeRegisters(modbusClient, 1090, writeRegisters1)
-
-        // Write writeRegisters2 to holding registers 1100-1108
-        await this.writeRegisters(modbusClient, 1100, writeRegisters2)
+        try {
+            // Write writeRegisters1 to holding registers 1090-1092
+            await this.writeRegisters(modbusClient, 1090, writeRegisters1)
+            // Write writeRegisters2 to holding registers 1100-1108
+            await this.writeRegisters(modbusClient, 1100, writeRegisters2)
+        } catch (error) {
+            throw "Error writing TOU charging values"
+        }
     }
 
     private async setTouDischarging(modbusClient: ModbusRTU): Promise<void> {
@@ -1030,11 +1033,14 @@ export class GrowattSPH3000 implements Inverter {
             this.touDischargingValues.enablePeriod3 === "ON" ? 1 : 0
         ]
 
-        // Write writeRegisters1 to holding registers 1070-1071
-        await this.writeRegisters(modbusClient, 1070, writeRegisters1)
-
-        // Write writeRegisters2 to holding registers 1080-1088
-        await this.writeRegisters(modbusClient, 1080, writeRegisters2)
+        try {
+            // Write writeRegisters1 to holding registers 1070-1071
+            await this.writeRegisters(modbusClient, 1070, writeRegisters1)
+            // Write writeRegisters2 to holding registers 1080-1088
+            await this.writeRegisters(modbusClient, 1080, writeRegisters2)
+        } catch (error) {
+            throw "Error writing TOU discharging values"
+        }
     }
 
     private async getTouCharging(modbusClient: ModbusRTU): Promise<TouChargingValues> {
@@ -1115,42 +1121,34 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
-    public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData[] | null> {
+    public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData | void> {
         const command: Command = JSON.parse(commandString)
 
         switch (command.command) {
             case "setTouCharging":
                 console.log(`${logDate()} Received Set TOU Charging command`)
-                await this.setTouCharging(modbusClient)
-                return null
+                return await this.setTouCharging(modbusClient)
             case "getTouCharging":
                 console.log(`${logDate()} Received Get TOU Charging command`)
-                return [
-                    {
-                        subTopic: "touCharging",
-                        values: await this.getTouCharging(modbusClient)
-                    }
-                ]
+                return {
+                    subTopic: "touCharging",
+                    values: await this.getTouCharging(modbusClient)
+                }
             case "setTouDischarging":
                 console.log(`${logDate()} Received Set TOU Discharging command`)
-                await this.setTouDischarging(modbusClient)
-                return null
+                return await this.setTouDischarging(modbusClient)
             case "getTouDischarging":
                 console.log(`${logDate()} Received Get TOU Discharging command`)
-                return [
-                    {
-                        subTopic: "touDischarging",
-                        values: await this.getTouDischarging(modbusClient)
-                    }
-                ]
+                return {
+                    subTopic: "touDischarging",
+                    values: await this.getTouDischarging(modbusClient)
+                }
             case "getTime":
                 console.log(`${logDate()} Received Get Time command`)
-                return [
-                    {
-                        subTopic: "time",
-                        values: await this.getTime(modbusClient)
-                    }
-                ]
+                return {
+                    subTopic: "time",
+                    values: await this.getTime(modbusClient)
+                }
             default:
                 throw `Unknown command: ${command.command}`
         }
