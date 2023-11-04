@@ -1,4 +1,4 @@
-# SolarPi v1.0.8
+# SolarPi v1.0.9
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
