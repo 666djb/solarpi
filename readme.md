@@ -80,6 +80,9 @@ from SolarPi is a JSON object that contains text and a boolean error representat
 entity is useful to detect when TOU Charge/Discharge periods overlap in a way the inverter rejects (you can't charge and discharge at the same time!).
 Also, if a command is not ok, then the actual values being used by the inverter are updated in Home Assistant.
 Also tidied up code including shortening of entity variables and MQTT value templates.
+### 1.0.9
+* Tested with Node.js version 20.9.0. See note below on updated Node.js versions. I'll update the installation instructions to use 20.9.0 at the next
+release.
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
@@ -151,7 +154,8 @@ If you want solarpi to run automatically at boot do the following:
 ### Configure SolarPi
 Edit the file /opt/solarpi/options.json to provide the following:
 * The hostname or IP address of your Home Assistant's MQTT broker ("brokerUrl" in the options file)
-* The username and password to access your MQTT broker (these are set in Home Assistant) ("username" and "password" in the options file)
+* The username and password to access your MQTT broker (these are set in Home Assistant) ("username" and "password" in the options file).
+Note you can use an SSL secured connection to your MQTT broker with a URL such as mqtts://home-assistant.domain:8883
 * Set the time in seconds between each poll for values from the inverter ("interval" in the options file)
 * The Inverter Model can currently be set to either SPH3000 or SPH6000 but nothing else as no other models have been defined yet (feel free to adapt the code to support other models though!)
 * Set the USB device path based on Installation Steps 5 and 6 above, prefixing the path with /dev (e.g. /dev/ttyUSB0) ("usbDevice" in the options file)
@@ -183,14 +187,27 @@ If you have used the install script or followed the complete set of manual steps
 ## Development
 If you make improvements, find bugs (in the code or this doc), let me know and, time permitting, I'll try to fix.
 
-### To do
+## Updating Node.js versions
+Earlier versions of SolarPi were developed for Node.js version 16.16.0. The version of Node.js that is now recommended on
+the https://nodejs.org site is 20.9.0 - version 20.x.x will be maintained to 2026 according to the Node.js schedule.
+I have updated my version by doing the following:
+* Run: wget https://unofficial-builds.nodejs.org/download/release/v20.9.0/node-v20.9.0-linux-armv6l.tar.xz when logged in as my default user on
+the Raspberry Pi Zero that I use for SolarPi
+* Run: tar xvfJ node-v20.9.0-linux-armv6l.tar.xz
+* Stop SolarPi by running: sudo systemctl stop solarpi (also stop anything else that is using Node.js)
+* Overwrite the old version by running: sudo cp -R node-v20.9.0-linux-armv6l/* /usr/local
+* Reboot or start SolarPi manually (sudo systemctl start solarpi)
+
+Rolling back to the previous version should be as simple as repeating the steps subtituting the relevant tar.xz file.
+
+## To do
 * Add some pictures of the hardware and connection to the inverter
 * Validate config file
 * Add robustness to install.sh script
 * Local CSV logging of energy values
 * Implement Inverter Time MQTT entities for reading (as sensors)
 * Implement automatic time setting and configuration file item to enable (e.g. use localtime on Raspberry Pi to update inverter time)
-* Test with newer versions of Node.js
+* ~~Test with newer versions of Node.js~~
 
 Feel free to use this code for your own purposes. If you test this with a Growatt SPH inverter, please let me know, also if you add support for other inverters, I will look to merging changes in. I can't promise to provide tonnes of support, but will try to help.
 

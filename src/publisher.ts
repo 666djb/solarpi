@@ -144,6 +144,7 @@ export class Publisher extends events.EventEmitter {
                 availability: availability,
                 device: device,
                 state_topic: `${this.config.baseTopic}/status/state`,
+                // TODO should this be the same as the unique_id?
                 object_id: "solarpi_status",
                 name: "Command Status",
                 type: "sensor",
