@@ -853,7 +853,9 @@ export class GrowattSPH3000 implements Inverter {
             setTimeout(() => { }, 2000)
             attempt++
         }
-        console.log(`${logDate()} DEBUG: writeRegisters() failed to send data after 3 attempts`) // DEBUG
+        if (!success) {
+            console.log(`${logDate()} DEBUG: writeRegisters() failed to send data after 3 attempts`) // DEBUG
+        }
     }
 
     public getSensorEntities(): SensorEntities {
