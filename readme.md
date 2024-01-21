@@ -81,7 +81,7 @@ entity is useful to detect when TOU Charge/Discharge periods overlap in a way th
 Also, if a command is not ok, then the actual values being used by the inverter are updated in Home Assistant.
 Also tidied up code including shortening of entity variables and MQTT value templates.
 ### 1.0.9
-* Tested with Node.js version 20.9.0. See note below on updated Node.js versions. I'll update the installation instructions to use 20.9.0 at the next
+* Tested with Node.js version 20.9.0. See note below on updating Node.js versions. I'll update the installation instructions to use 20.9.0 at the next
 release.
 
 ## Installation
