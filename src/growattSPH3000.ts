@@ -855,6 +855,8 @@ export class GrowattSPH3000 implements Inverter {
         }
         if (!success) {
             console.log(`${logDate()} DEBUG: writeRegisters() failed to send data after 3 attempts`) // DEBUG
+        } else {
+            console.log(`${logDate()} DEBUG: writeRegisters() success`) // DEBUG
         }
     }
 
