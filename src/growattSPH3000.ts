@@ -824,15 +824,36 @@ export class GrowattSPH3000 implements Inverter {
         return result
     }
 
-    private async writeRegisters(modbusClient: ModbusRTU, dataAddress: number, values: number[] | Buffer): Promise<WriteMultipleResult> {
-        const release = await this.mutex.acquire()
-        let result: WriteMultipleResult
-        try {
-            result = await modbusClient.writeRegisters(dataAddress, values)
-        } finally {
-            release()
+    private async writeRegisters(modbusClient: ModbusRTU, dataAddress: number, values: number[] | Buffer): Promise<void> {
+        // Going to try and send the data up to three times to combat any USB/serial/wiring induced errors
+        let success = false
+        let attempt = 0
+        while (success == false && attempt < 3) {
+            console.log(`${logDate()} DEBUG: writeRegisters() attempt number ${attempt + 1}`)  // DEBUG
+            try { // First try to get the mutex to ensure exclusive access to the serial port
+                console.log(`${logDate()} DEBUG: writeRegisters() acquiring mutex`)  // DEBUG
+                const release = await this.mutex.acquire()
+                console.log(`${logDate()} DEBUG: writeRegisters() acquired mutex`) // DEBUG
+                try { // Now try to send the data
+                    await modbusClient.writeRegisters(dataAddress, values)
+                    console.log(`${logDate()} DEBUG: writeRegisters() modbusClient.writeRegisters() successful`) // DEBUG
+                    success = true
+                } catch (error) { // Error writing data
+                    console.log(`${logDate()} DEBUG: writeRegisters() modbusClient.writeRegisters() error: ${error}`) // DEBUG
+                    throw error // Return and pass this error back up
+                } finally {
+                    release() // Release the mutex whether writing was successful or not
+                    console.log(`${logDate()} DEBUG: writeRegisters() released mutex`) // DEBUG
+                }
+            } catch (error) { // Error with mutex
+                console.log(`${logDate()} DEBUG: writeRegisters() error acquiring mutex: ${error}`) // DEBUG
+                throw error // Return and pass this error back up
+            }
+            // Wait a couple of seconds
+            setTimeout(() => { }, 2000)
+            attempt++
         }
-        return result
+        console.log(`${logDate()} DEBUG: writeRegisters() failed to send data after 3 attempts`) // DEBUG
     }
 
     public getSensorEntities(): SensorEntities {
