@@ -840,7 +840,7 @@ export class GrowattSPH3000 implements Inverter {
                     success = true
                 } catch (error) { // Error writing data
                     console.log(`${logDate()} DEBUG: writeRegisters() modbusClient.writeRegisters() error: ${error}`) // DEBUG
-                    throw error // Return and pass this error back up
+                    //throw error // Return and pass this error back up
                 } finally {
                     release() // Release the mutex whether writing was successful or not
                     console.log(`${logDate()} DEBUG: writeRegisters() released mutex`) // DEBUG
@@ -855,6 +855,7 @@ export class GrowattSPH3000 implements Inverter {
         }
         if (!success) {
             console.log(`${logDate()} DEBUG: writeRegisters() failed to send data after 3 attempts`) // DEBUG
+            throw "Error sending command to inverter" // Return and pass this error back up
         } else {
             console.log(`${logDate()} DEBUG: writeRegisters() success`) // DEBUG
         }
