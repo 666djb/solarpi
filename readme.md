@@ -1,4 +1,4 @@
-# SolarPi v1.0.9 beta 1
+# SolarPi v1.0.9 beta 2
 
 ## Beta for testing
 This version includes new code to implement retransmission of MODBUS messages between SolarPi and
