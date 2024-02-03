@@ -820,7 +820,7 @@ export class GrowattSPH3000 implements Inverter {
         let attempt = 0
 
         while (attempt++ < 3) {
-            await modbusClient
+            let result = await modbusClient
                 .readInputRegisters(dataAddress, length)
                 .then((result) => {
                     console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
@@ -831,6 +831,12 @@ export class GrowattSPH3000 implements Inverter {
                     console.log(`${logDate()} DEBUG: readInputRegisters() modbusClient.readInputRegisters() error: ${error}`) // DEBUG
                     setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
                 })
+
+            if (result) {
+                console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
+                release()
+                return result
+            }
         }
 
         console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
@@ -851,17 +857,18 @@ export class GrowattSPH3000 implements Inverter {
         let attempt = 0
 
         while (attempt++ < 3) {
-            await modbusClient
+            let result = await modbusClient
                 .readHoldingRegisters(dataAddress, length)
-                .then((result) => {
-                    console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
-                    release()
-                    return result
-                })
                 .catch(error => { // modbus read error
                     console.log(`${logDate()} DEBUG: readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error}`) // DEBUG
                     setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
                 })
+
+            if (result) {
+                console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
+                release()
+                return result
+            }
         }
 
         console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
