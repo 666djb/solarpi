@@ -820,17 +820,14 @@ export class GrowattSPH3000 implements Inverter {
         let attempt = 0
 
         while (attempt++ < 3) {
-            let result = await modbusClient
-                .readInputRegisters(dataAddress, length)
-                .catch(error => { // modbus read error
-                    console.log(`${logDate()} DEBUG: readInputRegisters() modbusClient.readInputRegisters() error: ${error}`) // DEBUG
-                    setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
-                })
-
-            if (result) {
+            try {
+                const result = await modbusClient.readInputRegisters(dataAddress, length)
                 console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
                 release()
                 return result
+            } catch (error) { // modbus read error
+                console.log(`${logDate()} DEBUG: readInputRegisters() modbusClient.readInputRegisters() error: ${error}`) // DEBUG
+                setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
             }
         }
 
@@ -852,17 +849,14 @@ export class GrowattSPH3000 implements Inverter {
         let attempt = 0
 
         while (attempt++ < 3) {
-            let result = await modbusClient
-                .readHoldingRegisters(dataAddress, length)
-                .catch(error => { // modbus read error
-                    console.log(`${logDate()} DEBUG: readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error}`) // DEBUG
-                    setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
-                })
-
-            if (result) {
+            try {
+                const result = await modbusClient.readHoldingRegisters(dataAddress, length)
                 console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
                 release()
                 return result
+            } catch (error) { // modbus read error
+                console.log(`${logDate()} DEBUG: readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error}`) // DEBUG
+                setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
             }
         }
 
