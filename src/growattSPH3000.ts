@@ -822,11 +822,6 @@ export class GrowattSPH3000 implements Inverter {
         while (attempt++ < 3) {
             let result = await modbusClient
                 .readInputRegisters(dataAddress, length)
-                .then((result) => {
-                    console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
-                    release()
-                    return result
-                })
                 .catch(error => { // modbus read error
                     console.log(`${logDate()} DEBUG: readInputRegisters() modbusClient.readInputRegisters() error: ${error}`) // DEBUG
                     setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
