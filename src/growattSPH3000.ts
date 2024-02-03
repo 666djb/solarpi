@@ -60,7 +60,6 @@ interface TimeValues {
 
 export class GrowattSPH3000 implements Inverter {
     private mutex = withTimeout(new Mutex(), 1000)
-    //private mutex: Mutex
 
     private sensorEntities: SensorEntity[] = [
         {
@@ -798,11 +797,6 @@ export class GrowattSPH3000 implements Inverter {
         stopHour3: 0,
         stopMinute3: 0,
         enablePeriod3: "OFF"
-    }
-
-    constructor() {
-        console.log(`${logDate()} DEBUG: creating new GrowattSPH3000 object`)  // DEBUG
-        //this.mutex = new Mutex()
     }
 
     // Wrapper methods to allow use of mutex as it seems ModbusRTU allows
