@@ -813,7 +813,7 @@ export class GrowattSPH3000 implements Inverter {
         const release = await this.mutex
             .acquire()
             .catch(error => {
-                console.log(`${logDate()} DEBUG: readInputRegisters() error acquiring mutex: ${error}`) // DEBUG
+                // TODO: if a mutex is locked for a long time, what to do? Release it here?
                 throw error // Pass this error back up
             })
 
@@ -833,7 +833,6 @@ export class GrowattSPH3000 implements Inverter {
 
         console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
         release()
-        console.log(`${logDate()} DEBUG: readInputRegisters() failed to read data after 3 attempts`) // DEBUG
         throw "Error reading data (input registers) from inverter after multiple attempts" // Return and pass this error back up
     }
 
@@ -842,7 +841,7 @@ export class GrowattSPH3000 implements Inverter {
         const release = await this.mutex
             .acquire()
             .catch(error => {
-                console.log(`${logDate()} DEBUG: readHoldingRegisters() error acquiring mutex: ${error}`) // DEBUG
+                // TODO: if a mutex is locked for a long time, what to do? Release it here?
                 throw error // Pass this error back up
             })
 
@@ -862,45 +861,35 @@ export class GrowattSPH3000 implements Inverter {
 
         console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
         release()
-        console.log(`${logDate()} DEBUG: readHoldingRegisters() failed to read data after 3 attempts`) // DEBUG
         throw "Error reading data (holding registers) from inverter after multiple attempts" // Return and pass this error back up
     }
 
-    private async writeRegisters(modbusClient: ModbusRTU, dataAddress: number, values: number[] | Buffer): Promise<void> {
-        // Going to try and send the data up to three times to combat any USB/serial/wiring induced errors
-        let success = false
+    private async writeRegisters(modbusClient: ModbusRTU, dataAddress: number, values: number[] | Buffer): Promise<WriteMultipleResult> {
+        console.log(`${logDate()} DEBUG: writeRegisters() acquiring mutex`) // DEBUG
+        const release = await this.mutex
+            .acquire()
+            .catch(error => {
+                // TODO: if a mutex is locked for a long time, what to do? Release it here?
+                throw error // Pass this error back up
+            })
+
         let attempt = 0
-        while (success == false && attempt < 3) {
-            console.log(`${logDate()} DEBUG: writeRegisters() attempt number ${attempt + 1}`)  // DEBUG
-            try { // First try to get the mutex to ensure exclusive access to the serial port
-                console.log(`${logDate()} DEBUG: writeRegisters() acquiring mutex`)  // DEBUG
-                const release = await this.mutex.acquire()
-                console.log(`${logDate()} DEBUG: writeRegisters() acquired mutex`) // DEBUG
-                try { // Now try to send the data
-                    await modbusClient.writeRegisters(dataAddress, values)
-                    console.log(`${logDate()} DEBUG: writeRegisters() modbusClient.writeRegisters() successful`) // DEBUG
-                    success = true
-                } catch (error) { // Error writing data
-                    console.log(`${logDate()} DEBUG: writeRegisters() modbusClient.writeRegisters() error: ${error}`) // DEBUG
-                    //throw error // Return and pass this error back up
-                } finally {
-                    release() // Release the mutex whether writing was successful or not
-                    console.log(`${logDate()} DEBUG: writeRegisters() released mutex`) // DEBUG
-                }
-            } catch (error) { // Error with mutex
-                console.log(`${logDate()} DEBUG: writeRegisters() error acquiring mutex: ${error}`) // DEBUG
-                throw error // Return and pass this error back up
+
+        while (attempt++ < 3) {
+            try {
+                const result = await modbusClient.writeRegisters(dataAddress, values)
+                console.log(`${logDate()} DEBUG: writeRegisters() releasing mutex`) // DEBUG
+                release()
+                return result
+            } catch (error) { // modbus write error
+                console.log(`${logDate()} DEBUG: writeRegisters() modbusClient.writeRegisters() error: ${error}`) // DEBUG
+                setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
             }
-            // Wait a couple of seconds
-            setTimeout(() => { }, 2000)
-            attempt++
         }
-        if (!success) {
-            console.log(`${logDate()} DEBUG: writeRegisters() failed to send data after 3 attempts`) // DEBUG
-            throw "Error sending command to inverter" // Return and pass this error back up
-        } else {
-            console.log(`${logDate()} DEBUG: writeRegisters() success`) // DEBUG
-        }
+
+        console.log(`${logDate()} DEBUG: writeRegisters() releasing mutex`) // DEBUG
+        release()
+        throw "Error write data to inverter after multiple attempts" // Return and pass this error back up
     }
 
     public getSensorEntities(): SensorEntities {
