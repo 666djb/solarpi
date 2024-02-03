@@ -846,6 +846,14 @@ export class GrowattSPH3000 implements Inverter {
                 throw error // Pass this error back up
             })
 
+        // Testing - should throw an error
+        await this.mutex
+            .acquire()
+            .catch(error => {
+                console.log(`${logDate()} DEBUG: readHoldingRegisters() error acquiring mutex: ${error}`) // DEBUG
+                throw error // Pass this error back up
+            })
+
         let attempt = 0
 
         while (attempt++ < 3) {
