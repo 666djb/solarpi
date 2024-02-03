@@ -1,9 +1,15 @@
-# SolarPi v1.0.9 beta 2
+# SolarPi v1.0.9 beta 3
 
 ## Beta for testing
+### Beta 1,2
 This version includes new code to implement retransmission of MODBUS messages between SolarPi and
-the inverter to overcome USB/RS485 and cabling induced errors. If successful, the changes will be
-merged into the regular public branch of code.
+the inverter to overcome USB/RS485 and cabling induced errors.
+### Beta 3
+This now includes retries for reads of MODBUS messages from from the inverter. Code for retries of
+writes and reads is simplified.
+
+If successful, the changes will be merged into the regular public branch of code.
+
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
