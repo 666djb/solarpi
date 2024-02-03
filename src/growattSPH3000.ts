@@ -5,7 +5,7 @@
 import { ModbusRTU, ReadRegisterResult, WriteMultipleResult } from "modbus-serial/ModbusRTU"
 import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities, ControlData } from "./inverter"
 import Ajv from "ajv"
-import { Mutex } from 'async-mutex'
+import { Mutex, withTimeout } from 'async-mutex'
 import { logDate } from "./logDate.js"
 
 interface TouChargingValues {
@@ -59,7 +59,8 @@ interface TimeValues {
 }
 
 export class GrowattSPH3000 implements Inverter {
-    mutex = new Mutex()
+    private mutex = withTimeout(new Mutex(), 1000)
+    //private mutex: Mutex
 
     private sensorEntities: SensorEntity[] = [
         {
@@ -799,29 +800,74 @@ export class GrowattSPH3000 implements Inverter {
         enablePeriod3: "OFF"
     }
 
+    constructor() {
+        console.log(`${logDate()} DEBUG: creating new GrowattSPH3000 object`)  // DEBUG
+        //this.mutex = new Mutex()
+    }
+
     // Wrapper methods to allow use of mutex as it seems ModbusRTU allows
     // read and writes to overlap
     // TODO create class that extends ModbusRTU with mutexed methods (and with timeouts)
     private async readInputRegisters(modbusClient: ModbusRTU, dataAddress: number, length: number): Promise<ReadRegisterResult> {
-        const release = await this.mutex.acquire()
-        let result: ReadRegisterResult
-        try {
-            result = await modbusClient.readInputRegisters(dataAddress, length)
-        } finally {
-            release()
+        console.log(`${logDate()} DEBUG: readInputRegisters() acquiring mutex`) // DEBUG
+        const release = await this.mutex
+            .acquire()
+            .catch(error => {
+                console.log(`${logDate()} DEBUG: readInputRegisters() error acquiring mutex: ${error}`) // DEBUG
+                throw error // Pass this error back up
+            })
+
+        let attempt = 0
+
+        while (attempt++ < 3) {
+            await modbusClient
+                .readInputRegisters(dataAddress, length)
+                .then((result) => {
+                    console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
+                    release()
+                    return result
+                })
+                .catch(error => { // modbus read error
+                    console.log(`${logDate()} DEBUG: readInputRegisters() modbusClient.readInputRegisters() error: ${error}`) // DEBUG
+                    setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
+                })
         }
-        return result
+
+        console.log(`${logDate()} DEBUG: readInputRegisters() releasing mutex`) // DEBUG
+        release()
+        console.log(`${logDate()} DEBUG: readInputRegisters() failed to read data after 3 attempts`) // DEBUG
+        throw "Error reading data (input registers) from inverter after multiple attempts" // Return and pass this error back up
     }
 
     private async readHoldingRegisters(modbusClient: ModbusRTU, dataAddress: number, length: number): Promise<ReadRegisterResult> {
-        const release = await this.mutex.acquire()
-        let result: ReadRegisterResult
-        try {
-            result = await modbusClient.readHoldingRegisters(dataAddress, length)
-        } finally {
-            release()
+        console.log(`${logDate()} DEBUG: readHoldingRegisters() acquiring mutex`) // DEBUG
+        const release = await this.mutex
+            .acquire()
+            .catch(error => {
+                console.log(`${logDate()} DEBUG: readHoldingRegisters() error acquiring mutex: ${error}`) // DEBUG
+                throw error // Pass this error back up
+            })
+
+        let attempt = 0
+
+        while (attempt++ < 3) {
+            await modbusClient
+                .readHoldingRegisters(dataAddress, length)
+                .then((result) => {
+                    console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
+                    release()
+                    return result
+                })
+                .catch(error => { // modbus read error
+                    console.log(`${logDate()} DEBUG: readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error}`) // DEBUG
+                    setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
+                })
         }
-        return result
+
+        console.log(`${logDate()} DEBUG: readHoldingRegisters() releasing mutex`) // DEBUG
+        release()
+        console.log(`${logDate()} DEBUG: readHoldingRegisters() failed to read data after 3 attempts`) // DEBUG
+        throw "Error reading data (holding registers) from inverter after multiple attempts" // Return and pass this error back up
     }
 
     private async writeRegisters(modbusClient: ModbusRTU, dataAddress: number, values: number[] | Buffer): Promise<void> {
