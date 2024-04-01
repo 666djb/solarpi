@@ -842,6 +842,7 @@ export class GrowattSPH3000 implements Inverter {
         while (attempt++ < 3) {
             try {
                 const result = await modbusClient.readHoldingRegisters(dataAddress, length)
+                release()
                 return result
             } catch (error) { // modbus read error
                 console.log(`${logDate()} readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error} ${attempt!=3 ? "retrying" : "giving up"}`)
