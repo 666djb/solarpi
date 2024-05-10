@@ -1,6 +1,5 @@
 #!/bin/bash
 pwd=$(pwd)
-echo "Note updating to version 1.0.4 from an earlier version requires an additional line in the configuration file options.json to be added for the USB device path"
 
 if test -f "/opt/solarpi/version"; then
     echo -n "Updating solarpi installation from Version "

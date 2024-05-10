@@ -1,4 +1,4 @@
-# SolarPi v1.0.9
+# SolarPi v1.1.0
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -81,8 +81,11 @@ entity is useful to detect when TOU Charge/Discharge periods overlap in a way th
 Also, if a command is not ok, then the actual values being used by the inverter are updated in Home Assistant.
 Also tidied up code including shortening of entity variables and MQTT value templates.
 ### 1.0.9
-* Tested with Node.js version 20.9.0. See note below on updated Node.js versions. I'll update the installation instructions to use 20.9.0 at the next
+* Tested with Node.js version 20.9.0. See note below on updating Node.js versions. I'll update the installation instructions to use 20.9.0 at the next
 release.
+### 1.1.0
+* Adds code to automatically retry sending commands to the inverter to mitigate errors that may appear on USB or serial connections, this does not change
+the functionality of SolarPi.
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
@@ -207,7 +210,7 @@ Rolling back to the previous version should be as simple as repeating the steps 
 * Local CSV logging of energy values
 * Implement Inverter Time MQTT entities for reading (as sensors)
 * Implement automatic time setting and configuration file item to enable (e.g. use localtime on Raspberry Pi to update inverter time)
-* ~~Test with newer versions of Node.js~~
+* Implement date/time format MQTT entities when MQTT discovery in Home Assistant permits this - this will make the HA front end time entry simpler e.g. one dialog for HH:MM rather than two
 
 Feel free to use this code for your own purposes. If you test this with a Growatt SPH inverter, please let me know, also if you add support for other inverters, I will look to merging changes in. I can't promise to provide tonnes of support, but will try to help.
 
