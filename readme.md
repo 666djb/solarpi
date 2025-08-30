@@ -1,4 +1,4 @@
-# SolarPi v1.1.0
+# SolarPi v1.1.1
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -86,6 +86,8 @@ release.
 ### 1.1.0
 * Adds code to automatically retry sending commands to the inverter to mitigate errors that may appear on USB or serial connections, this does not change
 the functionality of SolarPi.
+### 1.1.1
+* Minor change to install script to ensure it works with later Raspberry Pi OS (needed home directory for solarpi user)
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.

@@ -1,7 +1,7 @@
 #!/bin/sh
 pwd=$(pwd)
 echo "Adding solarpi system user"
-sudo adduser --system --group solarpi
+sudo adduser --system --group solarpi --comment solarpi --home /home/solarpi
 echo "Adding solarpi user to group dialout"
 sudo usermod -a -G dialout solarpi
 echo "Creating /opt/solarpi directory"
