@@ -125,7 +125,10 @@ in the config file (options.json) later.
     * Other versions of node.js should work, but I've not tested with them.
     * This page: https://hassancorrigan.com/blog/install-nodejs-on-a-raspberry-pi-zero/ gives instructions for the above.
 
-8. Download ZIP archive of this repository and unpack to a temporary folder (alternatively clone using Git).
+8. Download ZIP archive of this repository and unpack like this:
+    * wget https://github.com/666djb/solarpi/archive/refs/heads/public.zip
+    * unzip public.zip
+    * Or, alternatively clone using Git instead of those two steps above 
 
 9. **Either** run the install script **or** follow/adapt the manual steps below to install the SolarPi code.
 
@@ -139,7 +142,7 @@ Skip the manual steps below if you use this script.
 ### Manual steps
 Follow or adapt these if you don't use the install script.
 1. Add a new user to run solarpi:
-    * sudo adduser --system --group solarpi
+    * sudo adduser --system --group solarpi --comment solarpi --home /home/solarpi
 2. Make a folder to put the code in:
     * sudo mkdir -p /opt/solarpi
 3. Copy the code and change the permissions so the new user can run it:
