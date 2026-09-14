@@ -1,3 +1,4 @@
 Return time in the state object. Means testing MQTT date/time format.
 Implement times for TOU charge/discharge using MQTT date/time format.
 Add period call to setTime to update inverter time.
+Check update script: when copying files to examples, do as root then chown to solarpi (I think)

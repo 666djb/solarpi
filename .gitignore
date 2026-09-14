@@ -2,6 +2,7 @@ options.json.test
 dist/
 node_modules/
 .node_modules/
+TODO.txt
 built/*
 tests/cases/rwc/*
 tests/cases/test262/*
