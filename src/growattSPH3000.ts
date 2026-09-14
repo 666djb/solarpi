@@ -360,6 +360,14 @@ export class GrowattSPH3000 implements Inverter {
             command_template: '{ "command": {{ value }} }',
             payload_press: '"getTime"',
             icon: "mdi:check"
+        },
+        {
+            name: "Set Inverter Time",
+            type: "button",
+            unique_id: "solarpi_time_set",
+            command_template: '{ "command": {{ value }} }',
+            payload_press: '"setTime"',
+            icon: "mdi:check"
         }
     ]
 
@@ -1158,6 +1166,12 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
+    private async setTime(modbusClient: ModbusRTU): Promise<void> {
+        // TODO: include here the code to get the local system time
+        // Then write the time to the inverter using writeRegisters() method using the holding registers 45-50 as above
+        console.log(`${logDate()} TESTING: Setting inverter time to system time`)
+    }
+
     public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData | void> {
         const command: Command = JSON.parse(commandString)
 
@@ -1186,6 +1200,9 @@ export class GrowattSPH3000 implements Inverter {
                     subTopic: "time",
                     values: await this.getTime(modbusClient)
                 }
+            case "setTime":
+                console.log(`${logDate()} Received Set Time command`)
+                return await this.setTime(modbusClient)
             default:
                 throw `Unknown command: ${command.command}`
         }

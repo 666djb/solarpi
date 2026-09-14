@@ -1,0 +1,3 @@
+Return time in the state object. Means testing MQTT date/time format.
+Implement times for TOU charge/discharge using MQTT date/time format.
+Add period call to setTime to update inverter time.
