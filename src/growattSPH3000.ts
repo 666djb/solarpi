@@ -2,8 +2,9 @@
 // work for other SPH inverters unless these have more than 2 strings
 // of panels (then only the first two will be read)
 
-import { ModbusRTU, ReadRegisterResult, WriteMultipleResult } from "modbus-serial/ModbusRTU"
-import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities, ControlData } from "./inverter"
+import ModbusRTU from "modbus-serial"
+import { ReadRegisterResult, WriteMultipleResult } from "modbus-serial/ModbusRTU"
+import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities, ControlData } from "./inverter.js"
 import Ajv from "ajv"
 import { Mutex, withTimeout } from 'async-mutex'
 import { logDate } from "./logDate.js"
@@ -827,7 +828,7 @@ export class GrowattSPH3000 implements Inverter {
                 release()
                 return result
             } catch (error) { // modbus read error
-                console.log(`${logDate()} readInputRegisters() modbusClient.readInputRegisters() error: ${error} ${attempt!=3 ? "retrying" : "giving up"}`)
+                console.log(`${logDate()} readInputRegisters() modbusClient.readInputRegisters() error: ${error} ${attempt != 3 ? "retrying" : "giving up"}`)
                 setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
             }
         }
@@ -853,7 +854,7 @@ export class GrowattSPH3000 implements Inverter {
                 release()
                 return result
             } catch (error) { // modbus read error
-                console.log(`${logDate()} readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error} ${attempt!=3 ? "retrying" : "giving up"}`)
+                console.log(`${logDate()} readHoldingRegisters() modbusClient.readHoldingRegisters() error: ${error} ${attempt != 3 ? "retrying" : "giving up"}`)
                 setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
             }
         }
@@ -879,7 +880,7 @@ export class GrowattSPH3000 implements Inverter {
                 release()
                 return result
             } catch (error) { // modbus write error
-                console.log(`${logDate()} writeRegisters() modbusClient.writeRegisters() error: ${error} ${error} ${attempt!=3 ? "retrying" : "giving up"}`)
+                console.log(`${logDate()} writeRegisters() modbusClient.writeRegisters() error: ${error} ${error} ${attempt != 3 ? "retrying" : "giving up"}`)
                 setTimeout(() => { }, 2000) // Wait a couple of seconds before trying again
             }
         }
@@ -1166,10 +1167,19 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
-    private async setTime(modbusClient: ModbusRTU): Promise<void> {
-        // TODO: include here the code to get the local system time
-        // Then write the time to the inverter using writeRegisters() method using the holding registers 45-50 as above
-        console.log(`${logDate()} TESTING: Setting inverter time to system time`)
+    public async setTime(modbusClient: ModbusRTU): Promise<void> {
+        const now = new Date();
+
+        const values: Array<number> = [
+            now.getFullYear() % 100,
+            now.getMonth() + 1,
+            now.getDate(),
+            now.getHours(),
+            now.getMinutes(),
+            now.getSeconds()
+        ]
+
+        await this.writeRegisters(modbusClient, 45, values)
     }
 
     public async sendCommand(modbusClient: ModbusRTU, commandString: string): Promise<ControlData | void> {

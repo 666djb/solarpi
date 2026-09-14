@@ -1,4 +1,4 @@
-import { ModbusRTU } from "modbus-serial/ModbusRTU";
+import ModbusRTU from "modbus-serial"
 
 // Abstract class prototype for inverter
 // This enables other inverter types to be defined
@@ -10,6 +10,7 @@ export abstract class Inverter {
     public abstract sendCommand(modbusClient: ModbusRTU, command: string): Promise<ControlData | void>
     public abstract updateControl(subTopic: string, controlMessage: string): ControlData[]
     public abstract getControlValues(modbusClient: ModbusRTU): Promise<ControlData[]>
+    public abstract setTime(modbusClient: ModbusRTU): Promise<void>
 }
 
 export interface Command {

@@ -16,12 +16,16 @@ fi
 echo "Do you want to keep using existing configuration file?"
 select yn in "Yes" "No"; do
     case $yn in
-        Yes ) echo "Keeping current config"; sudo -u solarpi cp options.json /opt/solarpi/options.json.example; break;;
-        No ) echo "Backing up current config to options.json.backup"; sudo -u solarpi cp /opt/solarpi/options.json /opt/solarpi/options.json.backup; sudo -u solarpi cp options.json /opt/solarpi; break;;
+        Yes ) echo "Keeping current config"; sudo cp options.json /opt/solarpi/options.json.example; break;;
+        No ) echo "Backing up current config to options.json.backup"; sudo cp /opt/solarpi/options.json /opt/solarpi/options.json.backup; sudo -u solarpi cp options.json /opt/solarpi; break;;
     esac
 done
-sudo -u solarpi cp package-lock.json package.json version /opt/solarpi
-sudo -u solarpi cp -r src /opt/solarpi
+sudo cp package-lock.json package.json version /opt/solarpi
+sudo cp -r src /opt/solarpi
+
+# Make sure everything is owned by the solarpi user
+sudo chown -R solarpi:solarpi /opt/solarpi
+
 echo "Stopping solarpi"
 sudo systemctl stop solarpi
 echo "Getting Node.js modules and compiling solarpi"

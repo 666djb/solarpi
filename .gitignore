@@ -1,7 +1,9 @@
 options.json.test
+tarup.sh
 dist/
 node_modules/
 .node_modules/
+TODO.txt
 built/*
 tests/cases/rwc/*
 tests/cases/test262/*

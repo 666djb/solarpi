@@ -6,6 +6,7 @@ import { InverterClient } from "./inverterClient.js"
 import { logDate } from "./logDate.js"
 import { GrowattSPH3000 } from "./growattSPH3000.js"
 import { ControlData, Inverter } from "./inverter.js"
+import { scheduleDaily } from "./scheduleDaily.js"
 
 console.log(`${logDate()} Starting SolarPi`)
 
@@ -92,8 +93,15 @@ async function runSolarPi() {
     try {
         await inverterClient.init()
         console.log(`${logDate()} Connected to inverter`)
+
+        // Set up automatic time update if enabled in the config file
+        if (config.inverter.autoUpdateTime) {
+            scheduleDaily(async () => {
+                await inverterClient.setTime()
+            })
+        }
     } catch (error) {
-        console.error(`${logDate()} Error initialising connection to inveter:`, error)
+        console.error(`${logDate()} Error initialising connection to inverter:`, error)
     }
 
     setInterval(async () => {
