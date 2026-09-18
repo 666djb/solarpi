@@ -1166,7 +1166,7 @@ export class GrowattSPH3000 implements Inverter {
         }
     }
 
-    private async setTime(modbusClient: ModbusRTU): Promise<void> {
+    public async setTime(modbusClient: ModbusRTU): Promise<void> {
         const now = new Date();
 
         const values: Array<number> = [

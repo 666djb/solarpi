@@ -63,4 +63,8 @@ export class InverterClient {
     public async getControlValues(): Promise <ControlData[]> {
         return this.inverter.getControlValues(this.modbusClient)
     }
+
+    public async setTime(): Promise<void> {
+        return this.inverter.setTime(this.modbusClient)
+    }
 }

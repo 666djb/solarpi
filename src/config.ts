@@ -22,7 +22,8 @@ export enum models{
 export interface InverterConfig {
     model: models,
     usbDevice: string,
-    interval: number
+    interval: number,
+    autoUpdateTime: boolean
 }
 
 // Todo: check sanity of config items, parse with ajv?
