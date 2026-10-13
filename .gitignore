@@ -1,4 +1,5 @@
 options.json.test
+tarup.sh
 dist/
 node_modules/
 .node_modules/

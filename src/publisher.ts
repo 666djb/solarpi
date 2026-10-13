@@ -1,5 +1,4 @@
-import { IClientOptions, IClientPublishOptions } from "mqtt"
-import MQTT, { AsyncMqttClient } from 'async-mqtt'
+import MQTT, { AsyncMqttClient, IClientOptions, IClientPublishOptions } from 'async-mqtt'
 import { MqttConfig } from "./config.js"
 import * as events from "events"
 import { logDate } from "./logDate.js"
@@ -9,6 +8,7 @@ export class Publisher extends events.EventEmitter {
     mqttClient: AsyncMqttClient
     sensorEntities: SensorEntities
     controlEntities: ControlEntities[]
+
 
     constructor(private config: MqttConfig, sensorEntities: SensorEntities, controlEntities: ControlEntities[],
         commandEntities: CommandEntities) {

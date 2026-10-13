@@ -97,11 +97,11 @@ async function runSolarPi() {
         // Set up automatic time update if enabled in the config file
         if (config.inverter.autoUpdateTime) {
             scheduleDaily(async () => {
-                console.log("Just testing")
+                await inverterClient.setTime()
             })
         }
     } catch (error) {
-        console.error(`${logDate()} Error initialising connection to inveter:`, error)
+        console.error(`${logDate()} Error initialising connection to inverter:`, error)
     }
 
     setInterval(async () => {

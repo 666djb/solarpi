@@ -1,4 +1,4 @@
-import { ModbusRTU } from "modbus-serial/ModbusRTU";
+import ModbusRTU from "modbus-serial"
 
 // Abstract class prototype for inverter
 // This enables other inverter types to be defined

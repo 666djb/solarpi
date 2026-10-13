@@ -2,8 +2,9 @@
 // work for other SPH inverters unless these have more than 2 strings
 // of panels (then only the first two will be read)
 
-import { ModbusRTU, ReadRegisterResult, WriteMultipleResult } from "modbus-serial/ModbusRTU"
-import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities, ControlData } from "./inverter"
+import ModbusRTU from "modbus-serial"
+import { ReadRegisterResult, WriteMultipleResult } from "modbus-serial/ModbusRTU"
+import { Inverter, Command, SensorEntity, ControlEntity, SensorEntities, ControlEntities, CommandEntity, CommandEntities, ControlData } from "./inverter.js"
 import Ajv from "ajv"
 import { Mutex, withTimeout } from 'async-mutex'
 import { logDate } from "./logDate.js"

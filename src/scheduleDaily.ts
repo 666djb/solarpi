@@ -4,9 +4,9 @@ export function scheduleDaily(toRun: () => Promise<void>) {
     const now = new Date()
     const nextRun = new Date(now)
 
-    nextRun.setHours(2, 0, 0, 0)
+    nextRun.setHours(2, 5, 0, 0) // Schedule for 02:05 local time to avoid any potential issues with time changes due to daylight saving time
 
-    // If today's 02:00 has passed, schedule tomorrow.
+    // If today's 02:05 has passed, schedule tomorrow.
     if (nextRun <= now) {
         nextRun.setDate(nextRun.getDate() + 1)
     }

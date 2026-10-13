@@ -1,4 +1,4 @@
-# SolarPi v1.1.2
+# SolarPi v1.1.3
 
 ## Description
 A bridge between a solar PV inverter and MQTT, written in Typescript and executed using node.js.
@@ -18,6 +18,7 @@ SolarPi reads the following values from the inverter:
 * Battery Charge/Discharge Energy (today and total)
 * Grid Voltage
 * Command Status (indicating whether a command was accepted or not)
+* Time
 
 SolarPi reads and writes the following Time of Use (TOU) values:
 * TOU Charging:
@@ -30,12 +31,17 @@ SolarPi reads and writes the following Time of Use (TOU) values:
     - Stop Discharging SOC %
     - Start Hour/Minute, Stop Hour/Minute and Enable on/off for three time periods
 
+SolarPi updates the inverter clock's time.
+
 SolarPi creates and updates the following Device (SOLARPI Bridge), Control Entities and Sensor Entities automatically in Home Assistant:
 
-![Control Entitites 1](<SolarPi Controls 1.png>)
-![Control Entitites 2](<SolarPi Controls 2.png>)
-![Control Entitites 3](<SolarPi Controls 3.png>)
+![Device](<SolarPi Device.png>)
+![Control Entities 1](<SolarPi Controls 1.png>)
+![Control Entities 2](<SolarPi Controls 2.png>)
+![Control Entities 3](<SolarPi Controls 3.png>)
 ![Control Entities 4](<SolarPi Controls 4.png>)
+![Control Entities 5](<SolarPi Controls 5.png>)
+![Control Entities 6](<SolarPi Controls 6.png>)
 
 From these, Lovelace Dashboards such as the following can be created.
 
@@ -91,6 +97,8 @@ the functionality of SolarPi.
 ### 1.1.2
 * Fixed update.sh script to ensure backup files are created
 * Added support for updating the inverter clock based on localtime on the Raspberry Pi. This implements an MQTT button "Set Inverter Time"
+### 1.1.3
+* Added support for automatically updating the inverter clock at 02:05 each day.
 
 ## Installation
 These instructions should get you set up with a connection to the inverter and the code installed. When complete you need to start the code in the next section.
@@ -117,13 +125,13 @@ These instructions should get you set up with a connection to the inverter and t
 6. Note the USB device that the converter has created, in the above output text this is "ttyUSB0", it may be "ttyACM0" instead. You will need to put this device path
 in the config file (options.json) later.
 
-7. Install node.js (I am using version 16.16.0).
+7. Install node.js (my current version is 22.23.3).
     * First get the binary package using a command line like this:
-        * wget https://unofficial-builds.nodejs.org/download/release/v16.16.0/node-v16.16.0-linux-armv6l.tar.xz
+        * wget https://unofficial-builds.nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-armv6l.tar.xz
     * Then unzip it:
-        * tar xvfJ node-v16.16.0-linux-armv6l.tar.xz
+        * tar xvfJ node-v22.23.3-linux-armv6l.tar.xz
     * Then install the files:
-        * sudo cp -R node-v16.16.0-linux-armv6l/* /usr/local
+        * sudo cp -R node-v22.23.3-linux-armv6l/* /usr/local
     * **Be sure to use the ARMv6 version if you are using a Raspberry Pi Zero**
     * Other versions of node.js should work, but I've not tested with them.
     * This page: https://hassancorrigan.com/blog/install-nodejs-on-a-raspberry-pi-zero/ gives instructions for the above.
@@ -199,14 +207,12 @@ If you have used the install script or followed the complete set of manual steps
 If you make improvements, find bugs (in the code or this doc), let me know and, time permitting, I'll try to fix.
 
 ## Updating Node.js versions
-Earlier versions of SolarPi were developed for Node.js version 16.16.0. The version of Node.js that is now recommended on
-the https://nodejs.org site is 20.9.0 - version 20.x.x will be maintained to 2026 according to the Node.js schedule.
-I have updated my version by doing the following:
-* Run: wget https://unofficial-builds.nodejs.org/download/release/v20.9.0/node-v20.9.0-linux-armv6l.tar.xz when logged in as my default user on
+I have updated my version from an older version by doing the following:
+* Run: wget https://unofficial-builds.nodejs.org/download/release/v22.23.3/node-v22.23.3-linux-armv6l.tar.xz when logged in as my default user on
 the Raspberry Pi Zero that I use for SolarPi
-* Run: tar xvfJ node-v20.9.0-linux-armv6l.tar.xz
+* Run: tar xvfJ node-v22.23.3-linux-armv6l.tar.xz
 * Stop SolarPi by running: sudo systemctl stop solarpi (also stop anything else that is using Node.js)
-* Overwrite the old version by running: sudo cp -R node-v20.9.0-linux-armv6l/* /usr/local
+* Overwrite the old version by running: sudo cp -R node-v22.23.3-linux-armv6l/* /usr/local
 * Reboot or start SolarPi manually (sudo systemctl start solarpi)
 
 Rolling back to the previous version should be as simple as repeating the steps subtituting the relevant tar.xz file.
@@ -228,7 +234,7 @@ Whilst these instructions and code use published open interfaces and standards, 
 ## License
 ISC License
 
-Copyright 2023 David Brown
+Copyright 2026 David Brown
 
 Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
 
